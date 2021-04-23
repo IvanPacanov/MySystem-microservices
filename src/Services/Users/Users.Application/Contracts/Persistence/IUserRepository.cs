@@ -6,6 +6,6 @@ namespace Users.Application.Contracts.Persistence
 {
     public interface IUserRepository : IAsyncRepository<User>
     {
-        Task<IEnumerable<User>> GetUser(string userLogin);
+        Task<IEnumerable<User>> GetUsersByUserName(string userLogin);
     }
 }
