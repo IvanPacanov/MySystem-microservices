@@ -1,13 +1,13 @@
-package com.example.appklientvideochat.ui.slideshow
+package com.example.andro_client.ui.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class NotificationsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
+        value = "This is notifications Fragment"
     }
     val text: LiveData<String> = _text
 }

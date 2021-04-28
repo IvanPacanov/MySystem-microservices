@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "AppKlientVideoChat"
+rootProject.name = "Andro_Client"

@@ -1,4 +1,4 @@
-package com.example.appklientvideochat
+package com.example.andro_client
 
 import org.junit.Test
 

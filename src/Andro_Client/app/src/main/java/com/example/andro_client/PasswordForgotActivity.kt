@@ -1,11 +1,11 @@
-package com.example.appklientvideochat
+package com.example.andro_client
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class RegisterActivity : AppCompatActivity() {
+class PasswordForgotActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+        setContentView(R.layout.activity_password_forgot)
     }
 }

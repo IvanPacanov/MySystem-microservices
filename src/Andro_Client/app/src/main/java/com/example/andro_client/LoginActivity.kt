@@ -1,4 +1,4 @@
-package com.example.appklientvideochat
+package com.example.andro_client
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
