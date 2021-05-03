@@ -26,6 +26,9 @@ namespace Users.API
         public void ConfigureServices(IServiceCollection services)
         {
 
+          //  services.AddApplicationServices();
+          //  services.AddInfrasturereServices();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
