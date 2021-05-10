@@ -33,7 +33,7 @@ namespace Users.API.Controllers
             return Ok(user);
         }
 
-        [HttpPost(Name = "CreateUser")]
+        [HttpPost("[action]")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ActionResult<int>> CreateUser([FromBody] CreateUserCommand command)
         {            
@@ -41,7 +41,7 @@ namespace Users.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost(Name = "UpdateUser")]
+        [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]

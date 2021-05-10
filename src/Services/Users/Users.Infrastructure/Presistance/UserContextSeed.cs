@@ -12,7 +12,7 @@ namespace Users.Infrastructure.Presistance
     {
         public static async Task SeedAsync(UserContext userContext, ILogger<UserContextSeed> logger)
         {
-            if (!userContext.Users.Any()
+            if (!userContext.Users.Any())
             {
                 userContext.Users.AddRange(GetPreconfiguredUser());
                 await userContext.SaveChangesAsync();

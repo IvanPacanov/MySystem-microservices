@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+
+
+  userdb:
+    container_name:  userdb
+    environment:
+        SA_PASSWORD: "SwN12345678"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+        - "1433:1433" 
+
+  users.api:
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - "ConnectionStrings:OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=SwN12345678"            
+        - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+        - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+    depends_on:
+        - userdb
+    ports:
+        - "8004:80"

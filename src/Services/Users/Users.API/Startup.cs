@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Users.Application;
+using Users.Infrastructure;
 
 namespace Users.API
 {
@@ -26,8 +28,8 @@ namespace Users.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-          //  services.AddApplicationServices();
-          //  services.AddInfrasturereServices();
+           services.AddApplicationServices();
+           services.AddInfrastructureServices(Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
