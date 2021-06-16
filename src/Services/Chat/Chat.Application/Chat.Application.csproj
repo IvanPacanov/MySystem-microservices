@@ -1,11 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Chat.Domain\Chat.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\GroupChat\Commands\CreateNewGroupChat\" />
+    <Folder Include="Features\GroupChat\Commands\DeleteGroupChat\" />
+    <Folder Include="Features\GroupChat\Queries\GetMessages\" />
+    <Folder Include="Features\SingleChat\Commands\CreateNewSingleChat\" />
+    <Folder Include="Features\SingleChat\Commands\DeleteSingleChat\" />
+    <Folder Include="Features\SingleChat\Queries\GetMessages\" />
   </ItemGroup>
 
 </Project>

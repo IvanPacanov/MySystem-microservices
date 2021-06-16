@@ -4,14 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Data.SqlClient;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Users.API.Extensions
+namespace Chat.API.Extensions
 {
     public static class HostExtensions
     {
-        public static IHost MigrateDatabase<TContext>(this IHost host, 
-            Action<TContext, IServiceProvider> seeder, 
+        public static IHost MigrateDatabase<TContext>(this IHost host,
+            Action<TContext, IServiceProvider> seeder,
             int? retry = 0) where TContext : DbContext
         {
             int retryForAvailability = retry.Value;
@@ -32,19 +34,19 @@ namespace Users.API.Extensions
                 }
                 catch (SqlException ex)
                 {
-                    if(retryForAvailability < 10)
+                    if (retryForAvailability < 10)
                     {
                         retryForAvailability++;
                         System.Threading.Thread.Sleep(2000);
                         MigrateDatabase<TContext>(host, seeder, retryForAvailability);
-                    }                    
+                    }
                 }
             }
 
             return host;
         }
 
-        private static void InvokeSeeder<TContext>(Action<TContext, IServiceProvider> seeder, TContext context, IServiceProvider services) 
+        private static void InvokeSeeder<TContext>(Action<TContext, IServiceProvider> seeder, TContext context, IServiceProvider services)
             where TContext : DbContext
         {
             context.Database.Migrate();

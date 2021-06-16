@@ -19,5 +19,8 @@ namespace Chat.Infrastructure.Persistence
         }
 
         public DbSet<Chats> Chat { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        // public DbSet<Chats> Chat { get; set; }
     }
 }
