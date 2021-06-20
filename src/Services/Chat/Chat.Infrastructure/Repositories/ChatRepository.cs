@@ -20,10 +20,20 @@ namespace Chat.Infrastructure
         }
 
 
-        public async Task<IEnumerable<Chats>> GetChatByUserName(string userName)
+        public async Task<IEnumerable<Chats>> GetChatsByUserName(string userName)
         {
-            var chatList = await _dbContext.Chat.Where(chat => chat.UserName == userName).ToListAsync();
-            return chatList;
+          //  var userList = _dbContext.Chat.Select(c => c.Users.Where(u => u.UserName == userName).FirstOrDefault()).FirstOrDefault();
+          //  var chatList = await _dbContext.Chat.ToListAsync();
+           
+            var chatList2 = await _dbContext.Chat.Where(chat => chat.Users.Any(u => u.UserName == userName)).ToListAsync();
+            foreach (var item in chatList2)
+            {
+                item.Message = await _dbContext.Messages.Where(m => m.ChatsId == item.ChatsId).ToListAsync();
+                item.Users = await _dbContext.User.Where(m => m.ChatsId == item.ChatsId).ToListAsync();
+            }
+            return chatList2;
         }
+
+       
     }
 }

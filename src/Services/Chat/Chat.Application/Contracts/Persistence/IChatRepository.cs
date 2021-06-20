@@ -8,6 +8,6 @@ namespace Chat.Application.Contracts.Persistence
 {
    public interface IChatRepository
     {
-        Task<IEnumerable<Chats>> GetChatByUserName(string userLogin);
+        Task<IEnumerable<Chats>> GetChatsByUserName(string userName);
     }
 }

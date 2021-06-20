@@ -24,7 +24,8 @@ namespace Users.Infrastructure.Presistance
         {
             return new List<User>
             {
-                new User() {UserName = "Admin", UserPassword = "Admin" }
+                new User() {UserName = "Admin", UserPassword = "Admin" },
+                new User() {UserName = "Guest", UserPassword = "Guest" }
             };
         }
     }

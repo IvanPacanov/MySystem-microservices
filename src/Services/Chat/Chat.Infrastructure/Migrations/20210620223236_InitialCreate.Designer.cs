@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chat.Infrastructure.Migrations
 {
     [DbContext(typeof(ChatContext))]
-    [Migration("20210615215536_InitialCreate")]
+    [Migration("20210620223236_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace Chat.Infrastructure.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("NameOfChat")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -51,79 +51,76 @@ namespace Chat.Infrastructure.Migrations
                     b.ToTable("Chat");
                 });
 
-            modelBuilder.Entity("Chat.Domain.Entities.Conversation", b =>
-                {
-                    b.Property<int>("ConversationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ChatsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CommunicationWithUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ConversationId");
-
-                    b.HasIndex("ChatsId");
-
-                    b.ToTable("Conversations");
-                });
-
             modelBuilder.Entity("Chat.Domain.Entities.Message", b =>
                 {
-                    b.Property<int>("IdMessage")
+                    b.Property<int>("MessageId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ConversationId")
+                    b.Property<int?>("ChatsId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("DateOfSendMessage")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("ReceiverOfMessage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SenderOfMessage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdMessage");
+                    b.Property<string>("UserReceiver")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ConversationId");
+                    b.Property<string>("UserSend")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MessageId");
+
+                    b.HasIndex("ChatsId");
 
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Chat.Domain.Entities.Conversation", b =>
+            modelBuilder.Entity("Chat.Domain.Entities.User", b =>
                 {
-                    b.HasOne("Chat.Domain.Entities.Chats", null)
-                        .WithMany("Conversation")
-                        .HasForeignKey("ChatsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ChatsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("ChatsId");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Chat.Domain.Entities.Message", b =>
                 {
-                    b.HasOne("Chat.Domain.Entities.Conversation", null)
+                    b.HasOne("Chat.Domain.Entities.Chats", "Chats")
                         .WithMany("Message")
-                        .HasForeignKey("ConversationId");
+                        .HasForeignKey("ChatsId");
+
+                    b.Navigation("Chats");
+                });
+
+            modelBuilder.Entity("Chat.Domain.Entities.User", b =>
+                {
+                    b.HasOne("Chat.Domain.Entities.Chats", null)
+                        .WithMany("Users")
+                        .HasForeignKey("ChatsId");
                 });
 
             modelBuilder.Entity("Chat.Domain.Entities.Chats", b =>
                 {
-                    b.Navigation("Conversation");
-                });
-
-            modelBuilder.Entity("Chat.Domain.Entities.Conversation", b =>
-                {
                     b.Navigation("Message");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

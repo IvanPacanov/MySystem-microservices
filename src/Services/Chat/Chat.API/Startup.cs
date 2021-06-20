@@ -1,3 +1,4 @@
+using Chat.Application;
 using Chat.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,10 @@ namespace Chat.API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddApplicationServices();
             services.AddInfrastructureServices(Configuration);
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

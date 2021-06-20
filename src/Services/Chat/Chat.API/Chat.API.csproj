@@ -13,13 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Users\Users.API\Users.API.csproj" />
     <ProjectReference Include="..\Chat.Application\Chat.Application.csproj" />
     <ProjectReference Include="..\Chat.Infrastructure\Chat.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

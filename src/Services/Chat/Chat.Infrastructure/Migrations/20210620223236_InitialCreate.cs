@@ -14,7 +14,7 @@ namespace Chat.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ChatsId = table.Column<int>(type: "int", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NameOfChat = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -26,57 +26,57 @@ namespace Chat.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Conversations",
-                columns: table => new
-                {
-                    ConversationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ChatsId = table.Column<int>(type: "int", nullable: false),
-                    CommunicationWithUserName = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Conversations", x => x.ConversationId);
-                    table.ForeignKey(
-                        name: "FK_Conversations_Chat_ChatsId",
-                        column: x => x.ChatsId,
-                        principalTable: "Chat",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
-                    IdMessage = table.Column<int>(type: "int", nullable: false)
+                    MessageId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SenderOfMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReceiverOfMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConversationId = table.Column<int>(type: "int", nullable: true)
+                    ChatsId = table.Column<int>(type: "int", nullable: true),
+                    UserSend = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserReceiver = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfSendMessage = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messages", x => x.IdMessage);
+                    table.PrimaryKey("PK_Messages", x => x.MessageId);
                     table.ForeignKey(
-                        name: "FK_Messages_Conversations_ConversationId",
-                        column: x => x.ConversationId,
-                        principalTable: "Conversations",
-                        principalColumn: "ConversationId",
+                        name: "FK_Messages_Chat_ChatsId",
+                        column: x => x.ChatsId,
+                        principalTable: "Chat",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ChatsId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_User_Chat_ChatsId",
+                        column: x => x.ChatsId,
+                        principalTable: "Chat",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Conversations_ChatsId",
-                table: "Conversations",
+                name: "IX_Messages_ChatsId",
+                table: "Messages",
                 column: "ChatsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ConversationId",
-                table: "Messages",
-                column: "ConversationId");
+                name: "IX_User_ChatsId",
+                table: "User",
+                column: "ChatsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -85,7 +85,7 @@ namespace Chat.Infrastructure.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Conversations");
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Chat");

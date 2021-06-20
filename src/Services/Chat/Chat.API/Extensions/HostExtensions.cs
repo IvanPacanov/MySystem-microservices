@@ -54,3 +54,4 @@ namespace Chat.API.Extensions
         }
     }
 }
+

@@ -7,14 +7,15 @@ namespace Chat.Domain.Entities
 {
    public class Message
     {
-        [Key]
-        public int IdMessage { get; set; }
+        public int MessageId { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public int ChatsId { get; set; }
 
-        public string SenderOfMessage { get; set; }
+        public string UserSend { get; set; }
 
-        public string ReceiverOfMessage { get; set; }
+        public string UserReceiver { get; set; }
+
+        public DateTime DateOfSendMessage { get; set; }
 
         public string Text { get; set; }
 

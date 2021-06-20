@@ -23,27 +23,46 @@ namespace Chat.Infrastructure.Persistence
 
         public static IEnumerable<Chats> GetPreconfiguredChats()
         {
+
             return new List<Chats>
             {
                 new Chats()
                 {
-                    UserName = "Admin",
-                    ChatsId = 1,
-                    Conversation =  new List<Conversation>() 
+                    Users = new List<User>
                     {
-                                     new Conversation()
+                        new User(){ UserName = "Admin"},
+                        new User(){ UserName = "Guest"}
+                    },
+                    ChatsId = 1,
+                    Message =  new List<Message>() 
+                    {
+                                     new Message()
                                      {
-                                         CommunicationWithUserName = "Guest",
-                                         Message = new List<Message>()
-                                         {
-                                            new Message()
-                                            {
-                                                DateTime = DateTime.Now, 
-                                                SenderOfMessage = "Admin", 
-                                                ReceiverOfMessage = "Guest", 
-                                                Text= "Test message One"
-                                            }
-                                         }
+                                       
+                                                DateOfSendMessage = DateTime.Now,
+                                                UserSend = "Admin",
+                                                UserReceiver = "Guest",
+                                                Text= "Test message One",
+                                                
+                                       
+                                     },
+                                     new Message()
+                                     {
+
+                                                DateOfSendMessage = DateTime.Now,
+                                                UserSend = "Admin",
+                                                UserReceiver = "Guest",
+                                                Text= "Test message One22222"
+
+                                     },
+                                     new Message()
+                                     {
+
+                                                DateOfSendMessage = DateTime.Now,
+                                                UserSend = "Admin",
+                                                UserReceiver = "Guest",
+                                                Text= "Test message One333"
+
                                      }
                     }
                 }
