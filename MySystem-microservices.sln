@@ -25,11 +25,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chat.Domain", "src\Services
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chat.Infrastructure", "src\Services\Chat\Chat.Infrastructure\Chat.Infrastructure.csproj", "{E76C0D69-1684-4D72-B72E-597B3B9B69CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Infrastructure", "src\Services\Users\Users.Infrastructure\Users.Infrastructure.csproj", "{4CA0CC57-8BDC-4A71-BE71-83880369FEF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Infrastructure", "src\Services\Users\Users.Infrastructure\Users.Infrastructure.csproj", "{4CA0CC57-8BDC-4A71-BE71-83880369FEF6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideoCommunication", "VideoCommunication", "{88B1219E-87A9-4410-9B6A-F924299FE07B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoCommunication.API", "src\Services\VideoCommunication\VideoCommunication.API\VideoCommunication.API.csproj", "{6379213E-E00E-4B51-B6CC-54D15AA372D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideoCommunication.API", "src\Services\VideoCommunication\VideoCommunication.API\VideoCommunication.API.csproj", "{6379213E-E00E-4B51-B6CC-54D15AA372D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{398A64BE-2A9C-4510-A2A1-4DA1806ECB28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Messages", "src\Services\BuildingBlocks\EventBus.Messages\EventBus.Messages.csproj", "{F36014AF-18CE-4072-BC21-3D633915B371}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +81,10 @@ Global
 		{6379213E-E00E-4B51-B6CC-54D15AA372D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6379213E-E00E-4B51-B6CC-54D15AA372D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6379213E-E00E-4B51-B6CC-54D15AA372D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36014AF-18CE-4072-BC21-3D633915B371}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36014AF-18CE-4072-BC21-3D633915B371}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36014AF-18CE-4072-BC21-3D633915B371}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36014AF-18CE-4072-BC21-3D633915B371}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +102,8 @@ Global
 		{4CA0CC57-8BDC-4A71-BE71-83880369FEF6} = {35FC529B-C1F0-4DD7-B7F9-A14B856C5928}
 		{88B1219E-87A9-4410-9B6A-F924299FE07B} = {78D3C13F-884B-4976-B87C-7F53E5226F36}
 		{6379213E-E00E-4B51-B6CC-54D15AA372D0} = {88B1219E-87A9-4410-9B6A-F924299FE07B}
+		{398A64BE-2A9C-4510-A2A1-4DA1806ECB28} = {78D3C13F-884B-4976-B87C-7F53E5226F36}
+		{F36014AF-18CE-4072-BC21-3D633915B371} = {398A64BE-2A9C-4510-A2A1-4DA1806ECB28}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B58FE25-11FD-4C8B-927B-6ED62F36E576}

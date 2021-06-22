@@ -11,6 +11,7 @@ namespace VideoCommunication.API.Controllers
         {
             var userInfo = new UserInfo() { userName = username, connectionId = Context.ConnectionId };
             await Clients.Others.SendAsync("NewUserArrived", JsonSerializer.Serialize(userInfo));
+            await Clients.Users().SendAsync("NewUserArrived", JsonSerializer.Serialize(userInfo));
         }
 
         public async Task HelloUser(string userName, string user)
