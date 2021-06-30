@@ -13,19 +13,18 @@ namespace VideoCommunication.API.EventBusConsumer
     public class CheckeLoggedConsumer : IConsumer<LoginCheckoutEvent>
     {
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
         private readonly ILogger<CheckeLoggedConsumer> _logger;
 
-        public CheckeLoggedConsumer(IMapper mapper, IMediator mediator, ILogger<CheckeLoggedConsumer> logger)
+        public CheckeLoggedConsumer(IMapper mapper, ILogger<CheckeLoggedConsumer> logger)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task Consume(ConsumeContext<LoginCheckoutEvent> context)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Elo mordeczko to do zrobienia jeszcze!");
+            return null;
         }
     }
 }

@@ -12,7 +12,27 @@ services:
     ports:
         - "1433:1433" 
 
+
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+
+  portainer:
+    container_name: portainer
+    restart: always
+    ports:
+            - "8080:8000"
+            - "9000:9000"
+    volumes:
+            -  /var/run/docker.sock:/var/run/docker.sock
+            - portainer_data:/data
+
   users.api:
+    container_name: users.api
+    restart: always
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - "ConnectionStrings:OrderingConnectionString=Server=userdb;Database=OrderDb;User Id=sa;Password=SwN12345678"            
@@ -20,5 +40,21 @@ services:
         - "ElasticConfiguration:Uri=http://elasticsearch:9200"
     depends_on:
         - userdb
+        - rabbitmq
     ports:
         - "8004:80"
+
+  videocommunication.api:
+    container_name: videocommunication.api
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+     # - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8005:80"
+     # - "5005:443"
+    #volumes:
+    #  - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

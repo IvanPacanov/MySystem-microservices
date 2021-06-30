@@ -9,15 +9,16 @@ namespace VideoCommunication.API.Controllers
     {
         public async Task NewUser(string username)
         {
-            var userInfo = new UserInfo() { userName = username, connectionId = Context.ConnectionId };
-            await Clients.Others.SendAsync("NewUserArrived", JsonSerializer.Serialize(userInfo));
-            await Clients.Users().SendAsync("NewUserArrived", JsonSerializer.Serialize(userInfo));
+          //  var userInfo = new UserInfo() { userName = username, connectionId = Context.ConnectionId };
+            var test = new { userName = username, connectionId = Context.ConnectionId };
+            await Clients.Others.SendAsync("NewUserArrived", JsonSerializer.Serialize(test));
         }
 
         public async Task HelloUser(string userName, string user)
         {
-            var userInfo = new UserInfo() { userName = userName, connectionId = Context.ConnectionId };
-            await Clients.Client(user).SendAsync("UserSaidHello", JsonSerializer.Serialize(userInfo));
+            //  var userInfo = new UserInfo() { userName = username, connectionId = Context.ConnectionId };
+            var test = new { userName = userName, connectionId = Context.ConnectionId };
+            await Clients.Client(user).SendAsync("UserSaidHello", JsonSerializer.Serialize(test));
         }
 
         public async Task SendSignal(string signal, string user)
