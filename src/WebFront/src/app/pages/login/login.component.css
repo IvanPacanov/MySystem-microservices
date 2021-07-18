@@ -1,0 +1,90 @@
+
+.login-form__logo-container{
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.25);
+    
+}
+
+.login-form__logo {
+    display: block;
+    max-width: 125px;
+    margin: 0 auto;
+}
+
+.login-form,
+.login-form * {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.login-form{
+    max-width: 350px;
+    margin: 150px auto;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+}
+
+
+.login-form__content{
+    padding: 30px;
+    background: #eeeeee;
+}
+
+.login-form__header{
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333333;
+}
+
+input[type=text] {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border:  2px solid #dddddd;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.9s;
+ }
+ input[type=text]:focus{
+     border-color: #2196F3;
+ }
+
+ input[type=text]::placeholder{
+    border-color: #aaaaaa;
+}
+
+ 
+
+ input[type=password] {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border:  2px solid #dddddd;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.5s;
+ }
+ 
+ input[type=password]:focus{
+    border-color: #2196F3;
+}
+
+
+.login-form__Button{
+    padding: 10px;
+    color: #ffffff;
+    font-weight: bold;
+    background: #2196F3;
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form__Button:active{
+    background: #1976D2;
+}
