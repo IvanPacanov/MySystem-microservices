@@ -3,10 +3,15 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using VideoCommunication.API.Models;
 
-namespace VideoCommunication.API.Controllers
-{
-    public class VideoController : Hub
+namespace VideoCommunication.API.Hubs
+{    
+    public interface IHub
     {
+        public Task NewUser(string userName);
+    }
+    public class HubController : Hub, IHub
+    { 
+        
         public async Task NewUser(string username)
         {
           //  var userInfo = new UserInfo() { userName = username, connectionId = Context.ConnectionId };
@@ -31,5 +36,13 @@ namespace VideoCommunication.API.Controllers
             await Clients.All.SendAsync("UserDisconnect", Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
+
+        //private async Task SendUserListUpdate()
+        //{
+        //    _Users.ForEach(u => u.InCall = (GetUserCall(u.ConnectionId) != null));
+        //    await Clients.All.UpdateUserList(_Users);
+        //}
+
+        
     }
 }

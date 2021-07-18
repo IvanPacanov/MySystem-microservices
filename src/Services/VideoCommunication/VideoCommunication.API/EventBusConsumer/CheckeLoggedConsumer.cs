@@ -1,30 +1,34 @@
 ﻿using AutoMapper;
 using EventBus.Messages.Events;
 using MassTransit;
+using System.Text.Json;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VideoCommunication.API.Hubs;
 
 namespace VideoCommunication.API.EventBusConsumer
 {
-    public class CheckeLoggedConsumer : IConsumer<LoginCheckoutEvent>
+    public class CheckeLoggedConsumer : Hub, IConsumer<LoginCheckoutEvent>
     {
         private readonly IMapper _mapper;
         private readonly ILogger<CheckeLoggedConsumer> _logger;
+        private readonly IHub _hub;
 
-        public CheckeLoggedConsumer(IMapper mapper, ILogger<CheckeLoggedConsumer> logger)
+        public CheckeLoggedConsumer(IMapper mapper, ILogger<CheckeLoggedConsumer> logger, IHub hub)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper;
+            _logger = logger;
+            _hub = hub;
         }
 
-        public Task Consume(ConsumeContext<LoginCheckoutEvent> context)
+        public async Task Consume(ConsumeContext<LoginCheckoutEvent> context)
         {
-            Console.WriteLine("Elo mordeczko to do zrobienia jeszcze!");
-            return null;
+            await _hub.NewUser(context.Message.UserName);
         }
     }
 }

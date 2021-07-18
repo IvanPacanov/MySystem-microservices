@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using VideoCommunication.API.EventBusConsumer;
+using VideoCommunication.API.Hubs;
 
 namespace VideoCommunication.API
 {
@@ -24,7 +25,9 @@ namespace VideoCommunication.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-        
+
+            services.AddSignalR();
+            services.AddScoped<IHub, HubController>();
             // MassTransit-RabbitMQ Configuration 
             services.AddMassTransit(config =>
             {
@@ -73,6 +76,10 @@ namespace VideoCommunication.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<HubController>("/ConnectionHub", options =>
+                {
+                    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+                });
             });
         }
     }
