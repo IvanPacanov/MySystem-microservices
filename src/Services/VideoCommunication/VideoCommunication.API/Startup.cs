@@ -26,25 +26,35 @@ namespace VideoCommunication.API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder => {
+                builder
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+            }));
+
+            services.AddMvc(option => option.EnableEndpointRouting = false);
+
             services.AddSignalR();
             services.AddScoped<IHub, HubController>();
             // MassTransit-RabbitMQ Configuration 
-            services.AddMassTransit(config =>
-            {
+            //services.AddMassTransit(config =>
+            //{
 
-                config.AddConsumer<CheckeLoggedConsumer>();
+            //    config.AddConsumer<CheckeLoggedConsumer>();
 
-                config.UsingRabbitMq((ctx, cfg) =>
-                {
-                    cfg.Host(Configuration["EventBusSettings:HostAddress"]);
+            //    config.UsingRabbitMq((ctx, cfg) =>
+            //    {
+            //        cfg.Host(Configuration["EventBusSettings:HostAddress"]);
 
-                    cfg.ReceiveEndpoint(EventBusConstants.LoginCheckQueue, c =>
-                    {
-                        c.ConfigureConsumer<CheckeLoggedConsumer>(ctx);
-                    });
-                });
-            });
-            services.AddMassTransitHostedService();
+            //        cfg.ReceiveEndpoint(EventBusConstants.LoginCheckQueue, c =>
+            //        {
+            //            c.ConfigureConsumer<CheckeLoggedConsumer>(ctx);
+            //        });
+            //    });
+            //});
+            //services.AddMassTransitHostedService();
 
 
             services.AddAutoMapper(typeof(Startup));
@@ -70,6 +80,14 @@ namespace VideoCommunication.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
+
+  //          app.UseCors(builder => builder
+  //.AllowAnyOrigin()
+  //.AllowAnyMethod()
+  //.AllowAnyHeader());
+            app.UseMvc();
 
             app.UseAuthorization();
 

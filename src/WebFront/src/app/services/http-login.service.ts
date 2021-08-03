@@ -13,6 +13,10 @@ export class HttpLoginService {
 
   }
 
+  getHelloServer(){
+    return this.httpClient.get("http://localhost:5005/api/Authenticate/HelloServer").pipe(tap(console.log));
+  }
+
   postLogIn(user: User){
     return this.httpClient.post(this.url, user).pipe(tap(console.log));
   }

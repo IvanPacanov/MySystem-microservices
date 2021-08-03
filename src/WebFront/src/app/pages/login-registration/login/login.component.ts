@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm, NgModel } from '@angular/forms';
 import { HttpLoginService } from 'src/app/services/http-login.service';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -11,6 +12,7 @@ import { HttpLoginService } from 'src/app/services/http-login.service';
 })
 export class LoginComponent implements OnInit {
 
+  
   user : Partial<User> = {};
   constructor(private httpService: HttpLoginService, 
     private router: Router,) { }
@@ -23,13 +25,24 @@ export class LoginComponent implements OnInit {
         result => 
         {        
           console.log(result);
-          this.router.navigate(['/']);
+          this.router.navigate(['/HomePage']);
         },
-        error => console.log(error)
+        error =>
+        {
+          this.router.navigate(['/HomePage']); 
+          console.log(error)        
+           
+          }
       );
     }
     printModel(title: NgModel)
     {
-      console.log(title);
+      console.log(title); 
+     var c = ['10','1','11114111234342'].map(parseInt)
+        console.log(c);
     }
+    
+    
 }
+
+

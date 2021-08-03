@@ -1,4 +1,17 @@
 
+*{
+ margin: 0;
+ padding: 0;   
+}
+.header{
+    min-height: 100vh;
+    width: 100%;
+    background-image: linear-gradient(rgba(4,9,30,0.7),rgba(4,9,30,0.7)),url(/assets/video-chat.png);
+    background-position: center;
+    background-size: cover;
+    position: relative;
+}
+
 .login-form__logo-container{
     padding: 30px;
     background: rgba(255, 255, 255, 0.25);
@@ -11,6 +24,43 @@
     margin: 0 auto;
 }
 
+
+.form-box{
+    width: 380px;
+    height: 480px;
+    position: relative;
+    margin: 6% auto;
+    background: #fff;
+    padding: 5px;
+}
+
+.button-box{
+    width: 220px;
+    margin: 35px auto;
+    position: relative;
+    box-shadow: 0 0 20px 9px #ff61241f;
+}
+
+.toggle-btn{
+    padding: 10px 30px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    outline: none;
+    position: relative;
+}
+
+#btn{
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 110px;
+    height: 100%;
+    background: linear-gradient(to right, #ff105f,#ffad06);
+    border-radius: 30px;
+    transition: .5s;
+}
+
 .login-form,
 .login-form * {
     box-sizing: border-box;
@@ -19,7 +69,6 @@
 
 .login-form{
     max-width: 350px;
-    margin: 150px auto;
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
@@ -28,13 +77,15 @@
 
 .login-form__content{
     padding: 30px;
+    height: 300px;
     background: #eeeeee;
 }
 
 .login-form__header{
-    margin-bottom: 15px;
+    margin-bottom: 0px;
     text-align: center;
     color: #333333;
+    
 }
 
 input[type=text] {
@@ -74,17 +125,30 @@ input[type=text] {
 
 
 .login-form__Button{
-    padding: 10px;
+    padding: 10px 30px;
     color: #ffffff;
     font-weight: bold;
-    background: #2196F3;
+    background: linear-gradient(to right, #ff105f,#ffad06 );
+    display: block;
     width: 100%;
-    border: none;
+    border: 0;
     outline: none;
-    border-radius: 5px;
+    border-radius: 30px;
     cursor: pointer;
 }
 
 .login-form__Button:active{
     background: #1976D2;
+}
+
+
+
+/* 
+Poprawne */
+
+.login_center{
+    position: relative;
+    top: 50%;
+    left: 50%;
+        transform: translate(-50%, -50%)
 }
