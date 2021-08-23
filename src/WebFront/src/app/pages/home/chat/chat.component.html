@@ -1,18 +1,22 @@
 <div class="chat-container">
     <div class="search-container">
-            <input type="text" placeholder="Search"/>            
+            <input type="text" placeholder="Search"/>
     </div>
-    <app-user-list class="conversation-list">
+    <app-user-list class="conversation-list"
+    [friends] = "user.friendDTOs"
+    (idFriend)= "selectChat($event)">
 
     </app-user-list>
+
     <div class="new-message-container">
         <a href="#">+</a>
     </div>
 
     <div class="chat-title">
-        <span>Nazwa użytkownika</span>
+        <span></span>
     </div>
-    <app-messages class="chat-message-list">
+    <app-messages class="chat-message-list"
+    [id] = "id.asObservable()">
 
     </app-messages>
     <div class="chat-form">

@@ -6,8 +6,7 @@
         <input class="login-form__input" type="text" name="dc_userLog" placeholder="Login" [(ngModel)]="user.username" 
         id="in_user" 
         name="in_user" 
-        #in_user="ngModel" 
-        (input)="printModel(in_user)">
+        #in_user="ngModel" >
         <input class="login-form__input" type="password" name="dc_userPassword" placeholder="Password" [(ngModel)]="user.password">
         <button class="login-form__Button" type="submit">Login</button>
     </div>

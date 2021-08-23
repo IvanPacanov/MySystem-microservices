@@ -28,7 +28,7 @@ namespace VideoCommunication.API.EventBusConsumer
 
         public async Task Consume(ConsumeContext<LoginCheckoutEvent> context)
         {
-            await _hub.NewUser(context.Message.Username);
+            //await _hub.NewUser(context.Message.Username);
         }
     }
 }

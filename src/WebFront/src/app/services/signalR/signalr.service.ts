@@ -25,8 +25,24 @@ export class SignalrService {
         await this.hubConnection.start();
         console.log('Connection started');
 
-        
-    this.hubConnection.invoke('NewUser', "Eloo");
+
+    console.log("Test 1")
+        this.hubConnection.on('OnlineUser', (data) => {
+          this.newPeer.next(JSON.parse(data));
+          console.log("Test 2")
+        });
+
+        this.hubConnection.on('AnswerAfterLoggin', (data) => {
+          this.newPeer.next(JSON.parse(data));
+          console.log(data)
+        });
+
+    this.hubConnection.invoke('loginToSignalR', "Eloo");
+
+
+
   }
+
+
 
 }

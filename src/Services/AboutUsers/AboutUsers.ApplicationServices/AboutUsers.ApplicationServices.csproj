@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>AboutUsers.ApplicationServices</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ensure.That" Version="10.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AboutUsers.Common\AboutUsers.Common.csproj" />
+    <ProjectReference Include="..\AboutUsers.Domain\AboutUsers.Domain.csproj" />
+    <ProjectReference Include="..\AboutUsers.PublishedLanguage\AboutUsers.PublishedLanguage.csproj" />
+  </ItemGroup>
+
+</Project>

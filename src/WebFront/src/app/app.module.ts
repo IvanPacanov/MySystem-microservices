@@ -22,7 +22,7 @@ import { MessagesComponent } from './pages/home/chat/messages/messages.component
     HomeComponent,
     ChatComponent,
     UserListComponent,
-    MessagesComponent
+    MessagesComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, FormsModule

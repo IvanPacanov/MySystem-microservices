@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.Reflection;
 using VideoCommunication.API.EventBusConsumer;
 using VideoCommunication.API.Hubs;
@@ -56,6 +57,9 @@ namespace VideoCommunication.API
             //});
             //services.AddMassTransitHostedService();
 
+            services.AddSingleton<List<User>>();
+            services.AddSingleton<List<UserCall>>();
+            services.AddSingleton<List<CallOffer>>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<CheckeLoggedConsumer>();
@@ -83,10 +87,6 @@ namespace VideoCommunication.API
 
             app.UseCors("CorsPolicy");
 
-  //          app.UseCors(builder => builder
-  //.AllowAnyOrigin()
-  //.AllowAnyMethod()
-  //.AllowAnyHeader());
             app.UseMvc();
 
             app.UseAuthorization();

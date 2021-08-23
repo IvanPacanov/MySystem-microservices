@@ -13,5 +13,6 @@ namespace Chat.Domain.Entities
         public int ChatsId { get; set; }
 
         public string UserName { get; set; }
+        public ICollection<User> Users { get; set; }
     }
 }
