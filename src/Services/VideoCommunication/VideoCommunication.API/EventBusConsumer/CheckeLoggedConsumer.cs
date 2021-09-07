@@ -17,9 +17,9 @@ namespace VideoCommunication.API.EventBusConsumer
     {
         private readonly IMapper _mapper;
         private readonly ILogger<CheckeLoggedConsumer> _logger;
-        private readonly IHub _hub;
+        private readonly IConnectionHub _hub;
 
-        public CheckeLoggedConsumer(IMapper mapper, ILogger<CheckeLoggedConsumer> logger, IHub hub)
+        public CheckeLoggedConsumer(IMapper mapper, ILogger<CheckeLoggedConsumer> logger, IConnectionHub hub)
         {
             _mapper = mapper;
             _logger = logger;

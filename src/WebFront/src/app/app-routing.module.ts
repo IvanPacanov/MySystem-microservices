@@ -5,10 +5,10 @@ import { LoginRegistrationComponent } from "./pages/login-registration/login-reg
 import { LoginComponent } from "./pages/login-registration/login/login.component";
 
 const routes: Routes = [
-    
+
     {path: '', redirectTo: '/login$Register', pathMatch: 'full'},
     {path: 'login$Register', component: LoginRegistrationComponent},
-    {path: 'HomePage', component: HomeComponent}
+    {path: 'HomePage/:userName', component: HomeComponent}
 ]
 
 @NgModule({

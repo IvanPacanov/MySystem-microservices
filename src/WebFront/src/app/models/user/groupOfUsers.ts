@@ -1,8 +1,8 @@
 import { Message } from "./message";
-import { User } from "./user";
+import { UserDTO } from "./user";
 
 export interface GroupOfUsers{
     groupName: string,
-    users: User[]
+    users: UserDTO[]
     messages: Message[]
 }

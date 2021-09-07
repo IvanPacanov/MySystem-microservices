@@ -1,7 +1,7 @@
 import { Friend } from "./friend";
 import { GroupOfUsers } from "./groupOfUsers";
 
-export interface User{
+export interface UserDTO{
     userName: string,
     friendlyUsers: Friend[],
     groupOfUsers: GroupOfUsers[]

@@ -1,7 +1,7 @@
 
 
  <ul>
-  <li *ngFor="let message of messages | async">
+  <li *ngFor="let message of messages">
 
 <div class="message-row you-message" *ngIf="message.sendingBy === 'Admin'">
     <div class="message-content">

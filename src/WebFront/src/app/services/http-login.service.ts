@@ -9,10 +9,10 @@ import { User } from '../models/user';
 })
 export class HttpLoginService {
   private url = "http://localhost:5005/api/Authenticate/login"
-  constructor(private httpClient: HttpClient) { 
+  constructor(private httpClient: HttpClient) {
 
   }
-  
+
 
   getHelloServer(){
     return this.httpClient.get("http://localhost:5005/api/Authenticate/HelloServer").pipe(tap(console.log));

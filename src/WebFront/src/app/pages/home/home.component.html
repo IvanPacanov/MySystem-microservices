@@ -2,7 +2,7 @@
     <div class="logo_content">
         <div class="logo">
             <i class='bx bxl-angular'></i>
-            <div class="logo_name">CodingLab</div>
+            <div class="logo_name">{{user.userName}}</div>
         </div>
         <i class='bx bx-menu' id="btn"></i>
     </div>
@@ -33,8 +33,8 @@
         <div class="profile">
             <div class="profile_details">
                 <!-- <img   DOKOŃCZYĆ > -->
-                <div class="name">NazwaTeoretycznie</div>
-                
+                <div class="name">Nazwa</div>
+
             </div>
 
             <i class="bx bx-log-out" id="log_out"></i>
@@ -43,7 +43,7 @@
     </div>
 </div>
 <div class="home_content">
-   <app-chat>
-       
+   <app-chat [user]="user">
+
    </app-chat>
 </div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { User } from 'src/app/models/user/user';
+import { UserDTO } from 'src/app/models/user/user';
 import { Message } from 'src/app/models/user/message';
 
 @Injectable({
@@ -11,10 +11,16 @@ import { Message } from 'src/app/models/user/message';
 export class UserService {
 
   private url = "http://localhost:5006/Users"
+  private api = "http://localhost:5006/api/Authenticate"
   constructor(private httpClient: HttpClient) { }
 
-  getDataAboutUser() :Observable<User> {
-   return this.httpClient.get(this.url + "/users?UnserName=Admin").pipe(tap(console.log));
+  // loginUser(user: User): Observable<any>{
+  //       return this.httpClient.post(this.api + "/users?UnserName=Admin", user).pipe(tap(console.log));
+  // }
+
+  getDataAboutUser(userName: string) :Observable<UserDTO> {
+    console.log("Logowanie1")
+   return this.httpClient.get(this.url + `/users?UnserName=${userName}`).pipe(tap(console.log));
   }
 
   getDataAboutUserMesages(id:number) :Observable<Message[]> {

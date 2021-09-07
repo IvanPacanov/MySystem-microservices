@@ -27,16 +27,17 @@ export class LoginComponent implements OnInit {
       //   result =>
       //   {
       //     console.log(result);
-      //     this.router.navigate(['/HomePage']);
+      //    // this.router.navigate(['/HomePage']);
       //   },
       //   error =>
       //   {
-      //
+
       //     console.log(error)
 
       //     }
       // );
-      this.router.navigate(['/HomePage']);
+
+      this.router.navigate(['/HomePage', this.user.username]);
     }
     printModel(title: NgModel)
     {

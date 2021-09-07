@@ -1,4 +1,4 @@
-import { Component, DoCheck, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Friend } from 'src/app/models/user/friend';
 
 @Component({
@@ -6,11 +6,13 @@ import { Friend } from 'src/app/models/user/friend';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
-export class UserListComponent implements OnInit  {
+export class UserListComponent implements OnInit, OnChanges  {
 
   @Output() idFriend  = new EventEmitter<number>();
   @Input() friends: Friend[] | any;
   constructor() { }
+  ngOnChanges(changes: SimpleChanges): void {
+  }
 
   ngOnInit(): void {
   }

@@ -3,6 +3,7 @@
             <input type="text" placeholder="Search"/>
     </div>
     <app-user-list class="conversation-list"
+    *ngIf="user.friendDTOs"
     [friends] = "user.friendDTOs"
     (idFriend)= "selectChat($event)">
 
@@ -16,10 +17,11 @@
         <span></span>
     </div>
     <app-messages class="chat-message-list"
-    [id] = "id.asObservable()">
+    *ngIf="user.friendDTOs && user.friendDTOs[id]"
+    [messages]="user.friendDTOs[id].messageDTOs">
 
     </app-messages>
     <div class="chat-form">
-        <input type="text" placeholder="Widomość"/>
+        <input type="text" [(ngModel)]="message" placeholder="Widomość" (keyup.enter)="onEnter()"/>
     </div>
 </div>

@@ -38,7 +38,7 @@ namespace VideoCommunication.API
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
             services.AddSignalR();
-            services.AddScoped<IHub, HubController>();
+            services.AddSingleton<HubController>();
             // MassTransit-RabbitMQ Configuration 
             //services.AddMassTransit(config =>
             //{

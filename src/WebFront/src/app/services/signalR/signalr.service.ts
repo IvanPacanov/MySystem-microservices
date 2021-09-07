@@ -1,11 +1,26 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
 import { Subject } from 'rxjs';
+import { Message } from 'src/app/models/user/message';
+
+export interface UserInfo {
+  userName: string;
+  connectionId: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrService {
+
+
+  private helloAnswer = new Subject<UserInfo>();
+  public helloAnswer$ = this.helloAnswer.asObservable();
+
+
+  private messageResponse = new Subject<Message>();
+  public messageResponse$ = this.messageResponse.asObservable();
+
 
   private hubConnection: signalR.HubConnection;
 
@@ -19,30 +34,34 @@ export class SignalrService {
 
     console.log("Połączenie")
     this.hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl('https://localhost:5000/ConnectionHub')
-        .build();
+    .withUrl('https://localhost:5000/ConnectionHub')
+    .build();
+    this.hubConnection.serverTimeoutInMilliseconds = 100000;
 
         await this.hubConnection.start();
         console.log('Connection started');
 
-
-    console.log("Test 1")
-        this.hubConnection.on('OnlineUser', (data) => {
-          this.newPeer.next(JSON.parse(data));
-          console.log("Test 2")
-        });
-
-        this.hubConnection.on('AnswerAfterLoggin', (data) => {
-          this.newPeer.next(JSON.parse(data));
+        this.hubConnection.on('SendMessageToUser', (data) => {
           console.log(data)
+          this.messageResponse.next(JSON.parse(data));
         });
 
-    this.hubConnection.invoke('loginToSignalR', "Eloo");
-
-
+        // this.hubConnection.on('sendMessageToUser', (data: string) => {
+        //   this.messageResponse.next(JSON.parse(data));
+        // });
 
   }
 
+  public sendMessageToUser(signal: string, message: Message) {
+    this.hubConnection.invoke('SendMessage', message, signal);
+  }
 
+  public onLoginUser(name: string) {
+    this.hubConnection.invoke('Join', name);
+  }
+
+  public sendSignalToUser(signal: string, user: string) {
+    this.hubConnection.invoke('SendSignal', signal, user);
+  }
 
 }

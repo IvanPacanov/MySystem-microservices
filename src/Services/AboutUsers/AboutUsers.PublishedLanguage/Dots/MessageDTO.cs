@@ -8,8 +8,8 @@ namespace AboutUsers.PublishedLanguage.Dots
 {
    public class MessageDTO
     {
-        public string SendingBy { get; set; }
-        public string Text { get; set; }
-        public DateTime Sending { get; set; }
+        public string sendingBy { get; set; }
+        public string text { get; set; }
+        public string sending { get; set; }
     }
 }
