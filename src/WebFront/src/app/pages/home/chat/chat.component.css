@@ -1,6 +1,6 @@
 .chat-container{
     display: grid;
-    grid: 
+    grid:
         'search-container chat-title' 71px
         'conversation-list chat-message-list' 1fr
         'new-message-container chat-form' 78px
@@ -40,11 +40,11 @@
     box-sizing:border-box;
     padding-left: 38px;
     padding-right: 20px;
-    border: 0;    
+    border: 0;
     font-size: 1.2rem;
     background: url('/assets/bx-search.svg') no-repeat rgba(255, 255, 255, 0.3);
     background-position: 5px center;
-    background-size: 20px 20px; 
+    background-size: 20px 20px;
 }
 .search-container input::placeholder{
     color: #ddd;
@@ -60,7 +60,7 @@
 
 .new-message-container{
     display: grid;
-    grid: 40px / 40px;
+    grid: 60px / 35px;
     align-content: center;
     grid-area: new-message-container;
     border-top: 1px solid rgba(0, 0, 0, 0.25);
@@ -68,15 +68,16 @@
     padding: 0 15px;
 }
 
-.new-message-container a{
+.new-message-container button{
     display: grid;
+    width: 60px;
     place-content: center center;
     padding-bottom: 8px;
     background: #eee;
     border-radius: 100%;
     color: #002C88;
     text-decoration: none;
-    font-size: 3rem;    
+    font-size: 3rem;
 }
 
 
@@ -120,7 +121,7 @@
 }
 
 
-.chat-form input{ 
+.chat-form input{
     outline: none;
     padding: 15px;
     border: 2px solid #ddd;
@@ -136,4 +137,33 @@
 
 ::-webkit-scrollbar{
     display: none;
+}
+
+.custom-dialog-container .mat-dialog-container{
+  background: white;
+  margin-left: 250px;
+}
+
+
+.my-class .mat-dialog-container{
+  height: 400px;
+  width: 600px;
+  border-radius: 10px;
+  background: lightcyan;
+  color: #039be5;
+}
+
+
+.btn {
+  background-color: DodgerBlue; /* Blue background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 12px 16px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
 }

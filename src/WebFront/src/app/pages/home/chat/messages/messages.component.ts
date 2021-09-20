@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Message } from '@app/models/user/message';
+import { UserService } from '@app/services/userServices/user.service';
 import { Observable } from 'rxjs';
 import { switchMapTo } from "rxjs/operators";
-import { Message } from 'src/app/models/user/message';
-import { UserService } from 'src/app/services/userServices/user.service';
 
 @Component({
   selector: 'app-messages',

@@ -1,0 +1,108 @@
+@import 'variables';
+
+body {
+    margin: 0;
+    font-family: $main-font, sans-serif;
+    position: relative;
+}
+
+.navbar {
+    height: $navbar-height !important;
+}
+
+mat-card {
+    max-width: 1100px;
+    margin: 2em auto;
+}
+
+.fill-remaining-space {
+    flex: 1 1 auto;
+}
+
+.margin {
+    &-top {
+        &-25 {
+            margin-top: 25px;
+        }
+
+        &-130 {
+            margin-top: 130px;
+        }
+    }
+}
+
+.full-width-input {
+    width: 100%;
+}
+
+.small-info-page {
+    padding: 15px 1rem;
+
+    mat-card {
+        max-width: 400px;
+        margin: 2em auto;
+        text-align: center;
+    }
+}
+
+.menu-item-active {
+    border-bottom: 3px solid !important;
+}
+
+.spa-content {
+    .content {
+        min-height: calc(100vh - #{$navbar-height} - #{$footer-height} - 20px);
+    }
+}
+
+.header-banner {
+    max-height: $header-height;
+}
+
+.no-results-message {
+    text-align: center;
+    background-color: $primary-color-red;
+    color: white;
+}
+
+.justify-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+
+@media (min-width: $medium-screen-up) {
+    .border-between>[class*='col-']:before {
+        background: $med-grey;
+        bottom: 0;
+        content: " ";
+        left: 0;
+        position: absolute;
+        width: 1px;
+        top: 0;
+    }
+}
+
+.border-between>[class*='col-']:first-child:before {
+    display: none;
+}
+
+input {
+    background-color: white;
+}
+
+.panel-asset-description {
+    font-size: 15px;
+    color: white;
+
+    p {
+        a {
+            color: lightskyblue !important;
+        }
+
+        a:visited {
+            color: white;
+        }
+    }
+}

@@ -7,10 +7,10 @@
           <div class="title-text">
               {{friend.userName}}
           </div>
-          <div class="created-date">
+          <div class="created-date" *ngIf="friend.messageDTOs[0]">
             {{friend.messageDTOs[0].sending | date:'MM/dd/yyyy'}}
           </div>
-          <div class="conversation-message">
+          <div class="conversation-message" *ngIf="friend.messageDTOs[0]">
             {{friend.messageDTOs[0].text}}
           </div>
   </div>

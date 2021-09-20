@@ -1,0 +1,145 @@
+@import "_theme";
+@import "main";
+@import "~ngx-toastr/toastr";
+@import "toast";
+@import "variables";
+@import "select";
+@import "tippy.js/dist/tippy";
+@import "~@ng-select/ng-select/themes/material.theme.css";
+@import "bootstrap-4-grid/scss/grid/bootstrap-grid";
+
+.mat-ink-bar:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    width: 0;
+    height: 0;
+    border-top: solid 10px $primary-color-red;
+    border-left: solid 10px transparent;
+    border-right: solid 10px transparent;
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+    background-color: $primary-color-red;
+}
+
+.mat-tab-label.mat-tab-label-active {
+    background-color: $primary-color-red;
+    color: $light-grey;
+    opacity: 1 !important;
+}
+
+.mat-tab-header,
+.mat-tab-label-container {
+    padding-bottom: 10px;
+}
+
+.mat-tab-label {
+    width: calc(25% - 8px);
+    height: 35px !important;
+    margin-right: 20px;
+    margin-left: 20px;
+    background: $dark-grey;
+    color: $light-grey;
+}
+
+.mat-form-field-outline-start,
+.mat-form-field-outline-end {
+    border-radius: 0 !important;
+}
+
+mat-form-field.mat-form-field {
+    width: 100%;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+    background-color: $primary-color-red !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.mat-raised-button {
+    border-radius: 0px !important;
+    text-align: center !important;
+    min-width: 200px !important;
+    padding: 0 10px !important;
+}
+
+mat-card-content {
+    .action-buttons {
+        width: 100%;
+        height: 70px;
+        background-color: $black;
+        display: flex;
+        justify-content: space-around;
+
+        button {
+            min-width: 200px;
+            height: 40px;
+            margin-top: 15px;
+
+            &.grey-button,
+            &.mat-button-disabled {
+                background-color: $light-grey !important;
+            }
+        }
+    }
+}
+
+.dialog-panel-styles .mat-dialog-container {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    max-height: 600px;
+    min-width: 500px;
+    max-width: 900px;
+    background-color: $light-grey;
+
+    ng-component.ng-star-inserted {
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 200px;
+        height: 100%;
+
+        .mat-dialog-title {
+            color: $primary-color-red;
+            border-bottom: black solid 1px;
+        }
+
+        .mat-dialog-actions {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: $grey solid 1px;
+            margin-bottom: 0;
+        }
+    }
+}
+
+.cancel-button {
+    background-color: $grey;
+    color: white;
+}
+
+.mat-grey {
+    background-color: $grey;
+    color: white;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+:root {
+    --cropper-overlay-color: rgba(104, 102, 102, 0);
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    background-color: white;
+}

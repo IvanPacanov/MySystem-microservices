@@ -6,6 +6,7 @@ using AboutUsers.PublishedLanguage.Queries;
 using AboutUsers.PublishedLanguage.Dots;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using AboutUsers.PublishedLanguage.Commands;
 
 namespace AboutUsers.API.Controllers
 {
@@ -40,7 +41,12 @@ namespace AboutUsers.API.Controllers
             List<MessageDTO> list = await _queryDispatcher.Dispatch(messagesParameters);
             return Ok(list);
         }
-
+        [HttpPut("usersFriend")]
+        public async Task<IActionResult> AddNewFriend([FromBody] AddNewFriendCommand userParameters)
+        {
+            await _commandDispatcher.Dispatch(userParameters);
+            return Ok();
+        }
 
     }
 }

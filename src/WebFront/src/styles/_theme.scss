@@ -1,0 +1,103 @@
+@import '~@angular/material/theming';
+@include mat-core();
+$nh-blue: (50: #E7F0FF,
+    100: #C4DBFF,
+    200: #9DC3FF,
+    300: #76AAFF,
+    400: #5898FF,
+    500: #3B86FF,
+    600: #357EFF,
+    700: #2D73FF,
+    800: #2669FF,
+    900: #1956FF,
+    A100: #FFFFFF,
+    A200: #FDFEFF,
+    A400: #CAD7FF,
+    A700: #B1C3FF,
+    contrast: (50: $black-87-opacity,
+        100: $black-87-opacity,
+        200: $black-87-opacity,
+        300: $black-87-opacity,
+        400: $black-87-opacity,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: $black-87-opacity,
+        A200: $black-87-opacity,
+        A400: $black-87-opacity,
+        A700: white,
+    ));
+
+$nh-accent: (50: #E4EDED,
+    100: #BCD2D2,
+    200: #649596,
+    300: #649596,
+    400: #427F80,
+    500: #216869,
+    600: #1D6061,
+    700: #185556,
+    800: #144B4C,
+    900: #0B3A3B,
+    A100: #74FBFF,
+    A200: #41FAFF,
+    A400: #0EF9FF,
+    A700: #00EEF4,
+    contrast: (50: $black-87-opacity,
+        100: $black-87-opacity,
+        200: $black-87-opacity,
+        300: $black-87-opacity,
+        400: $black-87-opacity,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: $black-87-opacity,
+        A200: $black-87-opacity,
+        A400: $black-87-opacity,
+        A700: white,
+    ));
+
+$nh-red: (50: #F9E1E6,
+    100: #F1B5C0,
+    200: #E88497,
+    300: #DE536D,
+    400: #D72E4D,
+    500: #D0092E,
+    600: #CB0829,
+    700: #C40623,
+    800: #BE051D,
+    900: #B30212,
+    A100: #FFDCDE,
+    A200: #FFA9AD,
+    A400: #FF767D,
+    A700: #FF5D64,
+    contrast: (50: $black-87-opacity,
+        100: $black-87-opacity,
+        200: $black-87-opacity,
+        300: $black-87-opacity,
+        400: $black-87-opacity,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: $black-87-opacity,
+        A200: $black-87-opacity,
+        A400: $black-87-opacity,
+        A700: white,
+    ));
+
+$nh-palette-primary: mat-palette($nh-red);
+$nh-palette-accent: mat-palette($nh-accent);
+$nh-palette-warn: mat-palette($nh-red);
+
+$nh-theme: mat-light-theme($nh-palette-primary, $nh-palette-accent, $nh-palette-warn);
+
+// $custom-typography: mat-typography-config($font-family: $main-font);
+
+
+// @include angular-material-typography($custom-typography);
+@include angular-material-theme($nh-theme);

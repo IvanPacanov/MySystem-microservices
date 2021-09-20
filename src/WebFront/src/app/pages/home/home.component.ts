@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { UserDTO } from '@app/models/user/user';
+import { SignalrService } from '@app/services/signalR/signalr.service';
+import { UserService } from '@app/services/userServices/user.service';
 import { Console } from 'console';
 import { Subscription } from 'rxjs';
-import { UserDTO } from 'src/app/models/user/user';
-import { SignalrService, UserInfo } from 'src/app/services/signalR/signalr.service';
-import { UserService } from 'src/app/services/userServices/user.service';
+
+export interface AddUserDTO{
+  id: number,
+  userName: string
+}
 
 @Component({
   selector: 'app-home',
@@ -13,11 +18,13 @@ import { UserService } from 'src/app/services/userServices/user.service';
 })
 export class HomeComponent implements OnInit {
 
+
+  @ViewChild('toggleButton') toggleButton: ElementRef;
+  @ViewChild('dialog') dialog: ElementRef;
   public subscriptions = new Subscription();
   user: Partial<UserDTO> = {};
   userName: string;
-  constructor(private route: ActivatedRoute, private _userService: UserService, private _signalR: SignalrService) { }
-
+  constructor(private route: ActivatedRoute, private _userService: UserService, private _signalR: SignalrService) {}
 
 
   ngOnInit(): void {
@@ -38,6 +45,21 @@ export class HomeComponent implements OnInit {
       //    console.log(this.user);
       // }));
 
+  }
+  isMenuOpen  = false;
+
+  addNewUser(add: boolean){
+    this.isMenuOpen = add;
+  }
+   aaa: AddUserDTO;
+
+  addNewUserNice(nick: string){
+    this.aaa = {
+      id: 3,
+      userName: nick
+    }
+    this._userService.AddNewFriend(this.aaa).subscribe()
+    this.isMenuOpen  = false;
   }
 
 }

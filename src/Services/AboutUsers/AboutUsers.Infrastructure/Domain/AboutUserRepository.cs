@@ -2,6 +2,7 @@
 using AboutUsers.Common.Exceptions;
 using AboutUsers.Domain.Users;
 using AboutUsers.Infrastructure.DataModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,32 @@ namespace AboutUsers.Infrastructure.Domain
             {
                 throw new DomainException($"Provided sample name: \"{name}\" already exist.");
             }
+        }
+
+        public async Task<User> GetUser(int userId)
+        {
+            var listingImages = _context.Users.Where(u=> u.Id == userId)
+                .Include(x=>x.FriendlyUsers)
+                .FirstOrDefault();
+
+            return await Task.FromResult(listingImages);
+        }
+
+        public async Task<User> GetUser(string name)
+        {
+            var listingImages = _context.Users.Where(u => u.UserName == name)
+                .Include(x => x.FriendlyUsers)
+                .FirstOrDefault();
+
+            return await Task.FromResult(listingImages);
+        }
+
+        public async Task<List<Friend>> GetFriends(User user)
+        {
+            var listingImages = _context.Friends.Where(f => f.UserName == user.UserName)
+                .ToList();
+
+            return await Task.FromResult(listingImages);
         }
 
         public void Store(User user)

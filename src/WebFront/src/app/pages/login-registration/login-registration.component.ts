@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SignalrService } from '@app/services/signalR/signalr.service';
 import { Subscription } from 'rxjs';
-import { SignalrService } from 'src/app/services/signalR/signalr.service';
 
 @Component({
   selector: 'app-login-registration',
@@ -11,12 +11,12 @@ export class LoginRegistrationComponent implements OnInit {
 
 
   public subscriptions = new Subscription();
-  
+
   constructor(private signalR: SignalrService) { }
 
   ngOnInit(): void {
 
-   
+
     this.subscriptions.add(this.signalR.newPeer$.subscribe(() => {
            this.signalR.startConnection();
     }));
@@ -26,8 +26,8 @@ export class LoginRegistrationComponent implements OnInit {
 
   public async saveUsername(): Promise<void> {
     try {
-      console.log("mordeczko");   
-      await this.signalR.startConnection();    
+      console.log("mordeczko");
+      await this.signalR.startConnection();
   }
   catch{
 

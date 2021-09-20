@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/models/user';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm, NgModel } from '@angular/forms';
-import { HttpLoginService } from 'src/app/services/http-login.service';
+import { HttpLoginService } from '@app/services/http-login.service';
+import { User } from '@app/models/user';
 
 
 @Component({

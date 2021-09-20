@@ -1,5 +1,5 @@
 import { Component, DoCheck, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Friend } from 'src/app/models/user/friend';
+import { Friend } from '@app/models/user/friend';
 
 @Component({
   selector: 'app-user-list',
@@ -15,6 +15,7 @@ export class UserListComponent implements OnInit, OnChanges  {
   }
 
   ngOnInit(): void {
+    console.log(this.friends)
   }
 
   onClick(id: number){

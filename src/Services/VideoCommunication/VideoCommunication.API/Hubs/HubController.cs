@@ -35,12 +35,14 @@ namespace VideoCommunication.API.Hubs
     public interface IConnectionHub
     {
         Task UpdateUserList(List<User> userList);
+        Task UpdateUserList(string serialize);
         Task CallAccepted(User acceptingUser);
         Task CallDeclined(User decliningUser, string reason);
         Task IncomingCall(User callingUser);
         Task SendMessageToUser(string message);
         Task ReceiveSignal(User signalingUser, string signal);
         Task CallEnded(User signalingUser, string signal);
+        Task SendSignal(string signal, string user);
     }
 
 
@@ -76,9 +78,16 @@ namespace VideoCommunication.API.Hubs
                 ConnectionId = Context.ConnectionId
             });
 
-          //  await Clients.All.SendMessageToUser(JsonSerializer.Serialize(_Users));
+            var targetUser = _Users.SingleOrDefault(u => u.Username == username).ConnectionId;
+            await Clients.Client(targetUser).UpdateUserList(JsonSerializer.Serialize(_Users.Where(u=> u.Username != username ).Select(u=> new {u.Username, u.ConnectionId }).ToList()));
             await SendUserListUpdate();
         }
+
+        //public async Task SendSignal(string signal, string user)
+        //{
+        //    var targetUser = _Users.SingleOrDefault(u => u.Username == user).ConnectionId;
+        //    await Clients.Client(targetUser).SendSignal(Context.ConnectionId, signal);
+        //}
 
         public async Task SendMessage(MessageDTO message, string targetConnectionId)
         {
@@ -224,24 +233,20 @@ namespace VideoCommunication.API.Hubs
 
         public async Task SendSignal(string signal, string targetConnectionId)
         {
+            //var targetUser = _Users.SingleOrDefault(u => u.ConnectionId == targetConnectionId).ConnectionId;
+            //await Clients.Client(targetUser).SendSignal(Context.ConnectionId, signal);
+            //
             var callingUser = _Users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
             var targetUser = _Users.SingleOrDefault(u => u.ConnectionId == targetConnectionId);
 
-            // Make sure both users are valid
+            //// Make sure both users are valid
             if (callingUser == null || targetUser == null)
             {
                 return;
             }
+            await Clients.Client(targetConnectionId).SendSignal(Context.ConnectionId, signal);
 
-            // Make sure that the person sending the signal is in a call
-            var userCall = GetUserCall(callingUser.ConnectionId);
 
-            // ...and that the target is the one they are in a call with
-            if (userCall != null && userCall.Users.Exists(u => u.ConnectionId == targetUser.ConnectionId))
-            {
-                // These folks are in a call together, let's let em talk WebRTC
-     //           await Clients.Client(targetConnectionId).ReceiveSignal(callingUser, signal);
-            }
         }
 
 

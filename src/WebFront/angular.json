@@ -28,10 +28,12 @@
             ],
             "styles": [
               "src/styles.css",
-              "./node_modules/materialize-css/dist/css/materialize.css"
+              "./node_modules/materialize-css/dist/css/materialize.css",
+              "./node_modules/material-design-icons/iconfont/material-icons.css"
             ],
             "scripts": [
-              "./node_modules/materialize-css/dist/js/materialize.js"
+              "./node_modules/materialize-css/dist/js/materialize.js",
+              "node_modules/simple-peer/simplepeer.min.js"
             ]
           },
           "configurations": {
@@ -39,13 +41,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1000kb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "4kb",
+                  "maximumError": "8kb"
                 }
               ],
               "fileReplacements": [

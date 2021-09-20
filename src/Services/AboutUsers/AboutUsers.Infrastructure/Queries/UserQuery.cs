@@ -22,12 +22,31 @@ namespace AboutUsers.Infrastructure.Queries
             _sqlQueryBuilder = sqlQueryBuilder;
         }
 
-        public async Task<UserDTO> GetUserData(UserParameters query)
+        public async Task<UserDTO> GetUserByID(int id)
         {
             var c = await _sqlQueryBuilder
                  .Select("*")
                  .From("Users")
-                 .Where("UserName",query.UnserName)
+                 .Where("Id", id.ToString())
+                 .BuildQuery<UserDTO>().ExecuteSingle();
+
+            var c1 = await _sqlQueryBuilder
+            .Select("*")
+            .From("Friends")
+            .Where("UserId", c.Id.ToString())
+            .BuildQuery<FriendDTO>()
+            .ExecuteToList();
+            c.FriendDTOs = c1;
+
+            return c;
+        }
+
+        public async Task<UserDTO> GetUserData(string unserName)
+        {
+            var c = await _sqlQueryBuilder
+                 .Select("*")
+                 .From("Users")
+                 .Where("UserName", unserName)
                  .BuildQuery<UserDTO>().ExecuteSingle();
 
             var c1 = await _sqlQueryBuilder

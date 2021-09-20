@@ -23,7 +23,7 @@ namespace AboutUsers.ApplicationServices.UseCases
 
         public async Task<UserDTO> Handle(UserParameters query)
         {
-            return await _userQuery.GetUserData(query);
+            return await _userQuery.GetUserData(query.UnserName);
         }
 
         public async Task<List<MessageDTO>> Handle(MessagesParameters query)
