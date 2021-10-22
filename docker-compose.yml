@@ -5,9 +5,25 @@ services:
 
   userdb:
     image: mcr.microsoft.com/mssql/server:2017-latest
+  
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+
+  portainer:
+    image: portainer/portainer-ce
 
   users.api:
     image: ${DOCKER_REGISTRY-}usersapi
     build:
       context: .
       dockerfile: src/Services/Users/Users.API/Dockerfile
+
+
+  videocommunication.api:
+    image: ${DOCKER_REGISTRY-}videocommunicationapi
+    build:
+      context: .
+      dockerfile: src/Services/VideoCommunication/VideoCommunication.API/Dockerfile
+
+volumes:
+  portainer_data:

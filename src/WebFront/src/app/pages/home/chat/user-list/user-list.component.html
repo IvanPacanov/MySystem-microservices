@@ -1,0 +1,18 @@
+
+ <ul>
+  <li *ngFor="let friend of friends; index as i">
+  <div class="conversation" (click)="onClick(i)">
+          <img src="assets/images/profile.png" alt="Darly Duckmanton"/>
+          <!-- <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> -->
+          <div class="title-text">
+              {{friend.userName}}
+          </div>
+          <div class="created-date" *ngIf="friend.messageDTOs[0]">
+            {{friend.messageDTOs[0].sending | date:'MM/dd/yyyy'}}
+          </div>
+          <div class="conversation-message" *ngIf="friend.messageDTOs[0]">
+            {{friend.messageDTOs[0].text}}
+          </div>
+  </div>
+</li>
+</ul>

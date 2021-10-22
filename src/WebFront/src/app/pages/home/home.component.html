@@ -1,0 +1,55 @@
+<div class="sidebar">
+    <div class="logo_content">
+        <div class="logo">
+            <i class='bx bxl-angular'></i>
+            <div class="logo_name">{{user.userName}}</div>
+        </div>
+        <i class='bx bx-menu' id="btn"></i>
+    </div>
+    <ul class="nav_list">
+        <li>
+            <a href="#">
+                <i class='bx bx-chat' ></i>
+                <span class="links_name">Chat</span>
+            </a>
+            <!-- <span class="links_name">Chat</span> -->
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-error-alt' ></i>
+                <span class="links_name">Allert!</span>
+            </a>
+            <!-- <span class="links_name">Chat</span> -->
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-cog' ></i>
+                <span class="links_name">Settings</span>
+            </a>
+            <!-- <span class="links_name">Chat</span> -->
+        </li>
+    </ul>
+    <div class="profile_content">
+        <div class="profile">
+            <div class="profile_details">
+                <!-- <img   DOKOŃCZYĆ > -->
+                <div class="name">Nazwa</div>
+
+            </div>
+
+            <i class="bx bx-log-out" id="log_out"></i>
+        </div>
+
+    </div>
+</div>
+<div class="home_content">
+   <app-chat [user]="user" (addNewUser) = "addNewUser($event)">
+
+   </app-chat>
+</div>
+
+
+<app-dialog-own #dialog *ngIf="isMenuOpen" (addUserNick)="addNewUserNice($event)" style="width: 100%; height: 100%; position: absolute;">
+
+</app-dialog-own>
+

@@ -1,0 +1,34 @@
+.context{
+  background: white;
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgba(44, 44, 44, 0.5);
+}
+
+
+.context .dialog-context{
+  width: 350px;
+  height: 200px;
+  border-radius: 50px;
+  top: 25%;
+  left: 45%;
+  position: absolute;
+  background: white;
+
+}
+
+.context .dialog-context mat-form-field{
+  height: 80px;
+top: 25%;
+left: 25%;
+}
+
+.context .dialog-context mat-form-field input{
+ margin-top: 20px;
+}
+
+
+.context .dialog-context .buttons{
+  margin-left: 140px;
+  margin-top: 60px;
+  }

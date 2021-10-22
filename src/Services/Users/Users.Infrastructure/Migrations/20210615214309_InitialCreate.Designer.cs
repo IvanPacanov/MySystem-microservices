@@ -10,7 +10,7 @@ using Users.Infrastructure.Presistance;
 namespace Users.Infrastructure.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20210508162024_InitialCreate")]
+    [Migration("20210615214309_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace Users.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Users.Domain.Entities.User", b =>

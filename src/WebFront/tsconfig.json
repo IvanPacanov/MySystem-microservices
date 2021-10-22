@@ -1,0 +1,70 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "outDir": "./dist/out-tsc",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "sourceMap": true,
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "strictPropertyInitialization": false,
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "es2015",
+        "module": "es2020",
+        "lib": [
+            "es2019",
+            "dom"
+        ],
+        "paths": {
+            "@app/*": [
+                "app/*"
+            ],
+            "@assets": [
+                "assets"
+            ]
+        }
+    },
+    "angularCompilerOptions": {
+        "fullTemplateTypeCheck": true,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "strictTemplates": true
+    },
+    "workbench.sideBar.location": "right",
+    "window.zoomLevel": 1,
+    "editor.mouseWheelZoom": true,
+    "editor.formatOnSave": true,
+    "editor.minimap.enabled": false,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.tslint": true
+    },
+    "explorer.confirmDelete": false,
+    "explorer.autoReveal": false,
+    "beautify.options": {
+        "end_with_newline": true,
+        "preserve_newlines": true
+    },
+    "typescriptHero.imports.organizeOnSave": true,
+    "typescriptHero.imports.stringQuoteStyle": "\"",
+    "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "html.format.wrapAttributes": "force-aligned",
+    "typescriptHero.imports.multiLineTrailingComma": false,
+    "workbench.tree.indent": 16,
+    "csharp2ts.propertiesToCamelCase": true,
+    "csharp2ts.dateToDateOrString": false,
+    "ngx-translate.lookup.resourcesPath": "src\\assets\\i18n\\en.json",
+    "ngx-translate.lookup.resourcesType": "json",
+    "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?"
+}

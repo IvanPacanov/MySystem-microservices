@@ -1,0 +1,37 @@
+// colors
+$primary-color-red: #D0092E;
+$primary-color-blue: #1956FF;
+$black: #1E1E1E;
+$light-grey: #f2f2f2;
+$med-grey: #cac9c9;
+$grey: #686666;
+$dark-grey: #444444;
+$error-color: #d0132a;
+$iframe-grey:#999999;
+
+//navbar
+$navbar-height: 130px;
+$footer-height: 280px;
+$header-height: 450px;
+
+//media-screen
+$x-large-screen: 1399px;
+$large-screen: 1199px;
+$medium-screen: 991px;
+$small-screen: 767px;
+$x-small-screen: 575px;
+
+$x-large-screen-up: 1400px;
+$large-screen-up: 1200px;
+$medium-screen-up: 992px;
+$small-screen-up: 768px;
+$x-small-screen-up: 576px;
+
+//font
+$main-font: "Roboto";
+
+
+//boostrap
+//in case of small content change these values to higher one
+$container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1140px);
+$grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px);

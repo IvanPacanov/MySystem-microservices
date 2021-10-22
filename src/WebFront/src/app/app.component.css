@@ -1,0 +1,28 @@
+img {
+    width: 234px;
+    height: 348px;
+  }
+  
+  .grid {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 -5px; /* remove the inital 5px space */
+    width: auto;
+  }
+  .grid__item {
+    max-width: 234px;
+    padding: 0 5px; /* should be same as the negative margin above. */
+  }
+  
+  .card-content {
+    min-height: 180px;
+  }
+  
+  .card-title {
+    width: 100%;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  

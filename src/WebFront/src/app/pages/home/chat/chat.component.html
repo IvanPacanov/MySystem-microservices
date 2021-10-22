@@ -1,0 +1,32 @@
+<div class="chat-container">
+    <div class="search-container">
+            <input type="text" placeholder="Search"/>
+    </div>
+    <app-user-list class="conversation-list"
+    *ngIf="user.friendDTOs"
+    [friends] = "user.friendDTOs"
+    (idFriend)= "selectChat($event)">
+
+    </app-user-list>
+
+    <div class="new-message-container">
+        <button #toggleButton >+</button>
+    </div>
+    <video #videoPlayer width="320" height="240" controls></video>
+     <div class="chat-title">
+      <button mat-icon-button color="primary" aria-label="Example icon button with a home icon" (click)="onUserSelected(0)">
+        <mat-icon>phone</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" aria-label="Example icon button with a home icon" (click)="saveUsername()">
+        <mat-icon>help</mat-icon>
+      </button>
+    </div>
+    <app-messages class="chat-message-list"
+    *ngIf="user.friendDTOs && user.friendDTOs[id]">
+    <!-- [messages]="user as User.friendDTOs[id].messageDTOs"> -->
+
+    </app-messages>
+    <div class="chat-form">
+        <input type="text" [(ngModel)]="message" placeholder="Widomość" (keyup.enter)="onEnter()"/>
+    </div>
+</div>

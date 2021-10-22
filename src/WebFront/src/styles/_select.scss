@@ -1,0 +1,85 @@
+[formcontrolname].ng-invalid.ng-touched {
+    .ng-select-container::after {
+        border: solid 2px $error-color;
+        border-radius: 0;
+        height: calc(100% - 0.5em);
+        pointer-events: none;
+        transition: border-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .ng-placeholder {
+        color: $error-color;
+    }
+}
+
+ng-select.ng-select {
+    font-size: 14px;
+    padding-bottom: 0;
+
+    .ng-select-container.ng-appearance-outline {
+        min-height: 55px;
+
+        &:after {
+            height: calc(100% - 0.4375em);
+        }
+    }
+
+    &.ng-select-disabled {
+        .ng-select-container {
+            &:after {
+                background-image: none;
+                background-color: #f9f9f9;
+            }
+
+            .ng-placeholder {
+                background-color: transparent;
+            }
+        }
+    }
+
+    &.ng-select-single {
+        .ng-select-container {
+            .ng-value-container {
+                .ng-input {
+                    top: 12px;
+                    left: 0;
+                    padding-left: 10px;
+                    padding-right: 50px;
+
+                    input {
+                        height: 100%;
+                    }
+                }
+            }
+
+            &.ng-appearance-outline .ng-arrow-wrapper {
+                bottom: 19px;
+            }
+        }
+
+        &:not(.ng-select-opened) {
+            .ng-placeholder {
+                padding-top: 2px;
+            }
+        }
+
+        .ng-spinner-loader {
+            top: 14px;
+        }
+    }
+
+    .ng-value {
+        padding: 5px 0;
+    }
+}
+
+.error-message {
+    font-size: 75%;
+    color: $error-color;
+    margin-top: -11px;
+    padding-left: 8px;
+}
+
+.ng-select .ng-select-container.ng-appearance-outline:after {
+    border-radius: 0;
+}

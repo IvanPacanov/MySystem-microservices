@@ -1,0 +1,64 @@
+{
+  "name": "video-chat-front",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build-watch": "ng build --watch",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "postinstall": "ngcc"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^12.2.5",
+    "@angular/cdk": "^12.2.5",
+    "@angular/common": "~12.0.5",
+    "@angular/compiler": "~12.0.5",
+    "@angular/core": "~12.0.5",
+    "@angular/forms": "~12.0.5",
+    "@angular/material": "^12.2.5",
+    "@angular/platform-browser": "^12.2.5",
+    "@angular/platform-browser-dynamic": "~12.0.5",
+    "@angular/router": "~12.0.5",
+    "@ckeditor/ckeditor5-build-classic": "^29.2.0",
+    "@material/card": "^12.0.0",
+    "@microsoft/signalr": "^5.0.9",
+    "ckeditor": "^4.12.1",
+    "material-design-icons": "^3.0.1",
+    "materialize-css": "^1.0.0",
+    "rxjs": "~6.6.0",
+    "rxjs-compat": "^6.6.7",
+    "simple-peer": "^9.11.0",
+    "ts-nameof": "^5.0.0",
+    "tslib": "^2.3.1",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~12.0.5",
+    "@angular/cli": "~12.0.5",
+    "@angular/compiler-cli": "~12.0.5",
+    "@types/jasmine": "~3.6.0",
+    "@types/node": "^12.20.18",
+    "@types/simple-peer": "^6.1.6",
+    "jasmine-core": "~3.7.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.0.3",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "^1.5.0",
+    "typescript": "~4.2.3"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "tslint"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npx lint-staged"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+
+<form class="login-form" (ngSubmit)="onSubmit()" #form="ngForm">
+    <div class="login-form__content">
+        <div class="login-form__header">Zaloguj się</div>
+        <div class="login_center">
+        <input class="login-form__input" type="text" name="dc_userLog" placeholder="Login" [(ngModel)]="user.username"
+        id="in_user"
+        name="in_user"
+        #in_user="ngModel" >
+        <input class="login-form__input" type="password" name="dc_userPassword" placeholder="Password" [(ngModel)]="user.password">
+        <button class="login-form__Button" type="submit">Login</button>
+    </div>
+</div>
+</form>
+<!-- <div>Icons made by <a href="https://smashicons.com/" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> -->

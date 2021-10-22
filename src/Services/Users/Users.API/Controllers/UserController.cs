@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using EventBus.Messages.Events;
+using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,10 +21,14 @@ namespace Users.API.Controllers
     public class UserController  : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public UserController(IMediator mediator)
+        public UserController(IMediator mediator, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mediator = mediator;
+            _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }
 
         [HttpGet("{userName}", Name = "GetUser")]
@@ -30,7 +37,14 @@ namespace Users.API.Controllers
         {
             var query = new GetUsersListQuery(userName);
             var user = await _mediator.Send(query);
-            return Ok(user);
+            if(user == null)
+            {
+                return NotFound(userName);
+            }
+            var eventMessage = _mapper.Map<LoginCheckoutEvent>(user[0]);
+            await _publishEndpoint.Publish(eventMessage);
+
+            return Accepted();
         }
 
         [HttpPost("[action]")]
