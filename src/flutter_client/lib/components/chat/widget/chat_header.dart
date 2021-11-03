@@ -1,11 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/models/User.dart';
 
 class ChatHeaderWidget extends StatelessWidget {
-  final List<User> users;
+  //final AsyncSnapshot<QuerySnapshot<Object?>> users;
 
-  const ChatHeaderWidget(Key? key, {required this.users})
-      : super(key: key);
+  const ChatHeaderWidget() : super();
 
   @override
   Widget build(BuildContext context) => Container(
@@ -26,41 +26,61 @@ class ChatHeaderWidget extends StatelessWidget {
               ),
             ),
             SizedBox(height: 12),
-            Container(
-              height: 60,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final user = users[index];
-                  if (index == 0) {
-                    return Container(
-                      margin: EdgeInsets.only(right: 12),
-                      child: CircleAvatar(
-                        radius: 24,
-                        child: Icon(Icons.search),
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      margin: const EdgeInsets.only(right: 12),
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //   builder: (context) => ChatPage(user: users[index]),
-                          // ));
-                        },
-                        child: CircleAvatar(
-                          radius: 24,
-                          backgroundImage:
-                              NetworkImage(user.urlAvatar!),
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            )
+            //   Container(
+            //       height: 60,
+            //       child: ListView(
+            //         scrollDirection: Axis.horizontal,
+            //         children: users.data!.docs
+            //             .map((DocumentSnapshot document) {
+            //           Map<String, dynamic> data =
+            //               document.data()! as Map<String, dynamic>;
+
+            //           return ListTile(
+            //             title: Text(data['name']),
+            //             leading: CircleAvatar(
+            //               radius: 30.0,
+            //               backgroundImage:
+            //                   NetworkImage(data['urlAvatar']),
+            //               backgroundColor: Colors.transparent,
+            //             ),
+            //           );
+            //         }).toList(),
+            //       )
+
+            //       // ListView.builder(
+
+            //       //   scrollDirection: Axis.horizontal,
+            //       //   itemCount: users.length,
+            //       //   itemBuilder: (context, index) {
+            //       //     final user = users[index];
+            //       //     if (index == 0) {
+            //       //       return Container(
+            //       //         margin: EdgeInsets.only(right: 12),
+            //       //         child: CircleAvatar(
+            //       //           radius: 24,
+            //       //           child: Icon(Icons.search),
+            //       //         ),
+            //       //       );
+            //       //     } else {
+            //       //       return Container(
+            //       //         margin: const EdgeInsets.only(right: 12),
+            //       //         child: GestureDetector(
+            //       //           onTap: () {
+            //       //             // Navigator.of(context).push(MaterialPageRoute(
+            //       //             //   builder: (context) => ChatPage(user: users[index]),
+            //       //             // ));
+            //       //           },
+            //       //           child: CircleAvatar(
+            //       //             radius: 24,
+            //       //             backgroundImage:
+            //       //                 NetworkImage(user.urlAvatar!),
+            //       //           ),
+            //       //         ),
+            //       //       );
+            //       //     }
+            //       //   },
+            //       // ),
+            //       )
           ],
         ),
       );

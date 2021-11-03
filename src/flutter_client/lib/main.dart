@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/app_navigator.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
+import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_bloc.dart';
 import 'package:flutter_client/components/chat/chat_bloc.dart';
 import 'package:flutter_client/components/component_cubit.dart';
 import 'package:flutter_client/components/component_repository.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_client/models/ChatMessage.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/repositories/firebase_api.dart';
 import 'package:flutter_client/session/session_cubit.dart';
+import 'package:flutter_client/session/session_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -20,8 +24,18 @@ Future main() async {
   await FireBaseApi.addRandomUsers(Users.initUsers);
   await Permission.camera.request();
   await Permission.microphone.request();
+  HttpOverrides.global = MyHttpOverrides();
 
   runApp(MyApp());
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -29,22 +43,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              SessionCubit(authRepo: context.read<AuthRepository>()),
-        ),
-        BlocProvider(
-          create: (context) => ComponentCubit(
-              componentRepo: context.read<ComponentRepository>()),
-        ),
-        BlocProvider(
-            create: (context) => AuthCubit(
-                sessionCubit: context.read<SessionCubit>())),
-        BlocProvider<ChatBloc>(
-          create: (BuildContext context) => ChatBloc(),
-        ),
-      ],
+      providers: _providersBlocList(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -57,12 +56,41 @@ class MyApp extends StatelessWidget {
             RepositoryProvider(
               create: (context) => AuthRepository(),
             ),
+            RepositoryProvider(
+              create: (context) => ComponentRepository(),
+            ),
+            RepositoryProvider(
+              create: (context) => ComponentRepository(),
+            ),
           ],
           child: AppNavigator(),
         ),
       ),
     );
   }
+}
+
+List<BlocProvider> _providersBlocList() {
+  return [
+    BlocProvider(
+      create: (context) => ComponentCubit(
+          componentRepo: context.read<ComponentRepository>()),
+    ),
+    BlocProvider(
+      create: (context) =>
+          SessionCubit(authRepo: context.read<AuthRepository>()),
+    ),
+    BlocProvider(
+        create: (context) =>
+            AuthCubit(sessionCubit: context.read<SessionCubit>())),
+    BlocProvider<ChatBloc>(
+      create: (BuildContext context) => ChatBloc(
+          componehtRepository: context.read<ComponentRepository>(),
+          authRepository: context.read<AuthRepository>()),
+    ),
+    BlocProvider<AddnewuserBloc>(
+        create: (BuildContext context) => AddnewuserBloc())
+  ];
 }
 
 class Users {
@@ -75,7 +103,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -84,7 +112,27 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: new DateTime.now()
+                        .add(new Duration(minutes: -20))
+                        .toString()),
+                ChatMessage(
+                    text: "No witam witam, co tam u Ciebie słychać?",
+                    user: '2BxUoCAJYgvipGAHJLUI',
+                    messageStatus: MessageStatus.not_sent,
+                    messageType: MessageType.text,
+                    isSender: false,
+                    date: new DateTime.now()
+                        .add(new Duration(minutes: -10))
+                        .toString()),
+                ChatMessage(
+                    text:
+                        "Eee nudy robię magisterkę i piję piwko, a tam?",
+                    user: '2BxUoCAJYgvipGAHJLUI',
+                    messageStatus: MessageStatus.not_sent,
+                    messageType: MessageType.text,
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -97,7 +145,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -106,7 +154,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -119,7 +168,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -128,7 +177,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -141,7 +191,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -150,7 +200,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -163,7 +214,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -172,7 +223,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -185,7 +237,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -194,7 +246,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -207,7 +260,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -216,7 +269,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -229,7 +283,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -238,7 +292,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -251,7 +306,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -260,7 +315,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString()),
               ],
             ),
           ],
@@ -273,7 +329,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -282,7 +338,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString().toString()),
               ],
             ),
           ],
@@ -295,7 +352,7 @@ class Users {
             Friends(
               idUser: '2BxUoCAJYgvipGAHJLUI',
               name: 'James Schmidt',
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now().toString().toString(),
               urlAvatar:
                   'https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80',
               chatMessage: [
@@ -304,7 +361,8 @@ class Users {
                     user: '2BxUoCAJYgvipGAHJLUI',
                     messageStatus: MessageStatus.not_sent,
                     messageType: MessageType.text,
-                    isSender: true),
+                    isSender: true,
+                    date: DateTime.now().toString().toString()),
               ],
             ),
           ],

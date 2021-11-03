@@ -2,9 +2,15 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_client/auth/auth_credentials.dart';
+import 'package:flutter_client/repositories/firebase_api.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  late UserCredential userCred;
+
+  void setUser(UserCredential user) {
+    this.userCred = user;
+  }
 
   AuthCredentials _userFromFirebaseUser(User? user) {
     return AuthCredentials(userId: user!.uid);
@@ -44,6 +50,7 @@ class AuthRepository {
 
   Future signUp({
     required String email,
+    required String userName,
     required String password,
   }) async {
     try {
@@ -51,6 +58,7 @@ class AuthRepository {
           await _auth.createUserWithEmailAndPassword(
               email: email, password: password);
       User user = result.user!;
+      FireBaseApi.newUserAfterRegister(user.uid, userName);
       return _userFromFirebaseUser(user);
     } catch (e) {
       print(e.toString());

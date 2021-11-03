@@ -8,6 +8,7 @@ class ChatMessage {
   final MessageStatus? messageStatus;
   final MessageType? messageType;
   final bool? isSender;
+  final String? date;
 
   ChatMessage(
       {this.idChat,
@@ -15,13 +16,15 @@ class ChatMessage {
       required this.text,
       required this.messageStatus,
       required this.isSender,
-      required this.messageType});
+      required this.messageType,
+      required this.date});
 
   Map<String, dynamic> toJson() => {
         'user': user,
         'text': text,
         'messageStatus': messageStatus.toString(),
         'isSender': isSender,
+        'date': date,
         'messageType': messageType.toString(),
       };
 
@@ -31,14 +34,24 @@ class ChatMessage {
           String? text,
           MessageStatus? messageStatus,
           MessageType? messageType,
-          bool? isSender}) =>
+          bool? isSender,
+          String? date}) =>
       ChatMessage(
-          idChat: idChat,
           user: user,
           text: text,
           messageStatus: messageStatus,
           isSender: isSender,
-          messageType: messageType);
+          messageType: messageType,
+          date: date);
+
+  static ChatMessage fromJson(Map<String, dynamic> data) =>
+      ChatMessage(
+          user: data['user'],
+          text: data['text'],
+          messageStatus: MessageStatus.viewed,
+          isSender: data['isSender'],
+          date: data['date'],
+          messageType: MessageType.text);
 }
 
 List mockChatMesage = [

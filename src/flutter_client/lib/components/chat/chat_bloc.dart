@@ -1,29 +1,27 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_client/auth/auth_repository.dart';
 import 'package:flutter_client/components/chat/chat_state.dart';
 import 'package:flutter_client/components/component_cubit.dart';
 import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/repositories/firebase_api.dart';
+import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/session/session_state.dart';
 
 part 'chat_event.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  //final ComponentRepository componehtRepository;
-  //final ComponentCubit componehtCubit;
+  final ComponentRepository componehtRepository;
+  final AuthRepository authRepository;
+  final SignalRProvider signalR = new SignalRProvider();
 
-  ChatBloc() : super(ChatState(users: []));
-
-  Stream<QuerySnapshot> get todos {
-    print("elooo");
-
-    var a = FirebaseFirestore.instance
-        .collection('users')
-        .doc('0sqzFChjC7rL1Iq7MtBz')
-        .collection('friends')
-        .snapshots();
-    return a;
+  ChatBloc(
+      {required this.componehtRepository,
+      required this.authRepository})
+      : super(ChatState(users: [])) {
+    signalR.initSignalR(authRepository.userCred);
   }
 
   @override
@@ -32,6 +30,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       print("Cos");
     }
   }
-}
 
-final blocChat = ChatBloc();
+  void sendCos() async {
+    await signalR.sendMeMessage();
+  }
+}

@@ -10,9 +10,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final AuthRepository authRepo;
   final AuthCubit authCubit;
 
-  SignUpBloc({required this.authRepo, required this.authCubit}) : super(SignUpState());
+  SignUpBloc({required this.authRepo, required this.authCubit})
+      : super(SignUpState());
 
-    Stream<QuerySnapshot> get todos {
+  Stream<QuerySnapshot> get todos {
     print("elooo");
 
     var a = FirebaseFirestore.instance
@@ -43,6 +44,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
       try {
         await authRepo.signUp(
+          userName: state.username,
           email: state.email,
           password: state.password,
         );
@@ -54,7 +56,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           password: state.password,
         );
       } catch (e) {
-        yield state.copyWith(formStatus: SubmissionFailed(e as Exception));
+        yield state.copyWith(
+            formStatus: SubmissionFailed(e as Exception));
       }
     }
   }

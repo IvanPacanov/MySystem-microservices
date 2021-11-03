@@ -57,6 +57,7 @@ class FireBaseApi {
                     idChat: chatFireBase.id,
                     user: chat.user,
                     text: chat.text,
+                    date: chat.date,
                     messageStatus: chat.messageStatus,
                     isSender: chat.isSender,
                     messageType: chat.messageType);
@@ -93,5 +94,21 @@ class FireBaseApi {
         //   await userDoc.set(user);
       }
     }
+  }
+
+  static Future newUserAfterRegister(
+      String uid, String userName) async {
+    final refUsers = FirebaseFirestore.instance.collection('users');
+    final userDoc = refUsers.doc(uid);
+    final newUser = User.copyWithStatic(
+      idUser: userDoc.id,
+      urlAvatar:
+          "https://images.unsplash.com/photo-1496203695688-3b8985780d6a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=641&q=80",
+      name: userName,
+      friends: [],
+    );
+    var a = newUser.toJson();
+    print(a);
+    await userDoc.set(a);
   }
 }

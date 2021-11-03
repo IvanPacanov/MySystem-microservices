@@ -41,24 +41,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           email: "mat@gmail.com",
           password: "123456789",
         );
+        authRepository.setUser(user);
         yield state.copyWith(formStatus: SubmissionSuccess());
-       
-       
-        DocumentSnapshot snapshot = await FirebaseFirestore.instance
-            .collection('users')
-            .doc('0sqzFChjC7rL1Iq7MtBz')
-            .get();
-        var a =
-            User.fromJson(snapshot.data() as Map<String, dynamic>);
-
-        var querySnapshot2 = await FirebaseFirestore.instance
-            .collection('users')
-            .doc('0sqzFChjC7rL1Iq7MtBz')
-            .collection('friends')
-            .get();
-
- 
-
         authCubit.showConfirmLogin(user);
       } catch (e) {
         print(e.toString());
@@ -75,6 +59,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
         yield state.copyWith(formStatus: SubmissionSuccess());
         authCubit.showConfirmLogin(user);
+
+        authRepository.setUser(user);
       } catch (e) {
         yield state.copyWith(
             formStatus: SubmissionFailed(e as Exception));

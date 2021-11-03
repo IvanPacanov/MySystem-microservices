@@ -9,7 +9,7 @@ class UserField {
 class Friends {
   final String? idUser;
   final String? name;
-  final DateTime? lastMessageTime;
+  final String? lastMessageTime;
   final String? urlAvatar;
   final List<ChatMessage> chatMessage;
 
@@ -27,11 +27,18 @@ class Friends {
         'urlAvatar': urlAvatar
       };
 
+  static Friends fromJson(Map<String, dynamic> json) => Friends(
+      idUser: json['idUser'],
+      name: json['name'],
+      urlAvatar: json['urlAvatar'],
+      lastMessageTime: json['lastMessageTime'],
+      chatMessage: []);
+
   copyWith(
           {String? idUser,
           String? name,
           String? urlAvatar,
-          DateTime? lastMessageTime,
+          String? lastMessageTime,
           List<ChatMessage>? chatMessage}) =>
       Friends(
           idUser: idUser,
@@ -64,6 +71,19 @@ class User {
         urlAvatar: urlAvatar,
         friends: friends == null ? [] : friends,
       );
+
+      static User copyWithStatic(
+          {String? idUser,
+          String? name,
+          String? urlAvatar,
+          List<Friends>? friends}) =>
+      User(
+        idUser: idUser,
+        name: name,
+        urlAvatar: urlAvatar,
+        friends: friends == null ? [] : friends,
+      );
+
 
   static User fromJson(Map<String, dynamic> json) => User(
       idUser: json['idUser'],
