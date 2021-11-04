@@ -100,9 +100,8 @@ class SignalRProvider extends Bloc {
     Timer timer =
         Timer.periodic(Duration(seconds: 10), (timer) async {
       if (connection.state == HubConnectionState.connected) {
-        await connection.invoke('StayLiveMessage',
-            args: ['mojarab app', 'i am alive']);
-        print("I am Alive!");
+        await connection
+            .invoke('StayLiveMessage', args: [user.user!.uid]);
       } else {
         await connection.start();
       }
