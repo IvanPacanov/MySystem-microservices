@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">Andro_Client</string>
-    <string name="title_home">Czaty</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-</resources>
