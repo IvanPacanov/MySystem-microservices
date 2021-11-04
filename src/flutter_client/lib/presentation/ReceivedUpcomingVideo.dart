@@ -39,6 +39,12 @@ class _ReceivedUpcomingVideoState
   final String uid;
   final String offer;
   bool _offer = false;
+  double mar = 1;
+  void refresh(dynamic childValue) {
+    setState(() {
+      mar = 2;
+    });
+  }
 
   var arr = [];
 
@@ -96,6 +102,7 @@ class _ReceivedUpcomingVideoState
       body: Stack(
         children: <Widget>[
           Container(
+            padding: EdgeInsets.all(mar),
             key: Key('local'),
             decoration: BoxDecoration(color: Colors.black),
             child: RTCVideoView(remoteRenderer),
@@ -124,7 +131,7 @@ class _ReceivedUpcomingVideoState
     );
   }
 
-  makeMeGood(RTCSessionDescription value) {
+  makeMeGood(RTCSessionDescription value) async {
     if (value.sdp!.contains("candidate")) {
       print("ZAWIERAAAAAAA");
       var c = value.sdp;
@@ -132,6 +139,9 @@ class _ReceivedUpcomingVideoState
       var a = ls.convert(c!);
       arr.add(a[10].substring(2));
       signalRProvider.sendCandidate(arr, uid);
+
+      await Future.delayed(Duration(seconds: 2));
+      refresh(context);
     }
   }
 }

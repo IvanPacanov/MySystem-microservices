@@ -43,10 +43,10 @@ class SignalRProvider extends Bloc {
       chatSessionCubit.comingCalling(message![0], message[1]);
     });
 
-    connection.on('CandidateToConnect', (message) async {
-      print("ODEBRAŁEM KANDYDATA");
-      arr.add("das");
-    });
+    // connection.on('CandidateToConnect', (message) async {
+    //   print("ODEBRAŁEM KANDYDATA");
+    //   arr.add("das");
+    // });
 
     connection.on('UserDisconected', (message) async {
       print(message);
@@ -113,7 +113,7 @@ class SignalRProvider extends Bloc {
     await connection.invoke('SendMEssage', args: ['Mordeczko']);
   }
 
-  callToUser(String offer, String user) async {
+  static callToUser(String offer, String user) async {
     await connection.invoke('CallToUser', args: [offer, user]);
   }
 

@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_bloc.dart';
-import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_state.dart';
-import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_event.dart';
+import 'package:flutter_client/blocs/addNewUser/addnewuser_bloc.dart';
+import 'package:flutter_client/blocs/addNewUser/addnewuser_state.dart';
+import 'package:flutter_client/blocs/addNewUser/addnewuser_event.dart';
 import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 

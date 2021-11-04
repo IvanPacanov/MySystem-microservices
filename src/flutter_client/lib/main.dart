@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/app_navigator.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
-import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_bloc.dart';
+import 'package:flutter_client/blocs/addNewUser/addnewuser_bloc.dart';
+import 'package:flutter_client/blocs/video-call/video_call_bloc.dart';
 import 'package:flutter_client/components/chat/chat_bloc.dart';
 import 'package:flutter_client/components/component_cubit.dart';
 import 'package:flutter_client/components/component_repository.dart';
@@ -77,6 +78,9 @@ List<BlocProvider> _providersBlocList() {
     ),
     BlocProvider(
       create: (context) => ChatSessionCubit(),
+    ),
+    BlocProvider(
+      create: (context) => VideoCallBloc(),
     ),
     BlocProvider(
       create: (context) => SignalRProvider(
