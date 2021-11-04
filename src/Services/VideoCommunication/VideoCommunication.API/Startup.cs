@@ -1,4 +1,4 @@
-using EventBus.Messages.Common;
+
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Reflection;
-using VideoCommunication.API.EventBusConsumer;
 using VideoCommunication.API.Hubs;
 
 namespace VideoCommunication.API
@@ -28,12 +27,11 @@ namespace VideoCommunication.API
         {
 
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder => {
-                builder
-                .WithOrigins("http://localhost:4200")
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-            }));
+            builder.SetIsOriginAllowed(_ => true)
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials();
+        }));
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
@@ -62,7 +60,7 @@ namespace VideoCommunication.API
             services.AddSingleton<List<CallOffer>>();
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddScoped<CheckeLoggedConsumer>();
+         //   services.AddScoped<CheckeLoggedConsumer>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

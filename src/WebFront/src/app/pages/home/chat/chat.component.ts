@@ -147,7 +147,12 @@ private isConnecting: boolean = false;
 
 
   public onUserSelected(userInfo: number) {
-     const peer = this.rtcService.createPeer(this.stream, this.userIN[userInfo].connectionId, true);
+    console.log("POCZĄTEK")
+   console.log(this.stream);
+   console.log(this.userIN[userInfo].connectionId)
+   console.log("KONIEC")
+
+    const peer = this.rtcService.createPeer(this.stream, this.userIN[userInfo].connectionId, true);
      this.rtcService.currentPeer = peer;
   }
 
@@ -195,12 +200,12 @@ private isConnecting: boolean = false;
     console.log(this.user.friendDTOs)
   }
 
-
+  public blad:string;
   public async saveUsername(): Promise<void> {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     } catch (error) {
-      console.error(`Can't join room, error ${error}`);
+      this.blad = `Can't join room, error ${error}`;
     }
   }
 

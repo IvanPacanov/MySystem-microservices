@@ -31,7 +31,7 @@ namespace VideoCommunication.API
                    webBuilder.UseKestrel();
                    webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                    Console.WriteLine("Checking IP...");
-                   webBuilder.UseUrls("https://localhost:5000", "https://odin:5000");
+                   webBuilder.UseUrls("https://0.0.0.0:5000", "https://odin:5000");
                    Console.WriteLine("Ip Correct");
                    webBuilder.UseIISIntegration();
                    webBuilder.UseStartup<Startup>();

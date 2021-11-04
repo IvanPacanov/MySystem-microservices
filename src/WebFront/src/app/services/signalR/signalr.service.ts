@@ -52,7 +52,7 @@ export class SignalrService {
 
     console.log("Połączenie")
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl('https://localhost:5000/ConnectionHub')
+    .withUrl('https://192.168.1.106:5000/ConnectionHub')
     .build();
     this.hubConnection.serverTimeoutInMilliseconds = 100000;
 

@@ -6,8 +6,10 @@ using System.Linq;
 using VideoCommunication.API.Models;
 using System;
 using Microsoft.AspNetCore.SignalR.Client;
-using AboutUsers.Domain.Users;
-using AboutUsers.PublishedLanguage.Dots;
+using System.Threading;
+//using AboutUsers.Domain.Users;
+//using AboutUsers.PublishedLanguage.Dots;
+//using Microsoft.AspNetCore.Cors;
 
 namespace VideoCommunication.API.Hubs
 {
@@ -21,6 +23,7 @@ namespace VideoCommunication.API.Hubs
     {
         public string Username { get; set; }
         public string ConnectionId { get; set; }
+        public DateTime date { get; set; }
         public bool InCall { get; set; }
         public List<User> FriendList { get; set; }
     }
@@ -34,17 +37,20 @@ namespace VideoCommunication.API.Hubs
 
     public interface IConnectionHub
     {
+
+        Task Join(string userName);
+        Task PickUpPhone(string userName, string whoCalling);
         Task UpdateUserList(List<User> userList);
-        Task UpdateUserList(string serialize);
         Task CallAccepted(User acceptingUser);
         Task CallDeclined(User decliningUser, string reason);
         Task IncomingCall(User callingUser);
         Task SendMessageToUser(string message);
         Task ReceiveSignal(User signalingUser, string signal);
         Task CallEnded(User signalingUser, string signal);
-        Task SendSignal(string signal, string user);
+        Task VideoConnecting(string signal, string user);
+        Task Errors(string error);
+        Task CandidateToConnect(string valid, string candidate);
     }
-
 
     public class HubController : Hub<IConnectionHub>
     {
@@ -57,56 +63,86 @@ namespace VideoCommunication.API.Hubs
         private readonly List<CallOffer> _CallOffers;
 
         public HubController(List<User> users, List<UserCall> userCalls, List<CallOffer> callOffers)
-        {
-            //    _Users = new List<User>() {
-
-            //new User(){
-            //    Username = "guest",
-            //    ConnectionId = "sdfsadewr",
-            //FriendList = new List<User>(){ new User() { Username = "Admin" } }
-            //} };
+        {            
             _Users = users;
-                _UserCalls = userCalls;
+            _UserCalls = userCalls;
             _CallOffers = callOffers;
+             CheckedUser();
+        }
+
+        public async Task CheckedUser()
+        {
+            await Task.Run(() =>
+            {
+                while (true)
+                {
+                    if(_Users.Count > 0)
+                        _Users.RemoveAll(u => (DateTime.Now - u.date).Seconds > 15);
+                    Thread.Sleep(15000);
+                }
+            });
+        }
+
+        private bool ExistUserOnServer(string username)
+        {
+            if (_Users.Count > 0)
+            {
+                return _Users.Exists(user => user.Username == username);
+            }
+            return false;
         }
 
         public async Task Join(string username)
         {
-            _Users.Add(new User
+            if (!ExistUserOnServer(username))
             {
-                Username = username,
-                ConnectionId = Context.ConnectionId
-            });
+                _Users.Add(new User
+                {
+                    Username = username,
+                    ConnectionId = Context.ConnectionId,
+                    date = DateTime.Now
+                });
+                var targetUser = _Users.SingleOrDefault(u => u.Username == username).ConnectionId;
+                await Clients.Client(targetUser).UpdateUserList(_Users);
+                await SendUserListUpdate();
 
-            var targetUser = _Users.SingleOrDefault(u => u.Username == username).ConnectionId;
-            await Clients.Client(targetUser).UpdateUserList(JsonSerializer.Serialize(_Users.Where(u=> u.Username != username ).Select(u=> new {u.Username, u.ConnectionId }).ToList()));
-            await SendUserListUpdate();
+            }
+            else
+            {
+                await Clients.Client(Context.ConnectionId).Errors("Error MORDRO");
+            }
+
         }
 
-        //public async Task SendSignal(string signal, string user)
-        //{
-        //    var targetUser = _Users.SingleOrDefault(u => u.Username == user).ConnectionId;
-        //    await Clients.Client(targetUser).SendSignal(Context.ConnectionId, signal);
-        //}
-
-        public async Task SendMessage(MessageDTO message, string targetConnectionId)
+        public async Task CallToUser(string offer, string user)
         {
-            var targetUser = _Users.SingleOrDefault(u => u.Username == targetConnectionId).ConnectionId;
-            await Clients.Client(targetUser).SendMessageToUser(JsonSerializer.Serialize(message));
+                var targetUser = _Users.SingleOrDefault(u => u.Username == user).ConnectionId;
+            var whoCalling = _Users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
+                await Clients.Client(targetUser).PickUpPhone(offer, whoCalling.Username);
         }
-        public override async Task OnDisconnectedAsync(Exception exception)
+
+        public async Task SendCandidate(string valid, string candidate, string user)
         {
-            // Hang up any calls the user is in
-            await HangUp(); // Gets the user from "Context" which is available in the whole hub
-
-            // Remove the user
-            _Users.RemoveAll(u => u.ConnectionId == Context.ConnectionId);
-
-            // Send down the new user list to all clients
-            await SendUserListUpdate();
-
-            await base.OnDisconnectedAsync(exception);
+            var targetUser = _Users.SingleOrDefault(u => u.Username == user).ConnectionId;
+            await Clients.Client(targetUser).CandidateToConnect(valid, candidate);
         }
+
+
+        public async Task StayLiveMessage(string uid)
+        {
+            var aliveUser = _Users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
+            if (aliveUser != null)
+            {
+                var data = DateTime.Now - aliveUser.date;
+                _Users.First(u => u.ConnectionId == Context.ConnectionId).date = DateTime.Now;
+            }
+            else
+            {
+                await Join(uid);
+            }           
+        }
+           
+     
 
         public async Task CallUser(User targetConnectionId)
         {
@@ -117,19 +153,19 @@ namespace VideoCommunication.API.Hubs
             if (targetUser == null)
             {
                 // If not, let the caller know
-           //     await Clients.Caller.CallDeclined(targetConnectionId, "The user you called has left.");
+                //     await Clients.Caller.CallDeclined(targetConnectionId, "The user you called has left.");
                 return;
             }
 
             // And that they aren't already in a call
             if (GetUserCall(targetUser.ConnectionId) != null)
             {
-             //   await Clients.Caller.CallDeclined(targetConnectionId, string.Format("{0} is already in a call.", targetUser.Username));
+                //   await Clients.Caller.CallDeclined(targetConnectionId, string.Format("{0} is already in a call.", targetUser.Username));
                 return;
             }
 
             // They are here, so tell them someone wants to talk
-          //  await Clients.Client(targetConnectionId.ConnectionId).IncomingCall(callingUser);
+            //  await Clients.Client(targetConnectionId.ConnectionId).IncomingCall(callingUser);
 
             // Create an offer
             _CallOffers.Add(new CallOffer
@@ -153,14 +189,14 @@ namespace VideoCommunication.API.Hubs
             // Make sure the original caller has not left the page yet
             if (targetUser == null)
             {
-             //   await Clients.Caller.CallEnded(targetConnectionId, "The other user in your call has left.");
+                //   await Clients.Caller.CallEnded(targetConnectionId, "The other user in your call has left.");
                 return;
             }
 
             // Send a decline message if the callee said no
             if (acceptCall == false)
             {
-       //         await Clients.Client(targetConnectionId.ConnectionId).CallDeclined(callingUser, string.Format("{0} did not accept your call.", callingUser.Username));
+                //         await Clients.Client(targetConnectionId.ConnectionId).CallDeclined(callingUser, string.Format("{0} did not accept your call.", callingUser.Username));
                 return;
             }
 
@@ -169,7 +205,7 @@ namespace VideoCommunication.API.Hubs
                                                   && c.Caller.ConnectionId == targetUser.ConnectionId);
             if (offerCount < 1)
             {
-             //   await Clients.Caller.CallEnded(targetConnectionId, string.Format("{0} has already hung up.", targetUser.Username));
+                //   await Clients.Caller.CallEnded(targetConnectionId, string.Format("{0} has already hung up.", targetUser.Username));
                 return;
             }
 
@@ -177,7 +213,7 @@ namespace VideoCommunication.API.Hubs
             if (GetUserCall(targetUser.ConnectionId) != null)
             {
                 // And that they aren't already in a call
-           //     await Clients.Caller.CallDeclined(targetConnectionId, string.Format("{0} chose to accept someone elses call instead of yours :(", targetUser.Username));
+                //     await Clients.Caller.CallDeclined(targetConnectionId, string.Format("{0} chose to accept someone elses call instead of yours :(", targetUser.Username));
                 return;
             }
 
@@ -191,7 +227,7 @@ namespace VideoCommunication.API.Hubs
             });
 
             // Tell the original caller that the call was accepted
-      //      await Clients.Client(targetConnectionId.ConnectionId).CallAccepted(callingUser);
+            //      await Clients.Client(targetConnectionId.ConnectionId).CallAccepted(callingUser);
 
             // Update the user list, since thes two are now in a call
             await SendUserListUpdate();
@@ -213,7 +249,7 @@ namespace VideoCommunication.API.Hubs
             {
                 foreach (var user in currentCall.Users.Where(u => u.ConnectionId != callingUser.ConnectionId))
                 {
-          //          await Clients.Client(user.ConnectionId).CallEnded(callingUser, string.Format("{0} has hung up.", callingUser.Username));
+                    //          await Clients.Client(user.ConnectionId).CallEnded(callingUser, string.Format("{0} has hung up.", callingUser.Username));
                 }
 
                 // Remove the call from the list if there is only one (or none) person left.  This should
@@ -244,7 +280,7 @@ namespace VideoCommunication.API.Hubs
             {
                 return;
             }
-            await Clients.Client(targetConnectionId).SendSignal(Context.ConnectionId, signal);
+            //    await Clients.Client(targetConnectionId).SendSignal(Context.ConnectionId, signal);
 
 
         }
@@ -255,7 +291,7 @@ namespace VideoCommunication.API.Hubs
         private async Task SendUserListUpdate()
         {
             _Users.ForEach(u => u.InCall = (GetUserCall(u.ConnectionId) != null));
-           // await Clients.All.UpdateUserList(_Users);
+             await Clients.All.UpdateUserList(_Users);
         }
 
         private UserCall GetUserCall(string connectionId)

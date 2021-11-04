@@ -9,6 +9,7 @@ import { MainModule } from './main/main.module';
 import { DialogComponent } from './pages/home/chat/dialog/dialog.component';
 import { DialogOwnComponent } from './features/dialog-own/dialog-own.component';
 import { ConfirmCallingComponent } from './pages/home/chat/confirm-calling/confirm-calling.component';
+import { WebcamModule } from 'ngx-webcam';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { ConfirmCallingComponent } from './pages/home/chat/confirm-calling/confi
 
   ],
   imports: [
+    WebcamModule,
     BrowserModule, HttpClientModule, AppRoutingModule,
     MainModule
   ],

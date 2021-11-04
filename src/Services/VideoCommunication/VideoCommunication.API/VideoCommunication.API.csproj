@@ -26,10 +26,4 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\AboutUsers\AboutUsers.Domain\AboutUsers.Domain.csproj" />
-    <ProjectReference Include="..\..\BuildingBlocks\EventBus.Messages\EventBus.Messages.csproj" />
-    <ProjectReference Include="..\..\Users\Users.Application\Users.Application.csproj" />
-  </ItemGroup>
-
 </Project>

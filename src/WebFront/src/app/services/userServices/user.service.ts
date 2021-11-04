@@ -11,8 +11,8 @@ import { AddUserDTO } from '@app/pages/home/home.component';
 })
 export class UserService {
 
-  private url = "http://localhost:5006/Users"
-  private api = "http://localhost:5006/api/Authenticate"
+  private url = "https://192.168.1.106:5007/Users"
+  private api = "https://192.168.1.106:5007/api/Authenticate"
   constructor(private httpClient: HttpClient) { }
 
   // loginUser(user: User): Observable<any>{
