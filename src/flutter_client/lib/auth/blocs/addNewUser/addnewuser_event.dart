@@ -7,5 +7,6 @@ class UserNameChanged extends AddnewuserEvent {
 }
 
 class AddNewFriend extends AddnewuserEvent {
-
+  final String userUid;
+  AddNewFriend({required this.userUid});
 }

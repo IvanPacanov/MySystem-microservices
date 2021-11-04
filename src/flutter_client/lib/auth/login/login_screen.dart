@@ -10,12 +10,10 @@ import 'package:flutter_client/auth/login/login_state.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class LoginScreen extends StatelessWidget {
   final _formKey2 = GlobalKey<FormState>();
 
-
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
@@ -33,7 +31,6 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _passwordField() {
     return BlocBuilder<LoginBloc, LoginState>(
@@ -144,7 +141,6 @@ class LoginScreen extends StatelessWidget {
         final formStatus = state.formStatus;
         if (formStatus is SubmissionFailed) {
           _showSnackBar(context, formStatus.exception.toString());
-          
         }
       },
       child: Form(
@@ -162,14 +158,14 @@ class LoginScreen extends StatelessWidget {
               _buttonRegister(context),
               _sizeBoxH10(),
               _showGuestUpButton(context),
+              _sizeBoxH10(),
+              _showGuestUpButton2(context),
             ],
           ),
         ),
       ),
     );
   }
-
-  
 
   Widget _showSignUpButton(BuildContext context) {
     return SafeArea(
@@ -183,10 +179,20 @@ class LoginScreen extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
       return TextButton(
-        child: Text('Guest?.'),
+        child: Text('Użytkownik testowy 1'),
         onPressed: () =>
             context.read<LoginBloc>().add(LoginAsGuest()),
-            
+      );
+    });
+  }
+
+  Widget _showGuestUpButton2(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+        builder: (context, state) {
+      return TextButton(
+        child: Text('Użytkownik testowy 2'),
+        onPressed: () =>
+            context.read<LoginBloc>().add(LoginAsGuest2()),
       );
     });
   }

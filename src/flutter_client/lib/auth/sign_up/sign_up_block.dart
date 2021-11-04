@@ -5,6 +5,7 @@ import 'package:flutter_client/auth/auth_repository.dart';
 import 'package:flutter_client/auth/form_submission_status.dart';
 import 'package:flutter_client/auth/sign_up/sign_up_event.dart';
 import 'package:flutter_client/auth/sign_up/sign_up_state.dart';
+import 'package:flutter_client/constants.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final AuthRepository authRepo;
@@ -17,9 +18,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     print("elooo");
 
     var a = FirebaseFirestore.instance
-        .collection('users')
+        .collection(USER_COLLECTION)
         .doc('0sqzFChjC7rL1Iq7MtBz')
-        .collection('friends')
+        .collection(FRIEND_COLLECIONT)
         .snapshots();
     return a;
   }

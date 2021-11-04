@@ -24,7 +24,7 @@ class AuthCubit extends Cubit<AuthState> {
       email: email,
       password: password,
     );
-    emit(AuthState.confirmSignUp);
+    emit(AuthState.login);
   }
 
   void launchSession(UserCredential credentials) =>

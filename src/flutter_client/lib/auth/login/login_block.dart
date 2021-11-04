@@ -38,7 +38,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         // dynamic user = await authRepository.signInAnon();
         final user = await authRepository.loginWithEmailAndPassword(
-          email: "mat@gmail.com",
+          email: "mateusz@gmail.com",
+          password: "123456789",
+        );
+        authRepository.setUser(user);
+        yield state.copyWith(formStatus: SubmissionSuccess());
+        authCubit.showConfirmLogin(user);
+      } catch (e) {
+        print(e.toString());
+        yield state.copyWith(
+            formStatus: SubmissionFailed(e as Exception));
+      }
+    } else if (event is LoginAsGuest2) {
+      try {
+        // dynamic user = await authRepository.signInAnon();
+        final user = await authRepository.loginWithEmailAndPassword(
+          email: "olek@gmail.com",
           password: "123456789",
         );
         authRepository.setUser(user);

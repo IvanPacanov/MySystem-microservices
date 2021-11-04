@@ -30,7 +30,7 @@ class ConfirmationBloc
 
       try {
         await authRepo.confirmSignUp(
-          userName: authCubit.credentials!.userName!,
+          userName: authCubit.credentials!.email!,
           confirmationCode: state.code,
         );
 

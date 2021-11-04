@@ -7,20 +7,18 @@ import 'package:flutter_client/components/chat/chat_bloc.dart';
 import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
-import 'package:flutter_client/session/session_state.dart';
+import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:provider/src/provider.dart';
 import 'package:sdp_transform/sdp_transform.dart';
-import 'package:flutter_client/components/chat/chat_bloc.dart';
 import 'package:flutter_client/components/chat/chat_state.dart';
 
 class VideoCall2 extends StatefulWidget {
-  final Friends friend;
+  final Friends? friend;
   final RTCVideoRenderer remoteRenderer;
   final RTCPeerConnection peerConnection;
   const VideoCall2(
       {Key? key,
-      required this.friend,
+      this.friend,
       required this.remoteRenderer,
       required this.peerConnection})
       : super(key: key);
@@ -33,14 +31,14 @@ class VideoCall2 extends StatefulWidget {
 }
 
 class _VideoCallState2 extends State<VideoCall2> {
-  final Friends friend;
+  final Friends? friend;
   _VideoCallState2(
       {required this.friend,
       required this.remoteRenderer,
       required this.peerConnection});
 
   bool _offer = false;
-  late RTCPeerConnection peerConnection;
+  final RTCPeerConnection peerConnection;
   final RTCVideoRenderer remoteRenderer;
   // final sdpController = TextEditingController();
 
@@ -49,7 +47,10 @@ class _VideoCallState2 extends State<VideoCall2> {
         await peerConnection.createOffer({'offerToReceiveVideo': 1});
     var session = parse(description.sdp.toString());
     var offer = json.encode(session);
-    context.read<ChatBloc>().signalR.callToUser(offer, friend.name!);
+    context
+        .read<ChatBloc>()
+        .signalR
+        .callToUser(offer, friend!.idUser!);
     _offer = true;
     peerConnection.setLocalDescription(description);
   }
@@ -173,11 +174,14 @@ class _VideoCallState2 extends State<VideoCall2> {
     return BlocProvider(
         create: (context) => ChatBloc(
             componehtRepository: context.read<ComponentRepository>(),
-            authRepository: context.read<AuthRepository>()),
+            authRepository: context.read<AuthRepository>(),
+            chatSessionCubit: context.read<ChatSessionCubit>(),
+            signalR: context.read<SignalRProvider>()),
         child: BlocBuilder<ChatBloc, ChatState>(
             builder: (context, state) {
-          _createOffer(context);
-
+          if (friend != null) {
+            _createOffer(context);
+          }
           return Scaffold(
             body: Stack(
               children: <Widget>[

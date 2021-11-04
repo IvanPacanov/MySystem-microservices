@@ -11,10 +11,12 @@ class Friends {
   final String? name;
   final String? lastMessageTime;
   final String? urlAvatar;
+  final bool? confirmed;
   final List<ChatMessage> chatMessage;
 
   Friends(
       {this.idUser,
+      this.confirmed,
       required this.name,
       required this.lastMessageTime,
       required this.urlAvatar,
@@ -24,7 +26,8 @@ class Friends {
         'idUser': idUser,
         'name': name,
         'lastMessageTime': lastMessageTime.toString(),
-        'urlAvatar': urlAvatar
+        'urlAvatar': urlAvatar,
+        'confirmed': confirmed == null ? false : confirmed
       };
 
   static Friends fromJson(Map<String, dynamic> json) => Friends(
@@ -32,6 +35,7 @@ class Friends {
       name: json['name'],
       urlAvatar: json['urlAvatar'],
       lastMessageTime: json['lastMessageTime'],
+      confirmed: json['confirmed'],
       chatMessage: []);
 
   copyWith(
@@ -72,7 +76,7 @@ class User {
         friends: friends == null ? [] : friends,
       );
 
-      static User copyWithStatic(
+  static User copyWithStatic(
           {String? idUser,
           String? name,
           String? urlAvatar,
@@ -83,7 +87,6 @@ class User {
         urlAvatar: urlAvatar,
         friends: friends == null ? [] : friends,
       );
-
 
   static User fromJson(Map<String, dynamic> json) => User(
       idUser: json['idUser'],

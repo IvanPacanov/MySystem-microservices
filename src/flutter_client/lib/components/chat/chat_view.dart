@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
@@ -14,6 +15,8 @@ import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/presentation/AddNewUser.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/VideoCall2.dart';
+import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_client/session/session_state.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +28,7 @@ class ChatView extends StatefulWidget {
 
 class _ChatView extends State<ChatView> {
   int _selectedIndex = 0;
+  late UserCredential userCred;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,12 +38,18 @@ class _ChatView extends State<ChatView> {
         ChatHeaderWidget(),
         Flexible(
           child: BlocProvider(
-            create: (context) => ChatBloc(
-                componehtRepository:
-                    context.read<ComponentRepository>(),
-                authRepository: context.read<AuthRepository>()),
-            child: Scaffold(
-              body: _connectionString(),
+            create: (context) => SignalRProvider(
+                chatSessionCubit: context.read<ChatSessionCubit>()),
+            child: BlocProvider(
+              create: (context) => ChatBloc(
+                  componehtRepository:
+                      context.read<ComponentRepository>(),
+                  authRepository: context.read<AuthRepository>(),
+                  chatSessionCubit: context.read<ChatSessionCubit>(),
+                  signalR: context.read<SignalRProvider>()),
+              child: Scaffold(
+                body: _connectionString(),
+              ),
             ),
           ),
         ),
@@ -127,11 +137,12 @@ class _ChatView extends State<ChatView> {
       //             remoteRenderer: _remoteRenderer),
       //       ));
       // }
+      userCred = context.read<ChatBloc>().authRepository.userCred;
       return StreamBuilder<QuerySnapshot>(
           stream: context
               .read<ChatBloc>()
               .componehtRepository
-              .getListOfFriends,
+              .getListOfFriends(userCred.user!.uid),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
@@ -186,7 +197,8 @@ class _ChatView extends State<ChatView> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddNewUser()));
+                      builder: (context) =>
+                          AddNewUser(userCred: userCred)));
             },
             icon: Icon(Icons.add))
       ],

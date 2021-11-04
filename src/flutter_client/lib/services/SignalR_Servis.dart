@@ -1,12 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 final serverUrl = "https://192.168.1.106:5000/ConnectionHub";
 
-class SignalRProvider with ChangeNotifier {
+class SignalRProvider extends Bloc {
+  final ChatSessionCubit chatSessionCubit;
+  final arr = [];
   static HubConnection connection = HubConnectionBuilder()
       .withUrl(
           serverUrl,
@@ -16,6 +18,9 @@ class SignalRProvider with ChangeNotifier {
       .build();
 
   late Function(bool update) onMessagesUpdateCallback;
+
+  SignalRProvider({required this.chatSessionCubit})
+      : super(SignalRProvider);
 
   Future initSignalR(UserCredential user) async {
     await connection.start();
@@ -34,7 +39,13 @@ class SignalRProvider with ChangeNotifier {
     });
 
     connection.on('PickUpPhone', (message) async {
-      print(message);
+      print("OK ODEBRAŁEM CALLING");
+      chatSessionCubit.comingCalling(message![0], message[1]);
+    });
+
+    connection.on('CandidateToConnect', (message) async {
+      print("ODEBRAŁEM KANDYDATA");
+      arr.add("das");
     });
 
     connection.on('UserDisconected', (message) async {
@@ -84,7 +95,7 @@ class SignalRProvider with ChangeNotifier {
       await connection.start();
     });
 
-    await connection.invoke("Join", args: [user.user!.email]);
+    await connection.invoke("Join", args: [user.user!.uid]);
 
     Timer timer =
         Timer.periodic(Duration(seconds: 10), (timer) async {
@@ -103,8 +114,11 @@ class SignalRProvider with ChangeNotifier {
   }
 
   callToUser(String offer, String user) async {
-    print(
-        "WYSYŁAM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     await connection.invoke('CallToUser', args: [offer, user]);
+  }
+
+  sendCandidate(List<dynamic> offer, String uid) async {
+    await connection
+        .invoke('SendCandidate', args: [offer[0], offer[1], uid]);
   }
 }

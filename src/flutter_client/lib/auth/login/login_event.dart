@@ -17,5 +17,10 @@ class LoginAsGuest extends LoginEvent {
   
 }
 
+class LoginAsGuest2 extends LoginEvent {
+  
+}
+
+
 class LoginSubmitted extends LoginEvent{}
 

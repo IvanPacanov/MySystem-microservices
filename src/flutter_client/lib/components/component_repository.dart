@@ -1,26 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_client/constants.dart';
+import 'package:flutter_client/repositories/firebase_api.dart';
 
 class ComponentRepository {
-  // Stream getUser() async{
-  //   final Stream<QuerySnapshot> _usersStream =
-  //     FirebaseFirestore.instance.collection('users').snapshots();
-  // }
 
-  Stream<QuerySnapshot> get getListOfFriends {
+
+  Stream<QuerySnapshot> getListOfFriends(String uid) {
     return FirebaseFirestore.instance
-        .collection('users')
-        .doc('lMmppJhcSKPVB5A5ZQSN')
-        .collection('friends')
+        .collection(USER_COLLECTION)
+        .doc(uid)
+        .collection(FRIEND_COLLECIONT)
         .snapshots();
   }
 
-  Stream<QuerySnapshot> get getMessagesOfUser {
+  Stream<QuerySnapshot> getMessagesOfUser(
+      String uid, String friendUid) {
     return FirebaseFirestore.instance
-        .collection('users')
-        .doc('lMmppJhcSKPVB5A5ZQSN')
-        .collection('friends')
-        .doc('eifqPljYAp2UmrCmMkxZ')
-        .collection('message')
+        .collection(USER_COLLECTION)
+        .doc(uid)
+        .collection(FRIEND_COLLECIONT)
+        .doc(friendUid)
+        .collection(MESSAGE_COLLECTION)
         .snapshots();
+  }
+
+  void addNewFriend(String userUid, String userName) {
+    FireBaseApi.addNewFriend(userUid, userName);
   }
 }

@@ -8,6 +8,7 @@ import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/repositories/firebase_api.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_client/session/session_state.dart';
 
 part 'chat_event.dart';
@@ -15,11 +16,14 @@ part 'chat_event.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ComponentRepository componehtRepository;
   final AuthRepository authRepository;
-  final SignalRProvider signalR = new SignalRProvider();
+  final ChatSessionCubit chatSessionCubit;
+  final SignalRProvider signalR;
 
   ChatBloc(
       {required this.componehtRepository,
-      required this.authRepository})
+      required this.authRepository,
+      required this.signalR,
+      required this.chatSessionCubit})
       : super(ChatState(users: [])) {
     signalR.initSignalR(authRepository.userCred);
   }

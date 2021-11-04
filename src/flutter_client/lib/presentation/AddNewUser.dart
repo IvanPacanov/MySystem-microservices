@@ -1,34 +1,45 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_bloc.dart';
 import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_state.dart';
 import 'package:flutter_client/auth/blocs/addNewUser/addnewuser_event.dart';
+import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 
 class AddNewUser extends StatefulWidget {
+  final UserCredential userCred;
+  AddNewUser({required this.userCred});
+
   @override
-  State<AddNewUser> createState() => _AddNewUser();
+  State<AddNewUser> createState() => _AddNewUser(userCred: userCred);
 }
 
 class _AddNewUser extends State<AddNewUser> {
+  final UserCredential userCred;
+  _AddNewUser({required this.userCred});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<AddnewuserBloc, AddnewuserState>(
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                searchNewUser(context),
-                isTrustedPerson(context),
-                trustedPerson(context),
-                _buttonLogin()
-              ],
-            ),
-          );
-        },
+      body: BlocProvider(
+        create: (context) => AddNewUserBloc(
+            componetRepository: context.read<ComponentRepository>()),
+        child: BlocBuilder<AddNewUserBloc, AddnewuserState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  searchNewUser(context),
+                  isTrustedPerson(context),
+                  trustedPerson(context),
+                  _buttonLogin(context)
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -39,7 +50,7 @@ class _AddNewUser extends State<AddNewUser> {
             labelText: "Nazwa użytkownika"),
         keyboardType: TextInputType.name,
         autovalidateMode: AutovalidateMode.always,
-        onChanged: (value) => context.read<AddnewuserBloc>().add(
+        onChanged: (value) => context.read<AddNewUserBloc>().add(
               UserNameChanged(userName: value),
             ),
       );
@@ -48,10 +59,10 @@ class _AddNewUser extends State<AddNewUser> {
       CheckboxListTile(
         checkColor: Colors.white,
         title: Text("Zaufana osoba"),
-        value: context.read<AddnewuserBloc>().isTrusted,
+        value: context.read<AddNewUserBloc>().isTrusted,
         onChanged: (bool? value) {
           setState(() {
-            context.read<AddnewuserBloc>().isTrusted = value!;
+            context.read<AddNewUserBloc>().isTrusted = value!;
           });
         },
       );
@@ -63,24 +74,26 @@ class _AddNewUser extends State<AddNewUser> {
             icon: Icon(Icons.security), labelText: "Numer Telefonu"),
         keyboardType: TextInputType.phone,
         autovalidateMode: AutovalidateMode.always,
-        onChanged: (value) => context.read<AddnewuserBloc>().add(
+        onChanged: (value) => context.read<AddNewUserBloc>().add(
               UserNameChanged(userName: value),
             ),
       );
 
   Visibility trustedPerson(BuildContext context) => Visibility(
-        visible: context.read<AddnewuserBloc>().isTrusted,
+        visible: context.read<AddNewUserBloc>().isTrusted,
         child: Column(
           children: <Widget>[addPhoneNumberUser(context)],
         ),
       );
 
-  GradientButton _buttonLogin() => GradientButton(
+  GradientButton _buttonLogin(BuildContext context) => GradientButton(
         width: 150,
         height: 50,
         onPressed: () {
           {
-            context.read<AddnewuserBloc>().add(AddNewFriend());
+            context
+                .read<AddNewUserBloc>()
+                .add(AddNewFriend(userUid: this.userCred.user!.uid));
             Navigator.pop(context);
           }
         },
