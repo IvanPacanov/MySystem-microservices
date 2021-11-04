@@ -9,6 +9,7 @@ final serverUrl = "https://192.168.1.106:5000/ConnectionHub";
 class SignalRProvider extends Bloc {
   final ChatSessionCubit chatSessionCubit;
   final arr = [];
+  static late Timer timer;
   static HubConnection connection = HubConnectionBuilder()
       .withUrl(
           serverUrl,
@@ -21,6 +22,23 @@ class SignalRProvider extends Bloc {
 
   SignalRProvider({required this.chatSessionCubit})
       : super(SignalRProvider);
+
+  static Future disconectedSignalR() async {
+    timer.cancel();
+    connection.off('WelcomeOnServer');
+    connection.off('UpdateUserList');
+    connection.off('AnotherUserDisconected');
+    connection.off('PickUpPhone');
+    connection.off('UserDisconected');
+    connection.off('CallAccepted');
+    connection.off('IncomingCall');
+    connection.off('VideoConnecting');
+    connection.off('CallEnded');
+    connection.off('Errors');
+    connection.off('SendMessageToUser');
+    connection.off('ReceiveDisconnectedMessage');
+    await connection.stop();
+  }
 
   Future initSignalR(UserCredential user) async {
     await connection.start();
@@ -97,8 +115,7 @@ class SignalRProvider extends Bloc {
 
     await connection.invoke("Join", args: [user.user!.uid]);
 
-    Timer timer =
-        Timer.periodic(Duration(seconds: 10), (timer) async {
+    timer = Timer.periodic(Duration(seconds: 10), (timer) async {
       if (connection.state == HubConnectionState.connected) {
         await connection
             .invoke('StayLiveMessage', args: [user.user!.uid]);

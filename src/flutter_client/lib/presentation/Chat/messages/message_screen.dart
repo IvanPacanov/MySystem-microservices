@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
-import 'package:flutter_client/presentation/VideoCall2.dart';
+import 'package:flutter_client/presentation/VideoCalling/VideoCall2.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 import 'components/body.dart';
@@ -31,7 +31,7 @@ class _MessageScreen extends State<MessageScreen> {
     _createPeerConnecion().then((pc) {
       _peerConnection = pc;
     });
-    super.initState();   
+    super.initState();
   }
 
   initRenders() async {

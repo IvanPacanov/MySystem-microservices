@@ -36,6 +36,8 @@ dependencies:
   url_launcher: ^6.0.12
   socket_io_client: ^1.0.1
   
+  settings_ui: ^1.0.0
+  
 
   flutter_webrtc: ^0.6.0
   sdp_transform: ^0.3.0

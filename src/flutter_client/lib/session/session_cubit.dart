@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_credentials.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {
@@ -33,6 +34,7 @@ class SessionCubit extends Cubit<SessionState> {
 
   void signOut() {
     authRepo.signOut();
+    SignalRProvider.disconectedSignalR();
     emit(Unauthenticated());
   }
 }

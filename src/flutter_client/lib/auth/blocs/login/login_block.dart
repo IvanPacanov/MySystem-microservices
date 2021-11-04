@@ -1,17 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/auth/auth_credentials.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
 import 'package:flutter_client/auth/form_submission_status.dart';
-import 'package:flutter_client/auth/login/login_event.dart';
-import 'package:flutter_client/auth/login/login_state.dart';
-import 'package:flutter_client/models/User.dart';
-import 'package:flutter_client/repositories/firebase_api.dart';
-import 'package:flutter_client/utils.dart';
+import 'package:flutter_client/auth/blocs/login/login_event.dart';
+import 'package:flutter_client/auth/blocs/login/login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository authRepository;

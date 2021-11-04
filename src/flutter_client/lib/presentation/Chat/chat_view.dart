@@ -3,21 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
-import 'package:flutter_client/components/chat/card/chat_card.dart';
-import 'package:flutter_client/components/chat/chat_bloc.dart';
-import 'package:flutter_client/components/chat/chat_state.dart';
-import 'package:flutter_client/components/chat/messages/message_screen.dart';
-import 'package:flutter_client/components/chat/widget/chat_header.dart';
-import 'package:flutter_client/components/component_repository.dart';
+import 'package:flutter_client/blocs/chat/chat_bloc.dart';
+import 'package:flutter_client/blocs/chat/chat_state.dart';
 import 'package:flutter_client/constants.dart';
-import 'package:flutter_client/models/Chat.dart';
 import 'package:flutter_client/models/User.dart';
-import 'package:flutter_client/presentation/AddNewUser.dart';
-import 'package:flutter_client/presentation/VideoCall.dart';
-import 'package:flutter_client/presentation/VideoCall2.dart';
+import 'package:flutter_client/presentation/AddNewUser/AddNewUser.dart';
+import 'package:flutter_client/presentation/Chat/messages/message_screen.dart';
+import 'package:flutter_client/presentation/Chat/widget/chat_header.dart';
+import 'package:flutter_client/presentation/account/account_screen.dart';
+import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
-import 'package:flutter_client/session/session_state.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:provider/provider.dart';
 
@@ -78,31 +74,6 @@ class _ChatView extends State<ChatView> {
     });
   }
 
-  Widget _buttton2() {
-    return BlocBuilder<ChatBloc, ChatState>(
-        builder: (context, state) {
-      return GradientButton(
-        width: 150,
-        height: 50,
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VideoCall(),
-              ));
-        },
-        text: Text(
-          'VideoScreen',
-          style: TextStyle(color: Colors.white),
-        ),
-        icon: Icon(
-          Icons.check,
-          color: Colors.white,
-        ),
-      );
-    });
-  }
-
   Widget _buttton1() {
     return BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
@@ -127,16 +98,6 @@ class _ChatView extends State<ChatView> {
   Widget _connectionString() {
     return BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
-      // if (true) {
-      //   Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) => VideoCall2(
-      //             friend: friend,
-      //             peerConnection: _peerConnection,
-      //             remoteRenderer: _remoteRenderer),
-      //       ));
-      // }
       userCred = context.read<ChatBloc>().authRepository.userCred;
       return StreamBuilder<QuerySnapshot>(
           stream: context
@@ -200,7 +161,15 @@ class _ChatView extends State<ChatView> {
                       builder: (context) =>
                           AddNewUser(userCred: userCred)));
             },
-            icon: Icon(Icons.add))
+            icon: Icon(Icons.add)),
+        IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AccountScreen()));
+            },
+            icon: Icon(Icons.account_circle))
       ],
     );
   }
