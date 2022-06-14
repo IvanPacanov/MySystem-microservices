@@ -4,13 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_client/components/chat/messages/components/message.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/utils.dart';
 
 class FireBaseApi {
   static Stream<List<User>> getUsers() => FirebaseFirestore.instance
       .collection(USER_COLLECTION)
       .snapshots()
-      .transform(Utils.transformer2(User.fromJson)
+      .transform(Utils.transformer2(User.fromJson2)
           as StreamTransformer<QuerySnapshot<Map<String, dynamic>>,
               List<User>>);
 
@@ -25,9 +26,9 @@ class FireBaseApi {
       for (final user in users) {
         final userDoc = refUsers.doc();
         final newUser = user.copyWith(
-          idUser: userDoc.id,
+          id: 2,
           urlAvatar: user.urlAvatar,
-          name: user.name,
+          nick: user.nick,
           friends: user.friends,
         );
 
@@ -40,9 +41,9 @@ class FireBaseApi {
           for (final frie in user.friends) {
             final friendFirebase = firebaseFriend.doc();
             final newFriend = frie.copyWith(
-              idUser: firebaseFriend.id,
-              name: frie.name,
-              lastMessageTime: frie.lastMessageTime,
+              id: 2,
+              nick: frie.nick,
+              lastMessageTime: frie.lastLogin,
               urlAvatar: frie.urlAvatar,
             );
 
@@ -53,20 +54,20 @@ class FireBaseApi {
             if (allMessage.size != 0) {
               return;
             } else {
-              for (final chat in frie.chatMessage) {
-                final chatFireBase = messagesFirebase.doc();
-                final newChats = chat.copyWith(
-                    idChat: chatFireBase.id,
-                    user: chat.user,
-                    text: chat.text,
-                    date: chat.date,
-                    messageStatus: chat.messageStatus,
-                    isSender: chat.isSender,
-                    messageType: chat.messageType);
+              // for (final chat in frie.chatMessage) {
+              //   final chatFireBase = messagesFirebase.doc();
+              //   final newChats = chat.copyWith(
+              //       idChat: chatFireBase.id,
+              //       user: chat.user,
+              //       text: chat.text,
+              //       date: chat.date,
+              //       messageStatus: chat.messageStatus,
+              //       isSender: chat.isSender,
+              //       messageType: chat.messageType);
 
-                var a = newChats.toJson();
-                await chatFireBase.set(a);
-              }
+              //   var a = newChats.toJson();
+              //   await chatFireBase.set(a);
+              // }
             }
 
             var a = newFriend.toJson();
@@ -74,7 +75,7 @@ class FireBaseApi {
           }
         }
 
-        print(user.friends[0].chatMessage[0].text);
+       // print(user.friends[0].chatMessage[0].text);
         var a = newUser.toJson();
         print(a);
         await userDoc.set(a);
@@ -104,10 +105,10 @@ class FireBaseApi {
         FirebaseFirestore.instance.collection(USER_COLLECTION);
     final userDoc = refUsers.doc(uid);
     final newUser = User.copyWithStatic(
-      idUser: userDoc.id,
+      id: 2,
       urlAvatar:
           "https://images.unsplash.com/photo-1496203695688-3b8985780d6a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=641&q=80",
-      name: userName,
+      nick: userName,
       friends: [],
     );
     var a = newUser.toJson();
@@ -153,7 +154,7 @@ class FireBaseApi {
   static doSomething(
       String userUid, Map<String, dynamic> user) async {
     if (user != null) {
-      final Friends newFriend = Friends.fromJson(user);
+      final UserFriend newFriend = UserFriend.fromJson(user);
       final friendFirebase = FirebaseFirestore.instance
           .collection(USER_COLLECTION)
           .doc(userUid)
@@ -169,7 +170,7 @@ class FireBaseApi {
           .get()
           .then((value) => {
                 addMeToFriend(
-                    value.data()!, newFriend.idUser!)
+                    value.data()!, "newFriend.idUser")
               });
     }
 
@@ -178,7 +179,7 @@ class FireBaseApi {
 
   static addMeToFriend(
       Map<String, dynamic> user, String friendUid) async {
-    final Friends newFriend = Friends.fromJson(user);
+    final UserFriend newFriend = UserFriend.fromJson(user);
     final friendFirebase = FirebaseFirestore.instance
         .collection(USER_COLLECTION)
         .doc(friendUid)

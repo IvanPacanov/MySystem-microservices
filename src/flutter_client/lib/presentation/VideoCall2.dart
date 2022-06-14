@@ -7,6 +7,7 @@ import 'package:flutter_client/blocs/video-call/video_call_bloc.dart';
 import 'package:flutter_client/components/chat/chat_bloc.dart';
 import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_client/components/chat/chat_state.dart';
 import 'package:flutter_client/blocs/video-call/video_call_state.dart';
 
 class VideoCall2 extends StatefulWidget {
-  final Friends? friend;
+  final UserFriend? friend;
   final RTCVideoRenderer remoteRenderer;
   final RTCPeerConnection peerConnection;
   const VideoCall2(
@@ -33,7 +34,7 @@ class VideoCall2 extends StatefulWidget {
 }
 
 class _VideoCallState2 extends State<VideoCall2> {
-  final Friends? friend;
+  final UserFriend? friend;
   _VideoCallState2(
       {required this.friend,
       required this.remoteRenderer,
@@ -56,9 +57,11 @@ class _VideoCallState2 extends State<VideoCall2> {
         await peerConnection.createOffer({'offerToReceiveVideo': 1});
     var session = parse(description.sdp.toString());
     var offer = json.encode(session);
-    SignalRProvider.callToUser(offer, friend!.idUser!);
-    _offer = true;
-    peerConnection.setLocalDescription(description);
+    if (friend?.connectionId != null) {
+      SignalRProvider.callToUser(offer, friend!.connectionId);
+      _offer = true;
+      peerConnection.setLocalDescription(description);
+    }
   }
 
   void _setRemoteDescription(String offerSet) async {

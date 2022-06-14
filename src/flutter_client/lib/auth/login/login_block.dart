@@ -37,13 +37,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is LoginAsGuest) {
       try {
         // dynamic user = await authRepository.signInAnon();
-        final user = await authRepository.loginWithEmailAndPassword(
-          email: "mateusz@gmail.com",
+        final token = await authRepository.loginWithEmailAndPassword(
+          userName: "mateusz@gmail.com",
           password: "123456789",
         );
-        authRepository.setUser(user);
+        print("TODO AUTORYZACJA Z POBIERANIEM!!!!");
+        // authRepository.setToken(token);
         yield state.copyWith(formStatus: SubmissionSuccess());
-        authCubit.showConfirmLogin(user);
+        // authCubit.showConfirmLogin(user);
       } catch (e) {
         print(e.toString());
         yield state.copyWith(
@@ -53,12 +54,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         // dynamic user = await authRepository.signInAnon();
         final user = await authRepository.loginWithEmailAndPassword(
-          email: "olek@gmail.com",
+          userName: "olek@gmail.com",
           password: "123456789",
         );
-        authRepository.setUser(user);
+        // authRepository.setToken(user);
         yield state.copyWith(formStatus: SubmissionSuccess());
-        authCubit.showConfirmLogin(user);
+        // authCubit.showConfirmLogin(user);
       } catch (e) {
         print(e.toString());
         yield state.copyWith(
@@ -69,13 +70,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         final user = await authRepository.loginWithEmailAndPassword(
-          email: state.email,
+          userName: state.email,
           password: state.password,
         );
         yield state.copyWith(formStatus: SubmissionSuccess());
         authCubit.showConfirmLogin(user);
 
-        authRepository.setUser(user);
+        // authRepository.setToken(token);
       } catch (e) {
         yield state.copyWith(
             formStatus: SubmissionFailed(e as Exception));

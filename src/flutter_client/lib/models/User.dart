@@ -2,101 +2,74 @@ import 'dart:convert';
 
 import 'package:flutter_client/models/ChatMessage.dart';
 
+import 'UserFriend.dart';
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'User.g.dart';
+
 class UserField {
   static final String lastMessageTime = 'lastMessageTime';
 }
 
-class Friends {
-  final String? idUser;
-  final String? name;
-  final String? lastMessageTime;
-  final String? urlAvatar;
-  final bool? confirmed;
-  final List<ChatMessage> chatMessage;
-
-  Friends(
-      {this.idUser,
-      this.confirmed,
-      required this.name,
-      required this.lastMessageTime,
-      required this.urlAvatar,
-      required this.chatMessage});
-
-  Map<String, dynamic> toJson() => {
-        'idUser': idUser,
-        'name': name,
-        'lastMessageTime': lastMessageTime.toString(),
-        'urlAvatar': urlAvatar,
-        'confirmed': confirmed == null ? false : confirmed
-      };
-
-  static Friends fromJson(Map<String, dynamic> json) => Friends(
-      idUser: json['idUser'],
-      name: json['name'],
-      urlAvatar: json['urlAvatar'],
-      lastMessageTime: json['lastMessageTime'],
-      confirmed: json['confirmed'],
-      chatMessage: []);
-
-  copyWith(
-          {String? idUser,
-          String? name,
-          String? urlAvatar,
-          String? lastMessageTime,
-          List<ChatMessage>? chatMessage}) =>
-      Friends(
-          idUser: idUser,
-          name: name,
-          lastMessageTime: lastMessageTime,
-          urlAvatar: urlAvatar,
-          chatMessage: chatMessage == null ? [] : chatMessage);
-}
-
+@JsonSerializable()
 class User {
-  final String? idUser;
-  final String? name;
+  final int? id;
+  final String? nick;
+  final String? email;
   final String? urlAvatar;
-  final List<Friends> friends;
+  final List<UserFriend> friends;
 
   const User(
-      {this.idUser,
-      required this.name,
+      {this.id,
+      required this.nick,
+      required this.email,
       required this.urlAvatar,
       required this.friends});
 
   User copyWith(
-          {String? idUser,
-          String? name,
+          {int? id,
+          String? nick,
+          String? email,
           String? urlAvatar,
-          List<Friends>? friends}) =>
+          List<UserFriend>? friends}) =>
       User(
-        idUser: idUser,
-        name: name,
+        id: id,
+        nick: nick,
+        email: email,
         urlAvatar: urlAvatar,
         friends: friends == null ? [] : friends,
       );
 
   static User copyWithStatic(
-          {String? idUser,
-          String? name,
+          {int? id,
+          String? nick,
+          String? email,
           String? urlAvatar,
-          List<Friends>? friends}) =>
+          List<UserFriend>? friends}) =>
       User(
-        idUser: idUser,
-        name: name,
+        id: id,
+        nick: nick,
+        email: email,
         urlAvatar: urlAvatar,
         friends: friends == null ? [] : friends,
       );
 
-  static User fromJson(Map<String, dynamic> json) => User(
-      idUser: json['idUser'],
-      name: json['name'],
+  factory User.fromJson(Map<String, dynamic> json) =>
+      _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  static User fromJson2(Map<String, dynamic> json) => User(
+      id: json['idUser'],
+      nick: json['name'],
+      email: json['email'],
       urlAvatar: json['urlAvatar'],
       friends: []);
 
-  Map<String, dynamic> toJson() => {
-        'idUser': idUser,
-        'name': name,
-        'urlAvatar': urlAvatar,
-      };
+  // Map<String, dynamic> toJson() => {
+  //       'idUser': idUser,
+  //       'name': name,
+  //       'urlAvatar': urlAvatar,
+  //     };
 }

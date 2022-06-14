@@ -1,6 +1,11 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'ChatMessage.g.dart';
+
 enum MessageStatus { not_sent, not_view, viewed }
 enum MessageType { text }
 
+@JsonSerializable()
 class ChatMessage {
   final String? idChat;
   final String? user;
@@ -19,14 +24,19 @@ class ChatMessage {
       required this.messageType,
       required this.date});
 
-  Map<String, dynamic> toJson() => {
-        'user': user,
-        'text': text,
-        'messageStatus': messageStatus.toString(),
-        'isSender': isSender,
-        'date': date,
-        'messageType': messageType.toString(),
-      };
+  // Map<String, dynamic> toJson() => {
+  //       'user': user,
+  //       'text': text,
+  //       'messageStatus': messageStatus.toString(),
+  //       'isSender': isSender,
+  //       'date': date,
+  //       'messageType': messageType.toString(),
+  //     };
+
+    factory ChatMessage.fromJson(Map<String, dynamic> json) =>
+      _$ChatMessageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChatMessageToJson(this);
 
   copyWith(
           {String? idChat,
@@ -44,14 +54,14 @@ class ChatMessage {
           messageType: messageType,
           date: date);
 
-  static ChatMessage fromJson(Map<String, dynamic> data) =>
-      ChatMessage(
-          user: data['user'],
-          text: data['text'],
-          messageStatus: MessageStatus.viewed,
-          isSender: data['isSender'],
-          date: data['date'],
-          messageType: MessageType.text);
+  // static ChatMessage fromJson(Map<String, dynamic> data) =>
+  //     ChatMessage(
+  //         user: data['user'],
+  //         text: data['text'],
+  //         messageStatus: MessageStatus.viewed,
+  //         isSender: data['isSender'],
+  //         date: data['date'],
+  //         messageType: MessageType.text);
 }
 
 List mockChatMesage = [

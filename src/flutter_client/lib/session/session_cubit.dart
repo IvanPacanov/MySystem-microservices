@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_credentials.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/session/session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {
@@ -24,7 +24,7 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   void showAuth() => emit(Unauthenticated());
-  void showSession(UserCredential credentials) {
+  void showSession(User credentials) {
     // final user = dataRepo.getUser(credentials.userId);
     final user = credentials;
     print(user);

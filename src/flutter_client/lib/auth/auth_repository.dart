@@ -1,15 +1,28 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_client/api/api_auth.dart';
+import 'package:flutter_client/api/api_social.dart';
 import 'package:flutter_client/auth/auth_credentials.dart';
+import 'package:flutter_client/models/User.dart' as UserAuth;
 import 'package:flutter_client/repositories/firebase_api.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late UserCredential userCred;
 
-  void setUser(UserCredential user) {
-    this.userCred = user;
+  final ApiAuth _apiAuth = new ApiAuth();
+  final ApiSocial _apiSocial = new ApiSocial();
+  // late UserCredential userCred;
+  late UserAuth.User userNew;
+
+  late String token;
+
+  // void setUser(UserCredential user) {
+  //   this.userCred = user;
+  // }
+
+  void setToken(String token) {
+    this.token = token;
   }
 
   AuthCredentials _userFromFirebaseUser(User? user) {
@@ -36,16 +49,17 @@ class AuthRepository {
     throw Exception('not signed in');
   }
 
-  Future<UserCredential> loginWithEmailAndPassword({
-    required String email,
+  Future<UserAuth.User> loginWithEmailAndPassword({
+    required String userName,
     required String password,
   }) async {
     print('attempting login');
-    var user = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return user;
+    var test =
+        await _apiAuth.login(userName: userName, password: password);
+
+    this.userNew = await _apiSocial.getProfileData(
+        email: test['email']);
+    return this.userNew;
   }
 
   Future signUp({

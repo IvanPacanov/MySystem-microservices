@@ -1,14 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/blocs/addNewUser/addnewuser_bloc.dart';
 import 'package:flutter_client/blocs/addNewUser/addnewuser_state.dart';
 import 'package:flutter_client/blocs/addNewUser/addnewuser_event.dart';
 import 'package:flutter_client/components/component_repository.dart';
+import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 
 class AddNewUser extends StatefulWidget {
-  final UserCredential userCred;
+  final User userCred;
   AddNewUser({required this.userCred});
 
   @override
@@ -16,7 +16,7 @@ class AddNewUser extends StatefulWidget {
 }
 
 class _AddNewUser extends State<AddNewUser> {
-  final UserCredential userCred;
+  final User userCred;
   _AddNewUser({required this.userCred});
   @override
   Widget build(BuildContext context) {
@@ -91,9 +91,8 @@ class _AddNewUser extends State<AddNewUser> {
         height: 50,
         onPressed: () {
           {
-            context
-                .read<AddNewUserBloc>()
-                .add(AddNewFriend(userUid: this.userCred.user!.uid));
+            context.read<AddNewUserBloc>().add(
+                AddNewFriend(userUid: this.userCred.id.toString()));
             Navigator.pop(context);
           }
         },

@@ -38,9 +38,9 @@ class ConfirmationBloc
 
         final credentials = authCubit.credentials;
         final user = await authRepo.loginWithEmailAndPassword(
-            email: credentials!.userName!,
+            userName: credentials!.userName!,
             password: credentials.password!);
-        authCubit.launchSession(user);
+  //      authCubit.launchSession(user);
       } catch (e) {
         print(e);
         yield state.copyWith(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -25,7 +27,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       required this.signalR,
       required this.chatSessionCubit})
       : super(ChatState(users: [])) {
-    signalR.initSignalR(authRepository.userCred);
+    signalR.initSignalR(authRepository.userNew);
+    signalR.onFriendsUpdateCallback =
+        (data) => updateFriendsConnectionID(data);
   }
 
   @override
@@ -33,6 +37,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (event is ChatDownloadFirstData) {
       print("Cos");
     }
+  }
+
+  void updateFriendsConnectionID(List<dynamic>? data) {
+    var z = jsonDecode(data![0]);
+    print(z![0]['ConnectionId']);
   }
 
   void sendCos() async {

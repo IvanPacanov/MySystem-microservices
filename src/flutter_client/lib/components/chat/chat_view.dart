@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/Chat.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/AddNewUser.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/VideoCall2.dart';
@@ -28,7 +28,7 @@ class ChatView extends StatefulWidget {
 
 class _ChatView extends State<ChatView> {
   int _selectedIndex = 0;
-  late UserCredential userCred;
+  late User userCred;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,52 +137,27 @@ class _ChatView extends State<ChatView> {
       //             remoteRenderer: _remoteRenderer),
       //       ));
       // }
-      userCred = context.read<ChatBloc>().authRepository.userCred;
-      return StreamBuilder<QuerySnapshot>(
-          stream: context
-              .read<ChatBloc>()
-              .componehtRepository
-              .getListOfFriends(userCred.user!.uid),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.connectionState ==
-                    ConnectionState.active ||
-                snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                return const Text('Error');
-              } else if (snapshot.hasData) {
-                return ListView(
-                  children: snapshot.data!.docs
-                      .map((DocumentSnapshot document) {
-                    Map<String, dynamic> data =
-                        document.data()! as Map<String, dynamic>;
-                    final Friends us = Friends.fromJson(data);
-                    return ListTile(
-                      onTap: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MessageScreen(
-                                friend: us,
-                              ),
-                            ))
-                      },
-                      title: Text(us.name!),
-                      leading: CircleAvatar(
-                        radius: 30.0,
-                        backgroundImage: NetworkImage(us.urlAvatar!),
-                        backgroundColor: Colors.transparent,
+      userCred = context.read<ChatBloc>().authRepository.userNew;
+      return ListView.builder(
+          itemCount: userCred.friends.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              onTap: () => {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MessageScreen(
+                        friend: userCred.friends[index],
                       ),
-                    );
-                  }).toList(),
-                );
-              } else {
-                return const Text('Empty data');
-              }
-            } else {
-              return Text('State: ${snapshot.connectionState}');
-            }
+                    ))
+              },
+              title: Text(userCred.friends[index].nick!),
+              leading: CircleAvatar(
+                radius: 30.0,
+                backgroundImage: NetworkImage(userCred.friends[index].urlAvatar!),
+                backgroundColor: Colors.transparent,
+              ),
+            );
           });
     });
   }

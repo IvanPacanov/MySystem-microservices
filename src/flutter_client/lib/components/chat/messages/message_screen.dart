@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/VideoCall2.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'components/body.dart';
 
 class MessageScreen extends StatefulWidget {
-  final Friends friend;
+  final UserFriend friend;
   const MessageScreen({Key? key, required this.friend})
       : super(key: key);
 
@@ -19,7 +20,7 @@ class MessageScreen extends StatefulWidget {
 }
 
 class _MessageScreen extends State<MessageScreen> {
-  final Friends friend;
+  final UserFriend friend;
   _MessageScreen({required this.friend});
   final _remoteRenderer = new RTCVideoRenderer();
   late RTCPeerConnection _peerConnection;
@@ -123,7 +124,7 @@ class _MessageScreen extends State<MessageScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                friend.name!,
+                friend.nick!,
                 style: TextStyle(fontSize: 16),
               ),
               Text(
