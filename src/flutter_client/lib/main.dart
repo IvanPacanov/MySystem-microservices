@@ -5,17 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/app_navigator.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
 import 'package:flutter_client/blocs/addNewUser/addnewuser_bloc.dart';
+import 'package:flutter_client/blocs/chat/chat_bloc.dart';
 import 'package:flutter_client/blocs/video-call/video_call_bloc.dart';
-import 'package:flutter_client/components/chat/chat_bloc.dart';
-import 'package:flutter_client/components/component_cubit.dart';
-import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/models/ChatMessage.dart';
 import 'package:flutter_client/models/User.dart';
-import 'package:flutter_client/repositories/firebase_api.dart';
+import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_client/session/session_cubit.dart';
-import 'package:flutter_client/session/session_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -72,10 +69,6 @@ class MyApp extends StatelessWidget {
 
 List<BlocProvider> _providersBlocList() {
   return [
-    BlocProvider(
-      create: (context) => ComponentCubit(
-          componentRepo: context.read<ComponentRepository>()),
-    ),
     BlocProvider(
       create: (context) => ChatSessionCubit(),
     ),

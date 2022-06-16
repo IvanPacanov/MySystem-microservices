@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/components/chat/messages/components/text_message.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/ChatMessage.dart';
+import 'package:flutter_client/presentation/Chat/messages/components/text_message.dart';
 
 class Message extends StatelessWidget {
   const Message({

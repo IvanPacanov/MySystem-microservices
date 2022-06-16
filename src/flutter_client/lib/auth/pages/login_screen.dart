@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/blocs/login/login_block.dart';
+import 'package:flutter_client/auth/blocs/login/login_event.dart';
+import 'package:flutter_client/auth/blocs/login/login_state.dart';
 import 'package:flutter_client/auth/form_submission_status.dart';
-import 'package:flutter_client/auth/login/login_block.dart';
-import 'package:flutter_client/auth/login/login_event.dart';
-import 'package:flutter_client/auth/login/login_state.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -41,7 +41,7 @@ class LoginScreen extends StatelessWidget {
               labelText: "Password",
             ),
             obscureText: true,
-            autovalidateMode: AutovalidateMode.always,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) => state.isValidPassword
                 ? null
                 : 'Password is too short',
@@ -59,7 +59,7 @@ class LoginScreen extends StatelessWidget {
             decoration: InputDecoration(
                 icon: Icon(Icons.email), labelText: "Email"),
             keyboardType: TextInputType.emailAddress,
-            autovalidateMode: AutovalidateMode.always,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) => state.isValidUserName
                 ? null
                 : 'UserName is too short',
@@ -155,8 +155,8 @@ class LoginScreen extends StatelessWidget {
               _sizeBoxH10(),
               _buttonLogin(context),
               _sizeBoxH10(),
-              _buttonRegister(context),
-              _sizeBoxH10(),
+              // _buttonRegister(context),
+              //_sizeBoxH10(),
               _showGuestUpButton(context),
               _sizeBoxH10(),
               _showGuestUpButton2(context),

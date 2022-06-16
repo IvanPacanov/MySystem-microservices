@@ -2,17 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
 import 'package:flutter_client/blocs/video-call/video_call_bloc.dart';
-import 'package:flutter_client/components/chat/chat_bloc.dart';
-import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
-import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sdp_transform/sdp_transform.dart';
-import 'package:flutter_client/components/chat/chat_state.dart';
 import 'package:flutter_client/blocs/video-call/video_call_state.dart';
 
 class VideoCall2 extends StatefulWidget {

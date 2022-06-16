@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
-import 'package:flutter_client/auth/confirm/confirmation_view.dart';
-import 'package:flutter_client/auth/sign_up/sign_up_view.dart';
-import 'package:flutter_client/auth/login/login_screen.dart';
+import 'package:flutter_client/auth/pages/confirmation_Screen.dart';
+import 'package:flutter_client/auth/pages/sign_up_Screen.dart';
+import 'package:flutter_client/auth/pages/login_Screen.dart';
 import 'package:flutter_client/session/session_cubit.dart';
 
 class AuthNavigator extends StatelessWidget {

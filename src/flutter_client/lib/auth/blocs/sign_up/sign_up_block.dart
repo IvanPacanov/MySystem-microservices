@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
 import 'package:flutter_client/auth/form_submission_status.dart';
-import 'package:flutter_client/auth/sign_up/sign_up_event.dart';
-import 'package:flutter_client/auth/sign_up/sign_up_state.dart';
+import 'package:flutter_client/auth/blocs/sign_up/sign_up_event.dart';
+import 'package:flutter_client/auth/blocs/sign_up/sign_up_state.dart';
 import 'package:flutter_client/constants.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {

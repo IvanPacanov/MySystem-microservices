@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/components/chat/chat_view.dart';
-import 'package:flutter_client/components/component_repository.dart';
-import 'package:flutter_client/presentation/ComingVideo.dart';
+import 'package:flutter_client/presentation/Chat/chat_view.dart';
+import 'package:flutter_client/presentation/VideoCalling/ComingVideo.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_client/session/chatSession/chatSession_state.dart';
 

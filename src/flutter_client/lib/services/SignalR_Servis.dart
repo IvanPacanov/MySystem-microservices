@@ -10,6 +10,7 @@ import 'package:signalr_core/signalr_core.dart';
 class SignalRProvider extends Bloc {
   final ChatSessionCubit chatSessionCubit;
   final arr = [];
+  static late Timer timer;
   static HubConnection connection = HubConnectionBuilder()
       .withUrl(
           API_SOCIAL_SIGNALR,
@@ -100,8 +101,7 @@ class SignalRProvider extends Bloc {
     var a = user.friends.map((e) => e.email).toList();
     await connection.invoke("Join", args: [user.email, a]);
 
-    Timer timer =
-        Timer.periodic(Duration(seconds: 10), (timer) async {
+    timer = Timer.periodic(Duration(seconds: 10), (timer) async {
       if (connection.state == HubConnectionState.connected) {
         await connection.invoke('StayLiveMessage',
             args: [user.email, "I'm live"]);
