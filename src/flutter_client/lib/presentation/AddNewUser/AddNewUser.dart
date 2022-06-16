@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/blocs/addNewUser/addnewuser_bloc.dart';
 import 'package:flutter_client/blocs/addNewUser/addnewuser_state.dart';
 import 'package:flutter_client/blocs/addNewUser/addnewuser_event.dart';
-import 'package:flutter_client/components/component_repository.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 
 class AddNewUser extends StatefulWidget {

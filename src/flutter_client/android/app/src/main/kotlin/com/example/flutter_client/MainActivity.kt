@@ -1,4 +1,4 @@
-package com.example.flutter_client_1
+package com.example.flutter_client_2
 
 import io.flutter.embedding.android.FlutterActivity
 

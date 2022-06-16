@@ -22,6 +22,7 @@ class SignalRProvider extends Bloc {
   late Function(bool update) onMessagesUpdateCallback;
 
   late Function(List<dynamic>? update) onFriendsUpdateCallback;
+  late Function(dynamic update) onFriendUpdateCallback;
 
   SignalRProvider({required this.chatSessionCubit})
       : super(SignalRProvider);
@@ -38,11 +39,16 @@ class SignalRProvider extends Bloc {
       onFriendsUpdateCallback(message);
     });
 
+    connection.on('UpdateUserFriend', (message) async {
+      print("Zaktualizowano listę użytkowników");
+      onFriendUpdateCallback(message?[0]);
+    });
+
     connection.on('AnotherUserDisconected', (message) async {
       print(message);
     });
 
-    connection.on('PickUpPhone', (message) async {
+    connection.on('SendSignal', (message) async {
       print("OK ODEBRAŁEM CALLING");
       chatSessionCubit.comingCalling(message![0], message[1]);
     });

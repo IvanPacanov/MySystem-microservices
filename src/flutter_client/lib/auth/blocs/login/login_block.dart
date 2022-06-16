@@ -31,8 +31,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         // dynamic user = await authRepository.signInAnon();
         final token = await authRepository.loginWithEmailAndPassword(
-          userName: "mateusz@gmail.com",
-          password: "123456789",
+          userName: "Admin",
+          password: "Admin",
         );
         print("TODO AUTORYZACJA Z POBIERANIEM!!!!");
         // authRepository.setToken(token);
@@ -47,8 +47,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         // dynamic user = await authRepository.signInAnon();
         final user = await authRepository.loginWithEmailAndPassword(
-          userName: "olek@gmail.com",
-          password: "123456789",
+          userName: "dreezy",
+          password: "dreezy",
         );
         // authRepository.setToken(user);
         yield state.copyWith(formStatus: SubmissionSuccess());

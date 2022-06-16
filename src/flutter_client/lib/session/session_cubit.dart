@@ -33,7 +33,7 @@ class SessionCubit extends Cubit<SessionState> {
 
   void signOut() {
     authRepo.signOut();
-    SignalRProvider.disconectedSignalR();
+      // SignalRProvider.disconectedSignalR();
     emit(Unauthenticated());
   }
 }

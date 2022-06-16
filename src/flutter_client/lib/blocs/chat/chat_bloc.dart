@@ -25,6 +25,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     signalR.initSignalR(authRepository.userNew);
     signalR.onFriendsUpdateCallback =
         (data) => updateFriendsConnectionID(data);
+
+    signalR.onFriendUpdateCallback =
+        (data) => updateFriendConnectionID(data);
   }
 
   @override
@@ -35,8 +38,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void updateFriendsConnectionID(List<dynamic>? data) {
-    var z = jsonDecode(data![0]);
-    print(z![0]['ConnectionId']);
+    List<dynamic> test = jsonDecode(data![0]);
+    test.forEach((dynamic testItem) => {_testElo(testItem)});
+  }
+
+  void updateFriendConnectionID(dynamic? data) {
+    dynamic test = jsonDecode(data);
+    _testElo(test);
+  }
+
+  void _testElo(dynamic testItem) {
+    var user = authRepository.userNew.friends
+        .where((z) => z.email == testItem['email'])
+        .first;
+
+    int index = authRepository.userNew.friends.indexOf(user);
+    authRepository.userNew.friends[index].connectionId =
+        testItem['ConnectionId'];
   }
 
   void sendCos() async {

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
+import 'package:flutter_client/presentation/Chat/messages/components/message.dart';
 import 'package:flutter_client/utils.dart';
 
 class FireBaseApi {
