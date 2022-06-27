@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/presentation/Chat/chat_view.dart';
+import 'package:flutter_client/presentation/MainScreen/main_screen.dart';
 import 'package:flutter_client/presentation/VideoCalling/ComingVideo.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_client/session/chatSession/chatSession_state.dart';
@@ -10,22 +11,22 @@ class SessionView extends StatelessWidget {
   Widget build(BuildContext context) {
      return BlocProvider(
       create: (context) =>
-          ChatSessionCubit(),
-      child: BlocBuilder<ChatSessionCubit, ChatSessionState>(
+          AuthenticatedSessionCubit(),
+      child: BlocBuilder<AuthenticatedSessionCubit, AuthenticatedSessionState>(
           builder: (context, state) {
-        return _navi(state);
+        return _navigation(state);
       }),
     );
   }
 }
 
 
-Widget _navi(ChatSessionState state) {
+Widget _navigation(AuthenticatedSessionState state) {
   return Navigator(
     pages: [
       if (state is NormalState)
         MaterialPage(
-          child: ChatView(),
+          child: MainScreen(),
         ),
       if (state is ComingCalling)
         MaterialPage(

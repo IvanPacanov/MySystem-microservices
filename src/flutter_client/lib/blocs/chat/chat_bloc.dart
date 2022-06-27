@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_client/auth/auth_repository.dart';
 import 'package:flutter_client/blocs/chat/chat_state.dart';
+import 'package:flutter_client/models/Message.dart';
+import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
@@ -13,7 +15,7 @@ part 'chat_event.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ComponentRepository componehtRepository;
   final AuthRepository authRepository;
-  final ChatSessionCubit chatSessionCubit;
+  final AuthenticatedSessionCubit chatSessionCubit;
   final SignalRProvider signalR;
 
   ChatBloc(
@@ -28,7 +30,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     signalR.onFriendUpdateCallback =
         (data) => updateFriendConnectionID(data);
+
+    signalR.onReceivedMessageCallback =
+        (data) => receivedMessage(data);
   }
+
+
 
   @override
   Stream<ChatState> mapEventToState(ChatEvent event) async* {
@@ -59,5 +66,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void sendCos() async {
     await signalR.sendMeMessage();
+  }
+
+  receivedMessage(MessageSignalR data) {
+    var user = authRepository.userNew.friends
+        .where((z) => z.id == data.userId)
+        .first;
+
+    int index = authRepository.userNew.friends.indexOf(user);
+
+    Message message = new Message(
+        userId: data.userId,
+        text: data.text,
+        read: data.read,
+        send: data.send);
+
+    authRepository.userNew.friends[index].chats![0].messages!
+        .add(message);
   }
 }

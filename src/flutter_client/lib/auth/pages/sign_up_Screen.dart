@@ -12,18 +12,25 @@ class SignUpView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => SignUpBloc(
-          authRepo: context.read<AuthRepository>(),
-          authCubit: context.read<AuthCubit>(),
-        ),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            _signUpForm(),
-            _showLoginButton(context),
-          ],
+    return WillPopScope(
+     onWillPop: () async {
+        // Do something here
+        print("After clicking the Android Back Button");
+        return false;
+     },
+     child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: BlocProvider(
+          create: (context) => SignUpBloc(
+            authRepo: context.read<AuthRepository>(),
+            authCubit: context.read<AuthCubit>(),
+          ),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              _signUpForm(),
+            ],
+          ),
         ),
       ),
     );
@@ -44,9 +51,18 @@ class SignUpView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _usernameField(),
                 _emailField(),
                 _passwordField(),
+                SizedBox(
+                  height: 50,
+                ),
+                _usernameField(),
+                _firstNameField(),
+                _lastNameField(),
+                _phoneNumber(),
+                SizedBox(
+                  height: 50,
+                ),
                 _signUpButton(),
               ],
             ),
@@ -54,8 +70,62 @@ class SignUpView extends StatelessWidget {
         ));
   }
 
+  Widget _phoneNumber() {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
+      return TextFormField(
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          icon: Icon(Icons.phone),
+          hintText: 'Phone number',
+        ),
+        validator: (value) => state.isValidUsername
+            ? null
+            : 'Phone number is too short',
+        onChanged: (value) => context.read<SignUpBloc>().add(
+              SignUpUsernameChanged(username: value),
+            ),
+      );
+    });
+  }
+
+  Widget _lastNameField() {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
+      return TextFormField(
+        decoration: InputDecoration(
+          icon: Icon(Icons.person),
+          hintText: 'Last name',
+        ),
+        validator: (value) =>
+            state.isValidUsername ? null : 'Last name is too short',
+        onChanged: (value) => context.read<SignUpBloc>().add(
+              SignUpUsernameChanged(username: value),
+            ),
+      );
+    });
+  }
+
+  Widget _firstNameField() {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
+      return TextFormField(
+        decoration: InputDecoration(
+          icon: Icon(Icons.person),
+          hintText: 'First name',
+        ),
+        validator: (value) =>
+            state.isValidUsername ? null : 'First name is too short',
+        onChanged: (value) => context.read<SignUpBloc>().add(
+              SignUpUsernameChanged(username: value),
+            ),
+      );
+    });
+  }
+
   Widget _usernameField() {
-    return BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
       return TextFormField(
         decoration: InputDecoration(
           icon: Icon(Icons.person),
@@ -71,13 +141,15 @@ class SignUpView extends StatelessWidget {
   }
 
   Widget _emailField() {
-    return BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
       return TextFormField(
         decoration: InputDecoration(
           icon: Icon(Icons.person),
           hintText: 'Email',
         ),
-        validator: (value) => state.isValidUsername ? null : 'Invalid email',
+        validator: (value) =>
+            state.isValidUsername ? null : 'Invalid email',
         onChanged: (value) => context.read<SignUpBloc>().add(
               SignUpEmailChanged(email: value),
             ),
@@ -86,7 +158,8 @@ class SignUpView extends StatelessWidget {
   }
 
   Widget _passwordField() {
-    return BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
       return TextFormField(
         obscureText: true,
         decoration: InputDecoration(
@@ -103,16 +176,33 @@ class SignUpView extends StatelessWidget {
   }
 
   Widget _signUpButton() {
-    return BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
       return state.formStatus is FormSubmitting
           ? CircularProgressIndicator()
-          : ElevatedButton(
-              onPressed: () {
+          : InkWell(
+              onTap: () {
                 if (_formKey.currentState!.validate()) {
                   context.read<SignUpBloc>().add(SignUpSubmitted());
                 }
               },
-              child: Text('Sign Up'),
+              child: Container(
+                alignment: Alignment.center,
+                width: 200.0,
+                height: 200.0,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.orange.shade400, width: 5),
+                    shape: BoxShape.circle),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.login,
+                        size: 50, color: Colors.orange.shade400),
+                    Text('Potwierdź'),
+                  ],
+                ),
+              ),
             );
     });
   }
@@ -121,7 +211,8 @@ class SignUpView extends StatelessWidget {
     return SafeArea(
       child: TextButton(
         child: Text('Already have an account? Sign in.'),
-        onPressed: () => context.read<AuthCubit>().showLogin(),
+        onPressed: () =>
+            context.read<AuthCubit>().openRegistrationPage(),
       ),
     );
   }

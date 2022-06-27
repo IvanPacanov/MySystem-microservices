@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_client/models/ChatMessage.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'NewChat.dart';
+
 part 'UserFriend.g.dart';
 
 @JsonSerializable()
@@ -14,7 +16,7 @@ class UserFriend {
   final bool? isOnline;
   final String? lastLogin;
   late String connectionId;
-  // final List<ChatMessage> chatMessage;
+  final List<NewChat>? chats;
 
   UserFriend(
       {this.id,
@@ -22,7 +24,8 @@ class UserFriend {
       required this.nick,
       required this.email,
       required this.lastLogin,
-      required this.urlAvatar});
+      required this.urlAvatar,
+      required this.chats});
 
   factory UserFriend.fromJson(Map<String, dynamic> json) =>
       _$UserFriendFromJson(json);
@@ -51,12 +54,12 @@ class UserFriend {
           String? email,
           String? urlAvatar,
           String? lastMessageTime,
-          List<ChatMessage>? chatMessage}) =>
+          List<NewChat>? chats}) =>
       UserFriend(
-        id: id,
-        nick: nick,
-        email: email,
-        lastLogin: lastLogin,
-        urlAvatar: urlAvatar,
-      );
+          id: id,
+          nick: nick,
+          email: email,
+          lastLogin: lastLogin,
+          urlAvatar: urlAvatar,
+          chats: chats);
 }

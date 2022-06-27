@@ -3,17 +3,17 @@ import 'package:flutter_client/auth/auth_credentials.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/session/session_cubit.dart';
 
-enum AuthState { login, confirmLogin, signUp, confirmSignUp }
+enum AuthState { login_registration, login, confirmLogin, registration, confirmSignUp }
 
 class AuthCubit extends Cubit<AuthState> {
   final SessionCubit sessionCubit;
 
-  AuthCubit({required this.sessionCubit}) : super(AuthState.login);
+  AuthCubit({required this.sessionCubit}) : super(AuthState.login_registration);
 
   AuthCredentials? credentials;
 
-  void showLogin() => emit(AuthState.login);
-  void showSignUp() => emit(AuthState.signUp);
+  void openLoginPage() => emit(AuthState.login);
+  void openRegistrationPage() => emit(AuthState.registration);
   void showConfirmSignUp({
     required String userName,
     required String email,

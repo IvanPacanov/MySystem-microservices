@@ -14,6 +14,9 @@ UserFriend _$UserFriendFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String?,
       lastLogin: json['lastLogin'] as String?,
       urlAvatar: json['urlAvatar'] as String?,
+      chats: (json['chats'] as List<dynamic>?)
+          ?.map((e) => NewChat.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$UserFriendToJson(UserFriend instance) =>
@@ -23,5 +26,6 @@ Map<String, dynamic> _$UserFriendToJson(UserFriend instance) =>
       'email': instance.email,
       'urlAvatar': instance.urlAvatar,
       'isOnline': instance.isOnline,
-      'lastLogin': instance.lastLogin
+      'lastLogin': instance.lastLogin,
+      'chats': instance.chats,
     };

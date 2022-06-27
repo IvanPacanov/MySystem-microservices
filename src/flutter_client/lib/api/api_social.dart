@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_client/enviroments/enviroments.dart';
+import 'package:flutter_client/environments/environments.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:http/http.dart' as http;
 

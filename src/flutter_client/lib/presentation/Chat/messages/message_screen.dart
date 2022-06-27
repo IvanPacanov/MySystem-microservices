@@ -105,8 +105,12 @@ class _MessageScreen extends State<MessageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade400,
       appBar: buildAppBar(context),
-      body: Body(),
+      body: Body(
+        chats: friend.chats![0],
+        friend: friend
+      ),
     );
   }
 
@@ -117,7 +121,7 @@ class _MessageScreen extends State<MessageScreen> {
         children: [
           BackButton(),
           CircleAvatar(
-            backgroundImage: AssetImage("assets/images/dog.png"),
+            backgroundImage: NetworkImage(friend.urlAvatar!),
           ),
           SizedBox(width: defaulPadding * 0.75),
           Column(

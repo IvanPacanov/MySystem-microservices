@@ -1,14 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/enviroments/enviroments.dart';
+import 'package:flutter_client/environments/environments.dart';
+import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRProvider extends Bloc {
-  final ChatSessionCubit chatSessionCubit;
+  final AuthenticatedSessionCubit chatSessionCubit;
   final arr = [];
   static late Timer timer;
   static HubConnection connection = HubConnectionBuilder()
@@ -20,6 +19,7 @@ class SignalRProvider extends Bloc {
       .build();
 
   late Function(bool update) onMessagesUpdateCallback;
+  late Function(MessageSignalR message) onReceivedMessageCallback;
 
   late Function(List<dynamic>? update) onFriendsUpdateCallback;
   late Function(dynamic update) onFriendUpdateCallback;
@@ -29,6 +29,10 @@ class SignalRProvider extends Bloc {
 
   Future initSignalR(User user) async {
     await connection.start();
+
+    connection.on('SendMessage', (message) async {
+      onReceivedMessageCallback(MessageSignalR.fromJson(message?[0]));
+    });
 
     connection.on('WelcomeOnServer', (message) async {
       print(message);
@@ -84,9 +88,9 @@ class SignalRProvider extends Bloc {
 
     connection.on('SendMessageToUser', (message) async {
       print(message);
-      if (onMessagesUpdateCallback != null) {
-        onMessagesUpdateCallback(true);
-      }
+      // if (onMessagesUpdateCallback != null) {
+      //   onMessagesUpdateCallback(true);
+      // }
     });
 
     connection.on("ReceiveConnectedMessage", (message) async {
@@ -129,5 +133,11 @@ class SignalRProvider extends Bloc {
   sendCandidate(List<dynamic> offer, String uid) async {
     await connection
         .invoke('SendCandidate', args: [offer[0], offer[1], uid]);
+  }
+
+  sendMessage(
+      MessageSignalR message, String connectionId, int chatId) async {
+    await connection
+        .invoke('SendMessage', args: [message, connectionId, chatId]);
   }
 }

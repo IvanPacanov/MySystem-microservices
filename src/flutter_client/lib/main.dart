@@ -9,6 +9,7 @@ import 'package:flutter_client/blocs/chat/chat_bloc.dart';
 import 'package:flutter_client/blocs/video-call/video_call_bloc.dart';
 import 'package:flutter_client/models/ChatMessage.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/presentation/Chat/messages/bloc/message_bloc.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
@@ -70,14 +71,15 @@ class MyApp extends StatelessWidget {
 List<BlocProvider> _providersBlocList() {
   return [
     BlocProvider(
-      create: (context) => ChatSessionCubit(),
+      create: (context) => AuthenticatedSessionCubit(),
     ),
     BlocProvider(
       create: (context) => VideoCallBloc(),
     ),
     BlocProvider(
       create: (context) => SignalRProvider(
-          chatSessionCubit: context.read<ChatSessionCubit>()),
+          chatSessionCubit:
+              context.read<AuthenticatedSessionCubit>()),
     ),
     BlocProvider(
       create: (context) =>
@@ -90,8 +92,13 @@ List<BlocProvider> _providersBlocList() {
       create: (BuildContext context) => ChatBloc(
           componehtRepository: context.read<ComponentRepository>(),
           authRepository: context.read<AuthRepository>(),
-          chatSessionCubit: context.read<ChatSessionCubit>(),
+          chatSessionCubit: context.read<AuthenticatedSessionCubit>(),
           signalR: context.read<SignalRProvider>()),
+    ),
+    BlocProvider<MessageBloc>(
+      create: (BuildContext context) => MessageBloc(
+          signalR: context.read<SignalRProvider>(),
+          authRepository: context.read<AuthRepository>()),
     ),
     BlocProvider<AddNewUserBloc>(
         create: (BuildContext context) => AddNewUserBloc(

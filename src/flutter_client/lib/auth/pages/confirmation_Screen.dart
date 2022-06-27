@@ -83,4 +83,6 @@ class ConfirmationView extends StatelessWidget {
     final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+
 }

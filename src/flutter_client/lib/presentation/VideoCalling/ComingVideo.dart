@@ -8,13 +8,15 @@ import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class ComingVideo extends StatefulWidget {
-  const ComingVideo({Key? key, required this.offer, required this.uid})
+  const ComingVideo(
+      {Key? key, required this.offer, required this.uid})
       : super(key: key);
   final String offer;
-  
+
   final String uid;
   @override
-  State<ComingVideo> createState() => _ComingVideoState(offer: offer, uid: uid);
+  State<ComingVideo> createState() =>
+      _ComingVideoState(offer: offer, uid: uid);
 }
 
 class _ComingVideoState extends State<ComingVideo> {
@@ -24,7 +26,7 @@ class _ComingVideoState extends State<ComingVideo> {
   late RTCPeerConnection _peerConnection;
   final sdpController = TextEditingController();
 
-  _ComingVideoState({required this.offer , required this.uid});
+  _ComingVideoState({required this.offer, required this.uid});
 
   @override
   initState() {
@@ -106,7 +108,8 @@ class _ComingVideoState extends State<ComingVideo> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignalRProvider(
-          chatSessionCubit: context.read<ChatSessionCubit>()),
+          chatSessionCubit:
+              context.read<AuthenticatedSessionCubit>()),
       child: BlocBuilder<SignalRProvider, void>(
           builder: (content, asta) {
         return Scaffold(

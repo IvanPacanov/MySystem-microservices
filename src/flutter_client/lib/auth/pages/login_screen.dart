@@ -15,18 +15,49 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => LoginBloc(
-          authRepository: context.read<AuthRepository>(),
-          authCubit: context.read<AuthCubit>(),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: BlocProvider(
+          create: (context) => LoginBloc(
+            authRepository: context.read<AuthRepository>(),
+            authCubit: context.read<AuthCubit>(),
+          ),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              _loginForm(context),
+            ],
+          ),
         ),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            _loginForm(context),
-            _showSignUpButton(context),
-          ],
+      ),
+    );
+  }
+
+  Widget _loginForm(BuildContext context) {
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        final formStatus = state.formStatus;
+        if (formStatus is SubmissionFailed) {
+          _showSnackBar(context, formStatus.exception.toString());
+        }
+      },
+      child: Form(
+        key: _formKey2,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _emailField(),
+              _passwordField(),
+              _sizeBoxH10(value: 50),
+              _loginButton(context)
+            ],
+          ),
         ),
       ),
     );
@@ -70,131 +101,42 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buttonLogin(BuildContext context) {
+  Widget _loginButton(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
       return state.formStatus is FormSubmitting
           ? CircularProgressIndicator()
-          : GradientButton(
-              width: 150,
-              height: 50,
-              onPressed: () {
+          : InkWell(
+              onTap: () {
                 if (_formKey2.currentState!.validate()) {
                   context.read<LoginBloc>().add(LoginSubmitted());
                 }
               },
-              text: Text(
-                'LogIn',
-                style: TextStyle(color: Colors.white),
-              ),
-              icon: Icon(
-                Icons.check,
-                color: Colors.white,
+              child: Container(
+                alignment: Alignment.center,
+                width: 200.0,
+                height: 200.0,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.orange.shade400, width: 5),
+                    shape: BoxShape.circle),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.login,
+                        size: 50, color: Colors.orange.shade400),
+                    Text('Zaloguj się'),
+                  ],
+                ),
               ),
             );
     });
   }
 
-  Widget _buttonRegister(BuildContext context) {
-    return GradientButton(
-      width: 150,
-      height: 50,
-      onPressed: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) => CupertinoAlertDialog(
-                  title: Text('Camera Permission'),
-                  content: Text(
-                      'This app needs camera access to take pictures for upload user profile photo'),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      child: Text('Deny'),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    CupertinoDialogAction(
-                      child: Text('Settings'),
-                      onPressed: () => openAppSettings(),
-                    ),
-                  ],
-                ));
-      },
-      text: Text(
-        'Register',
-        style: TextStyle(color: Colors.white),
-      ),
-      icon: Icon(
-        Icons.arrow_forward,
-        color: Colors.white,
-      ),
-    );
-  }
-
-  Widget _sizeBoxH10() {
+  Widget _sizeBoxH10({double value = 10}) {
     return SizedBox(
-      height: 10,
+      height: value,
     );
-  }
-
-  Widget _loginForm(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-        final formStatus = state.formStatus;
-        if (formStatus is SubmissionFailed) {
-          _showSnackBar(context, formStatus.exception.toString());
-        }
-      },
-      child: Form(
-        key: _formKey2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _emailField(),
-              _passwordField(),
-              _sizeBoxH10(),
-              _buttonLogin(context),
-              _sizeBoxH10(),
-              // _buttonRegister(context),
-              //_sizeBoxH10(),
-              _showGuestUpButton(context),
-              _sizeBoxH10(),
-              _showGuestUpButton2(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _showSignUpButton(BuildContext context) {
-    return SafeArea(
-        child: TextButton(
-      child: Text('Don\'t have an account? Sign up.'),
-      onPressed: () => context.read<AuthCubit>().showSignUp(),
-    ));
-  }
-
-  Widget _showGuestUpButton(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-        builder: (context, state) {
-      return TextButton(
-        child: Text('Użytkownik testowy 1'),
-        onPressed: () =>
-            context.read<LoginBloc>().add(LoginAsGuest()),
-      );
-    });
-  }
-
-  Widget _showGuestUpButton2(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-        builder: (context, state) {
-      return TextButton(
-        child: Text('Użytkownik testowy 2'),
-        onPressed: () =>
-            context.read<LoginBloc>().add(LoginAsGuest2()),
-      );
-    });
   }
 
   void _showSnackBar(BuildContext context, String message) {

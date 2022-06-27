@@ -1,9 +1,11 @@
 import 'package:flutter_client/auth/form_submission_status.dart';
 import 'package:flutter_client/models/User.dart';
 
-class ChatState {
+class ChatState  {
   final FormSubmissionStatus formStatus;
   final List<User> users;
+
+  static bool test = true;
 
   ChatState(
       {required this.users,

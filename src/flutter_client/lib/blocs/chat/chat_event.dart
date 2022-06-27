@@ -7,3 +7,7 @@ class ChatDownloadFirstData extends ChatEvent {
 
   ChatDownloadFirstData({required this.users});
 }
+
+class MessageIsComming extends ChatEvent {
+  
+}

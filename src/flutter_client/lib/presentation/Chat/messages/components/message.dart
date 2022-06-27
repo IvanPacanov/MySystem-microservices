@@ -1,42 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/constants.dart';
-import 'package:flutter_client/models/ChatMessage.dart';
+import 'package:flutter_client/models/Message.dart';
+import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/Chat/messages/components/text_message.dart';
 
-class Message extends StatelessWidget {
-  const Message({
+class MessageScreen extends StatelessWidget {
+  const MessageScreen({
     Key? key,
-    required this.chatMessage,
+    required this.message,
+    required this.friend,
+    required this.userId,
   }) : super(key: key);
 
-  final ChatMessage chatMessage;
+  final UserFriend friend; 
+  final Message message;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
-    Widget messageContaint(ChatMessage message) {
+    Widget messageContains(Message message) {
       switch (message.messageType) {
-        case MessageType.text:
-          return TextMessage(message: message);
+        case MessageTypeNew.text:
+          return TextMessage(message: message, userId: userId, friend: friend);
         default:
           return SizedBox();
       }
     }
 
     return Padding(
-      padding: const EdgeInsets.only(top: defaulPadding),
+      padding: const EdgeInsets.only(top: 0),
       child: Row(
-        // mainAxisAlignment: chatMessage.isSender
-        //     ? MainAxisAlignment.end
-        //     : MainAxisAlignment.start,
+        mainAxisAlignment: message.userId == userId
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         children: [
-          //   if (!chatMessage.isSender) ...[
-          //     CircleAvatar(
-          //       radius: 12,
-          //       backgroundImage: AssetImage("assets/images/dog.png"),
-          //     ),
-          //     SizedBox(width: defaulPadding / 2),
-          //   ],
-          messageContaint(chatMessage),
+          messageContains(message),
         ],
       ),
     );

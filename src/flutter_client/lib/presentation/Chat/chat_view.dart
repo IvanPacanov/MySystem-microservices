@@ -32,17 +32,21 @@ class _ChatView extends State<ChatView> {
       appBar: buildAppBar(),
       bottomNavigationBar: _bottomNavigation(),
       body: Column(children: <Widget>[
-        ChatHeaderWidget(),
+        SizedBox(
+          height: 20,
+        ),
         Flexible(
           child: BlocProvider(
             create: (context) => SignalRProvider(
-                chatSessionCubit: context.read<ChatSessionCubit>()),
+                chatSessionCubit:
+                    context.read<AuthenticatedSessionCubit>()),
             child: BlocProvider(
               create: (context) => ChatBloc(
                   componehtRepository:
                       context.read<ComponentRepository>(),
                   authRepository: context.read<AuthRepository>(),
-                  chatSessionCubit: context.read<ChatSessionCubit>(),
+                  chatSessionCubit:
+                      context.read<AuthenticatedSessionCubit>(),
                   signalR: context.read<SignalRProvider>()),
               child: Scaffold(
                 body: _connectionString(),
@@ -113,31 +117,96 @@ class _ChatView extends State<ChatView> {
       return ListView.builder(
           itemCount: userCred.friends.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              onTap: () => {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MessageScreen(
-                        friend: userCred.friends[index],
-                      ),
-                    ))
-              },
-              title: Text(userCred.friends[index].nick!),
-              leading: CircleAvatar(
-                radius: 30.0,
-                backgroundImage: NetworkImage(userCred.friends[index].urlAvatar!),
-                backgroundColor: Colors.transparent,
-              ),
-            );
+            return _friendCard(userCred.friends[index]);
+
+            // return ListTile(
+            //   onTap: () => {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => MessageScreen(
+            //             friend: userCred.friends[index],
+            //           ),
+            //         ))
+            //   },
+            //   title: Text(userCred.friends[index].nick!),
+            //   leading: CircleAvatar(
+            //     radius: 60.0,
+            //     backgroundImage:
+            //         NetworkImage(userCred.friends[index].urlAvatar!),
+            //     backgroundColor: Colors.transparent,
+            //   ),
+            // );
           });
     });
+  }
+
+  Widget _friendCard(UserFriend friend) {
+    return Card(
+      color: friend.isOnline! ? Colors.green.shade200 : Colors.white,
+      child: IntrinsicHeight(
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MessageScreen(
+                    friend: friend,
+                  ),
+                ));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 60.0,
+                  backgroundImage: NetworkImage(friend.urlAvatar!),
+                  backgroundColor: Colors.transparent,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(friend.nick!,
+                        style: TextStyle(fontSize: 20)),
+                    Text(
+                        friend.chats!.length > 0
+                            ? (friend.chats![0].messages!.length > 0
+                                ? friend.chats![0].messages![0].text!
+                                : "")
+                            : "",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: friend.chats!.length > 0
+                              ? (friend.chats![0].messages!.length > 0
+                                  ? friend.chats![0].messages![0]
+                                          .read!
+                                      ? FontWeight.normal
+                                      : FontWeight.bold
+                                  : FontWeight.normal)
+                              : FontWeight.normal,
+                        )),
+                  ],
+                ),
+                Positioned(
+                    child: Text(friend.lastLogin != null
+                        ? friend.lastLogin!
+                        : ""))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   AppBar buildAppBar() {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Text("Chats"),
+      title: Text("Chats".toUpperCase()),
       actions: [
         IconButton(
             onPressed: () {
