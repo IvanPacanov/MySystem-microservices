@@ -21,6 +21,8 @@ class SignalRProvider extends Bloc {
   late Function(bool update) onMessagesUpdateCallback;
   late Function(MessageSignalR message) onReceivedMessageCallback;
 
+  late Function(bool sended) onSendOwnMessageCallback;
+
   late Function(List<dynamic>? update) onFriendsUpdateCallback;
   late Function(dynamic update) onFriendUpdateCallback;
 
@@ -28,7 +30,9 @@ class SignalRProvider extends Bloc {
       : super(SignalRProvider);
 
   Future initSignalR(User user) async {
-    await connection.start();
+    if (connection.state == HubConnectionState.disconnected) {
+      await connection.start();
+    }
 
     connection.on('SendMessage', (message) async {
       onReceivedMessageCallback(MessageSignalR.fromJson(message?[0]));
@@ -137,6 +141,7 @@ class SignalRProvider extends Bloc {
 
   sendMessage(
       MessageSignalR message, String connectionId, int chatId) async {
+    onSendOwnMessageCallback(true);
     await connection
         .invoke('SendMessage', args: [message, connectionId, chatId]);
   }

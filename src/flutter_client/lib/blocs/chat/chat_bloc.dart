@@ -13,18 +13,19 @@ import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 part 'chat_event.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final ComponentRepository componehtRepository;
+  final ComponentRepository? componehtRepository;
   final AuthRepository authRepository;
-  final AuthenticatedSessionCubit chatSessionCubit;
+  final AuthenticatedSessionCubit? chatSessionCubit;
   final SignalRProvider signalR;
 
   ChatBloc(
-      {required this.componehtRepository,
+      {this.componehtRepository,
       required this.authRepository,
       required this.signalR,
-      required this.chatSessionCubit})
+      this.chatSessionCubit})
       : super(ChatState(users: [])) {
     signalR.initSignalR(authRepository.userNew);
+    signalR.onSendOwnMessageCallback = (data) => test(data);
     signalR.onFriendsUpdateCallback =
         (data) => updateFriendsConnectionID(data);
 
@@ -33,9 +34,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     signalR.onReceivedMessageCallback =
         (data) => receivedMessage(data);
+
   }
-
-
 
   @override
   Stream<ChatState> mapEventToState(ChatEvent event) async* {
@@ -83,5 +83,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     authRepository.userNew.friends[index].chats![0].messages!
         .add(message);
+  }
+
+  test(bool value) {
+    print(value);
   }
 }

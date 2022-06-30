@@ -100,6 +100,11 @@ class _ChatView extends State<ChatView> {
     });
   }
 
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {},
+  );
+
   Widget _connectionString() {
     return BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
@@ -114,6 +119,7 @@ class _ChatView extends State<ChatView> {
       //       ));
       // }
       userCred = context.read<ChatBloc>().authRepository.userNew;
+
       return ListView.builder(
           itemCount: userCred.friends.length,
           itemBuilder: (context, index) {

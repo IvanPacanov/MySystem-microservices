@@ -6,6 +6,7 @@ import 'package:flutter_client/api/api_social.dart';
 import 'package:flutter_client/auth/auth_credentials.dart';
 import 'package:flutter_client/models/User.dart' as UserAuth;
 import 'package:flutter_client/repositories/firebase_api.dart';
+import 'package:flutter_client/services/SignalR_Servis.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -57,8 +58,8 @@ class AuthRepository {
     var test =
         await _apiAuth.login(userName: userName, password: password);
 
-    this.userNew = await _apiSocial.getProfileData(
-        email: test['email']);
+    this.userNew =
+        await _apiSocial.getProfileData(email: test['email']);
     return this.userNew;
   }
 
