@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/models/Message.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/UserFriend.dart';
@@ -12,7 +12,7 @@ part 'message_state.dart';
 
 class MessageBloc extends Bloc<MessageEvent, MessageState> {
   final SignalRProvider signalR;
-  final AuthRepository authRepository;
+  final AuthServices authRepository;
 
   MessageBloc({required this.signalR, required this.authRepository})
       : super(MessageState(message: ''));
@@ -26,7 +26,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
     if (event is MessageSend) {
       MessageSignalR message = new MessageSignalR(
-          userId: authRepository.userNew.id!,
+          userId: authRepository.user.id!,
           text: state.message,
           read: false,
           send: DateTime.now().toString());
@@ -39,11 +39,11 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   _addSendedMessage(MessageSignalR data, int friendId) {
-    var user = authRepository.userNew.friends
+    var user = authRepository.user.friends
         .where((z) => z.id == friendId)
         .first;
 
-    int index = authRepository.userNew.friends.indexOf(user);
+    int index = authRepository.user.friends.indexOf(user);
 
     Message message = new Message(
         userId: data.userId,
@@ -51,7 +51,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
         read: data.read,
         send: data.send);
 
-    authRepository.userNew.friends[index].chats![0].messages!
+    authRepository.user.friends[index].chats![0].messages!
         .add(message);
   }
 }

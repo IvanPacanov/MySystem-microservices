@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/app_navigator.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/auth/pages/login_screen.dart';
 import 'package:flutter_client/session/session_cubit.dart';
 import 'package:flutter_client/session/session_state.dart';
@@ -20,7 +20,7 @@ class _AccountScreenState extends State<AccountScreen> {
     bool isSwitched = false;
     return BlocProvider(
       create: (context) =>
-          SessionCubit(authRepo: context.read<AuthRepository>()),
+          SessionCubit(authServices: context.read<AuthServices>()),
       child: BlocBuilder<SessionCubit, SessionState>(
         builder: (context, state) {
           return Scaffold(
@@ -65,7 +65,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       title: 'Wyloguj',
                       leading: Icon(Icons.logout),
                       onPressed: (BuildContext context) {
-                        context.read<SessionCubit>().signOut();
+                        //context.read<SessionCubit>().signOut();
                         Navigator.push(
                             context,
                             MaterialPageRoute(

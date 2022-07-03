@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/blocs/chat/chat_bloc.dart';
 import 'package:flutter_client/blocs/chat/chat_state.dart';
 import 'package:flutter_client/constants.dart';
@@ -15,10 +15,13 @@ import 'package:flutter_client/presentation/account/account_screen.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
+import 'package:flutter_client/session/session_cubit.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:provider/provider.dart';
 
 class ChatView extends StatefulWidget {
+  ChatView(BuildContext context);
+
   @override
   State<ChatView> createState() => _ChatView();
 }
@@ -37,20 +40,13 @@ class _ChatView extends State<ChatView> {
         ),
         Flexible(
           child: BlocProvider(
-            create: (context) => SignalRProvider(
-                chatSessionCubit:
-                    context.read<AuthenticatedSessionCubit>()),
-            child: BlocProvider(
-              create: (context) => ChatBloc(
-                  componehtRepository:
-                      context.read<ComponentRepository>(),
-                  authRepository: context.read<AuthRepository>(),
-                  chatSessionCubit:
-                      context.read<AuthenticatedSessionCubit>(),
-                  signalR: context.read<SignalRProvider>()),
-              child: Scaffold(
-                body: _connectionString(),
-              ),
+            create: (context) => ChatBloc(
+              authRepository: context.read<AuthServices>(),
+              chatSessionCubit:
+                  context.read<AuthenticatedSessionCubit>(),
+            ),
+            child: Scaffold(
+              body: _connectionString(context),
             ),
           ),
         ),
@@ -105,7 +101,7 @@ class _ChatView extends State<ChatView> {
     onPressed: () {},
   );
 
-  Widget _connectionString() {
+  Widget _connectionString(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
       // if (true) {
@@ -118,12 +114,12 @@ class _ChatView extends State<ChatView> {
       //             remoteRenderer: _remoteRenderer),
       //       ));
       // }
-      userCred = context.read<ChatBloc>().authRepository.userNew;
+      userCred = context.read<ChatBloc>().authRepository.user;
 
       return ListView.builder(
           itemCount: userCred.friends.length,
           itemBuilder: (context, index) {
-            return _friendCard(userCred.friends[index]);
+            return _friendCard(context, userCred.friends[index]);
 
             // return ListTile(
             //   onTap: () => {
@@ -147,7 +143,7 @@ class _ChatView extends State<ChatView> {
     });
   }
 
-  Widget _friendCard(UserFriend friend) {
+  Widget _friendCard(BuildContext context, UserFriend friend) {
     return Card(
       color: friend.isOnline! ? Colors.green.shade200 : Colors.white,
       child: IntrinsicHeight(
@@ -157,6 +153,7 @@ class _ChatView extends State<ChatView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MessageScreen(
+                    context: context,
                     friend: friend,
                   ),
                 ));
@@ -216,11 +213,11 @@ class _ChatView extends State<ChatView> {
       actions: [
         IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          AddNewUser(userCred: userCred)));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) =>
+              //             AddNewUser(userCred: userCred)));
             },
             icon: Icon(Icons.add)),
         IconButton(

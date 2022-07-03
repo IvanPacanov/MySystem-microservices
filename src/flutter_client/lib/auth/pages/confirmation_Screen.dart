@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/auth/blocs/confirm/confirmation_bloc.dart';
 import 'package:flutter_client/auth/blocs/confirm/confirmation_event.dart';
 import 'package:flutter_client/auth/blocs/confirm/confirmation_state.dart';
@@ -16,7 +16,7 @@ class ConfirmationView extends StatelessWidget {
       body: BlocProvider(
         create: (context) => ConfirmationBloc(
           authCubit: context.read<AuthCubit>(),
-          authRepo: context.read<AuthRepository>(),
+          authRepo: context.read<AuthServices>(),
         ),
         child: _confirmationForm(),
       ),

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/blocs/chat/chat_state.dart';
 import 'package:flutter_client/models/Message.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
@@ -13,28 +13,22 @@ import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 part 'chat_event.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final ComponentRepository? componehtRepository;
-  final AuthRepository authRepository;
-  final AuthenticatedSessionCubit? chatSessionCubit;
-  final SignalRProvider signalR;
+  final AuthServices authRepository = new AuthServices();
+  final AuthenticatedSessionCubit chatSessionCubit;
 
   ChatBloc(
-      {this.componehtRepository,
-      required this.authRepository,
-      required this.signalR,
-      this.chatSessionCubit})
+      {required this.chatSessionCubit})
       : super(ChatState(users: [])) {
-    signalR.initSignalR(authRepository.userNew);
-    signalR.onSendOwnMessageCallback = (data) => test(data);
-    signalR.onFriendsUpdateCallback =
+    chatSessionCubit.signalRProvider.onSendOwnMessageCallback =
+        (data) => test(data);
+    chatSessionCubit.signalRProvider.onFriendsUpdateCallback =
         (data) => updateFriendsConnectionID(data);
 
-    signalR.onFriendUpdateCallback =
+    chatSessionCubit.signalRProvider.onFriendUpdateCallback =
         (data) => updateFriendConnectionID(data);
 
-    signalR.onReceivedMessageCallback =
+    chatSessionCubit.signalRProvider.onReceivedMessageCallback =
         (data) => receivedMessage(data);
-
   }
 
   @override
@@ -55,25 +49,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _testElo(dynamic testItem) {
-    var user = authRepository.userNew.friends
+    var user = authRepository.user.friends
         .where((z) => z.email == testItem['email'])
         .first;
 
-    int index = authRepository.userNew.friends.indexOf(user);
-    authRepository.userNew.friends[index].connectionId =
+    int index = authRepository.user.friends.indexOf(user);
+    authRepository.user.friends[index].connectionId =
         testItem['ConnectionId'];
   }
 
   void sendCos() async {
-    await signalR.sendMeMessage();
+    await chatSessionCubit.signalRProvider.sendMeMessage();
   }
 
   receivedMessage(MessageSignalR data) {
-    var user = authRepository.userNew.friends
+    var user = authRepository.user.friends
         .where((z) => z.id == data.userId)
         .first;
 
-    int index = authRepository.userNew.friends.indexOf(user);
+    int index = authRepository.user.friends.indexOf(user);
 
     Message message = new Message(
         userId: data.userId,
@@ -81,7 +75,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         read: data.read,
         send: data.send);
 
-    authRepository.userNew.friends[index].chats![0].messages!
+    authRepository.user.friends[index].chats![0].messages!
         .add(message);
   }
 

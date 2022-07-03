@@ -1,56 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/blocs/chat/chat_bloc.dart';
-import 'package:flutter_client/blocs/chat/chat_state.dart';
 import 'package:flutter_client/constants.dart';
-import 'package:flutter_client/models/ChatMessage.dart';
 import 'package:flutter_client/models/NewChat.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/Chat/messages/components/message.dart';
 import 'package:flutter_client/presentation/Chat/messages/components/message_input_field.dart';
-import 'package:flutter_client/repositories/component_repository.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
-import 'package:flutter_client/session/session_cubit.dart';
-import 'package:flutter_client/session/session_state.dart';
+import 'package:provider/provider.dart';
 
-class Body extends StatefulWidget {
+class BodyMessageScreen extends StatefulWidget {
   final NewChat chats;
   final UserFriend friend;
-  Body({required this.chats, required this.friend});
+  BodyMessageScreen(BuildContext context,
+      {required this.chats, required this.friend});
 
   @override
-  State<Body> createState() => _BodyState();
+  State<BodyMessageScreen> createState() => _BodyState();
 }
 
-class _BodyState extends State<Body> {
+class _BodyState extends State<BodyMessageScreen> {
   @override
   Widget build(BuildContext context) {
+    var z = context.read<ChatBloc>().authRepository.user;
     return BlocProvider(
-        create: (context) => SignalRProvider(
-            chatSessionCubit:
-                context.read<AuthenticatedSessionCubit>()),
-        child: BlocProvider(
-          create: (context) => ChatBloc(
-              authRepository: context.read<AuthRepository>(),
+        create: (context) => ChatBloc(
+              authRepository: context.read<AuthServices>(),
               chatSessionCubit:
                   context.read<AuthenticatedSessionCubit>(),
-              signalR: context.read<SignalRProvider>()),
-          child: BlocBuilder<ChatBloc, ChatState>(
-              builder: (context, state) {
-            return TestColumn(context);
-          }),
-        ));
+            ),
+        child: TestColumn(context));
   }
 
   Widget TestColumn(BuildContext context) {
-    context.read<ChatBloc>().signalR.onReceivedMessageCallback =
-        (data) => {setState(() {})};
+    context
+        .read<ChatBloc>()
+        .chatSessionCubit
+        .signalRProvider
+        .onReceivedMessageCallback = (data) => {setState(() {})};
 
-    context.read<ChatBloc>().signalR.onSendOwnMessageCallback =
-        (data) => {
-          setState(() {})};
+    context
+        .read<ChatBloc>()
+        .chatSessionCubit
+        .signalRProvider
+        .onSendOwnMessageCallback = (data) => {setState(() {})};
     return Column(
       children: [
         Expanded(
@@ -67,13 +61,16 @@ class _BodyState extends State<Body> {
                 return MessageScreen(
                     message: item,
                     friend: widget.friend,
-                    userId:
-                        context.read<AuthRepository>().userNew.id!);
+                    userId: context
+                        .read<ChatBloc>()
+                        .chatSessionCubit
+                        .user
+                        .id!);
               },
             ),
           ),
         ),
-        MessageInputField(
+        MessageInputField(context,
             friend: widget.friend, chatId: widget.chats.id!)
       ],
     );

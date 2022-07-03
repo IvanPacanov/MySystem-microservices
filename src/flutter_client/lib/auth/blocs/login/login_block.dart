@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/auth/form_submission_status.dart';
 import 'package:flutter_client/auth/blocs/login/login_event.dart';
 import 'package:flutter_client/auth/blocs/login/login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthRepository authRepository;
+  final AuthServices authRepository;
   final AuthCubit authCubit;
 
   LoginBloc({required this.authRepository, required this.authCubit})

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
 import 'package:flutter_client/auth/blocs/login/login_block.dart';
 
-import '../auth_repository.dart';
+import '../services/auth_services.dart';
 
 class LoginRegistrationScreen extends StatelessWidget {
   @override
@@ -11,7 +11,7 @@ class LoginRegistrationScreen extends StatelessWidget {
     return Scaffold(
         body: BlocProvider(
       create: (context) => LoginBloc(
-        authRepository: context.read<AuthRepository>(),
+        authRepository: context.read<AuthServices>(),
         authCubit: context.read<AuthCubit>(),
       ),
       child: Container(

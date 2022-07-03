@@ -107,9 +107,7 @@ class _ComingVideoState extends State<ComingVideo> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SignalRProvider(
-          chatSessionCubit:
-              context.read<AuthenticatedSessionCubit>()),
+      create: (context) => SignalRProvider(),
       child: BlocBuilder<SignalRProvider, void>(
           builder: (content, asta) {
         return Scaffold(

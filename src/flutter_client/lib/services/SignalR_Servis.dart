@@ -7,7 +7,6 @@ import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRProvider extends Bloc {
-  final AuthenticatedSessionCubit chatSessionCubit;
   final arr = [];
   static late Timer timer;
   static HubConnection connection = HubConnectionBuilder()
@@ -26,7 +25,9 @@ class SignalRProvider extends Bloc {
   late Function(List<dynamic>? update) onFriendsUpdateCallback;
   late Function(dynamic update) onFriendUpdateCallback;
 
-  SignalRProvider({required this.chatSessionCubit})
+  late Function(dynamic update, dynamic update2) onComingCalling;
+
+  SignalRProvider()
       : super(SignalRProvider);
 
   Future initSignalR(User user) async {
@@ -58,7 +59,8 @@ class SignalRProvider extends Bloc {
 
     connection.on('SendSignal', (message) async {
       print("OK ODEBRAŁEM CALLING");
-      chatSessionCubit.comingCalling(message![0], message[1]);
+      //chatSessionCubit.comingCalling(message![0], message[1]);
+      onComingCalling(message![0], message[1]);
     });
 
     // connection.on('CandidateToConnect', (message) async {

@@ -17,7 +17,7 @@ import 'package:flutter_client/session/session_cubit.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'auth/auth_repository.dart';
+import 'auth/services/auth_services.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,10 +55,7 @@ class MyApp extends StatelessWidget {
         home: MultiRepositoryProvider(
           providers: [
             RepositoryProvider(
-              create: (context) => AuthRepository(),
-            ),
-            RepositoryProvider(
-              create: (context) => ComponentRepository(),
+              create: (context) => AuthServices(),
             ),
           ],
           child: AppNavigator(),
@@ -71,38 +68,38 @@ class MyApp extends StatelessWidget {
 List<BlocProvider> _providersBlocList() {
   return [
     BlocProvider(
-      create: (context) => AuthenticatedSessionCubit(),
+      create: (context) => AuthenticatedSessionCubit(
+          signalRProvider: context.read<SignalRProvider>(),
+          user: context.read<SessionCubit>().user),
     ),
     BlocProvider(
       create: (context) => VideoCallBloc(),
     ),
     BlocProvider(
-      create: (context) => SignalRProvider(
-          chatSessionCubit:
-              context.read<AuthenticatedSessionCubit>()),
+      create: (context) => SignalRProvider(),
+    ),    
+    BlocProvider(
+      create: (context) =>
+          SessionCubit(authServices: context.read<AuthServices>()),
     ),
     BlocProvider(
       create: (context) =>
-          SessionCubit(authRepo: context.read<AuthRepository>()),
+          AuthCubit(sessionCubit: context.read<SessionCubit>()),
     ),
-    BlocProvider(
-        create: (context) =>
-            AuthCubit(sessionCubit: context.read<SessionCubit>())),
     BlocProvider<ChatBloc>(
       create: (BuildContext context) => ChatBloc(
-          componehtRepository: context.read<ComponentRepository>(),
-          authRepository: context.read<AuthRepository>(),
-          chatSessionCubit: context.read<AuthenticatedSessionCubit>(),
-          signalR: context.read<SignalRProvider>()),
+          authRepository: context.read<AuthServices>(),
+          chatSessionCubit:
+              context.read<AuthenticatedSessionCubit>()),
     ),
     BlocProvider<MessageBloc>(
       create: (BuildContext context) => MessageBloc(
           signalR: context.read<SignalRProvider>(),
-          authRepository: context.read<AuthRepository>()),
+          authRepository: context.read<AuthServices>()),
     ),
-    BlocProvider<AddNewUserBloc>(
-        create: (BuildContext context) => AddNewUserBloc(
-            componetRepository: context.read<ComponentRepository>()))
+    // BlocProvider<AddNewUserBloc>(
+    //     create: (BuildContext context) => AddNewUserBloc(
+    //         componetRepository: context.read<ComponentRepository>()))
   ];
 }
 

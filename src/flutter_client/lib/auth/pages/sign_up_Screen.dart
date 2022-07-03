@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/auth/form_submission_status.dart';
 import 'package:flutter_client/auth/blocs/sign_up/sign_up_block.dart';
 import 'package:flutter_client/auth/blocs/sign_up/sign_up_event.dart';
@@ -22,7 +22,7 @@ class SignUpView extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         body: BlocProvider(
           create: (context) => SignUpBloc(
-            authRepo: context.read<AuthRepository>(),
+            authRepo: context.read<AuthServices>(),
             authCubit: context.read<AuthCubit>(),
           ),
           child: Stack(

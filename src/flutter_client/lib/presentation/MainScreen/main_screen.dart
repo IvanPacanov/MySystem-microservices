@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_client/presentation/Chat/chat_view.dart';
+import 'package:flutter_client/session/session_cubit.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -24,6 +26,7 @@ class _MainScreen extends State<MainScreen> {
             _cardElement(_phoneButton(context)),
             _cardElement(_guardianButton(context)),
             _cardElement(_chatButton(context)),
+            _cardElement(_logoutButton(context)),
           ],
         ),
       ),
@@ -41,13 +44,38 @@ class _MainScreen extends State<MainScreen> {
     );
   }
 
+  Widget _logoutButton(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.read<SessionCubit>().logout();
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: 200.0,
+        height: 200.0,
+        decoration: BoxDecoration(
+            border:
+                Border.all(color: Colors.orange.shade400, width: 5),
+            shape: BoxShape.circle),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.logout,
+                size: 50, color: Colors.orange.shade400),
+            Text('Logout'.toUpperCase()),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _chatButton(BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ChatView(),
+              builder: (context) => ChatView(context),
             ));
       },
       child: Container(

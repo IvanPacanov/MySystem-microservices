@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/auth_cubit.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/auth/blocs/confirm/confirmation_event.dart';
 import 'package:flutter_client/auth/blocs/confirm/confirmation_state.dart';
 import 'package:flutter_client/auth/form_submission_status.dart';
 
 class ConfirmationBloc
     extends Bloc<ConfirmationEvent, ConfirmationState> {
-  final AuthRepository authRepo;
+  final AuthServices authRepo;
   final AuthCubit authCubit;
 
   ConfirmationBloc({
@@ -29,10 +29,10 @@ class ConfirmationBloc
       yield state.copyWith(formStatus: FormSubmitting());
 
       try {
-        await authRepo.confirmSignUp(
-          userName: authCubit.credentials!.email!,
-          confirmationCode: state.code,
-        );
+        // await authRepo.confirmSignUp(
+        //   userName: authCubit.credentials!.email!,
+        //   confirmationCode: state.code,
+        // );
 
         yield state.copyWith(formStatus: SubmissionSuccess());
 

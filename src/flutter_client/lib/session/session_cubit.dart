@@ -1,39 +1,38 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/auth/auth_credentials.dart';
-import 'package:flutter_client/auth/auth_repository.dart';
+import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/session/session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {
-  final AuthRepository authRepo;
-
-  SessionCubit({required this.authRepo})
+  final AuthServices authServices;
+  late User user;
+  SessionCubit({required this.authServices})
       : super(UnKnownSessionState()) {
-    attemptAutoLogin();
+    emit(Unauthenticated());
+    authServices.getUserId().then((value) async => getUser(value));
   }
 
-  void attemptAutoLogin() async {
-    try {
-      final userId = await authRepo.attemptAutoLogin();
-      //final user = dataRepo.getUser(userId);
-      final user = userId;
-      emit(Authenticated(user: user));
-    } on Exception {
+  void getUser(value) async {
+    print(value);
+    if (value != null) {
+      this.user = await authServices.getProfile(email: value);
+
+      emit(Authenticated(
+        user: this.user,
+      ));
+    } else {
       emit(Unauthenticated());
     }
   }
 
   void showAuth() => emit(Unauthenticated());
   void showSession(User credentials) {
-    // final user = dataRepo.getUser(credentials.userId);
     final user = credentials;
-    print(user);
     emit(Authenticated(user: user));
   }
 
-  void signOut() {
-    authRepo.signOut();
-      // SignalRProvider.disconectedSignalR();
+  void logout() {
+    authServices.logout();
     emit(Unauthenticated());
   }
 }

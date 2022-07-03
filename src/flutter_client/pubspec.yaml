@@ -50,6 +50,9 @@ dependencies:
   errors: ^0.1.1
   json_annotation: ^4.4.0
 
+  #NEW 30,06,2022
+  flutter_secure_storage: ^5.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
