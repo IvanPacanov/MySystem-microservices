@@ -14,7 +14,7 @@ import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/account/account_screen.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
-import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_client/session/session_cubit.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +41,9 @@ class _ChatView extends State<ChatView> {
         Flexible(
           child: BlocProvider(
             create: (context) => ChatBloc(
-              authRepository: context.read<AuthServices>(),
+              authRepository: context
+                  .read<AuthenticatedSessionCubit>()
+                  .authServices,
               chatSessionCubit:
                   context.read<AuthenticatedSessionCubit>(),
             ),
@@ -114,7 +116,7 @@ class _ChatView extends State<ChatView> {
       //             remoteRenderer: _remoteRenderer),
       //       ));
       // }
-      userCred = context.read<ChatBloc>().authRepository.user;
+      userCred = context.read<ChatBloc>().chatSessionCubit.user;
 
       return ListView.builder(
           itemCount: userCred.friends.length,
@@ -178,7 +180,7 @@ class _ChatView extends State<ChatView> {
                     Text(
                         friend.chats!.length > 0
                             ? (friend.chats![0].messages!.length > 0
-                                ? friend.chats![0].messages![0].text!
+                                ? friend.chats![0].messages![0].text
                                 : "")
                             : "",
                         style: TextStyle(

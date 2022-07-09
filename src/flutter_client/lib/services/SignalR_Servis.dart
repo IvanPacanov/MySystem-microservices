@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/environments/environments.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
-import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRProvider extends Bloc {
@@ -25,10 +25,11 @@ class SignalRProvider extends Bloc {
   late Function(List<dynamic>? update) onFriendsUpdateCallback;
   late Function(dynamic update) onFriendUpdateCallback;
 
+  late Function(dynamic update) incomingCalling;
+
   late Function(dynamic update, dynamic update2) onComingCalling;
 
-  SignalRProvider()
-      : super(SignalRProvider);
+  SignalRProvider() : super(SignalRProvider);
 
   Future initSignalR(User user) async {
     if (connection.state == HubConnectionState.disconnected) {
@@ -37,6 +38,17 @@ class SignalRProvider extends Bloc {
 
     connection.on('SendMessage', (message) async {
       onReceivedMessageCallback(MessageSignalR.fromJson(message?[0]));
+    });
+
+    connection.on('PickUpPhone', (message) async {
+      print("OK ODEBRAŁEM CALLING");
+      onComingCalling(message![0], message[1]);
+    });
+
+// poniżej odpowiednik!
+
+    connection.on("IncomingCall", (message) async {
+      incomingCalling(message?[0]);
     });
 
     connection.on('WelcomeOnServer', (message) async {
@@ -57,11 +69,11 @@ class SignalRProvider extends Bloc {
       print(message);
     });
 
-    connection.on('SendSignal', (message) async {
-      print("OK ODEBRAŁEM CALLING");
-      //chatSessionCubit.comingCalling(message![0], message[1]);
-      onComingCalling(message![0], message[1]);
-    });
+    // connection.on('SendSignal', (message) async {
+    //   print("OK ODEBRAŁEM CALLING");
+    //   //chatSessionCubit.comingCalling(message![0], message[1]);
+    //   onComingCalling(message![0], message[1]);
+    // });
 
     // connection.on('CandidateToConnect', (message) async {
     //   print("ODEBRAŁEM KANDYDATA");
@@ -73,10 +85,6 @@ class SignalRProvider extends Bloc {
     });
 
     connection.on("CallAccepted", (message) async {
-      print(message);
-    });
-
-    connection.on("IncomingCall", (message) async {
       print(message);
     });
 
@@ -133,7 +141,7 @@ class SignalRProvider extends Bloc {
   }
 
   static callToUser(String offer, String user) async {
-    await connection.invoke('CallUser', args: [offer, user]);
+    connection.invoke('CallUser', args: [offer, user]);
   }
 
   sendCandidate(List<dynamic> offer, String uid) async {
@@ -146,5 +154,13 @@ class SignalRProvider extends Bloc {
     onSendOwnMessageCallback(true);
     await connection
         .invoke('SendMessage', args: [message, connectionId, chatId]);
+  }
+
+  callingToUser(String user) async {
+    connection.invoke('CallingToUser', args: [user]);
+  }
+
+  stopCallingToUser(String user) async {
+    connection.invoke('StopCallingToUser', args: [user]);
   }
 }

@@ -12,11 +12,12 @@ import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/presentation/Chat/messages/bloc/message_bloc.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
-import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_client/session/session_cubit.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'auth/repository/auth_service.dart';
 import 'auth/services/auth_services.dart';
 
 Future main() async {
@@ -69,6 +70,7 @@ List<BlocProvider> _providersBlocList() {
   return [
     BlocProvider(
       create: (context) => AuthenticatedSessionCubit(
+        authServices: context.read<AuthServices>(),
           signalRProvider: context.read<SignalRProvider>(),
           user: context.read<SessionCubit>().user),
     ),
@@ -77,6 +79,9 @@ List<BlocProvider> _providersBlocList() {
     ),
     BlocProvider(
       create: (context) => SignalRProvider(),
+    ),    
+     BlocProvider(
+      create: (context) => AuthRepository(),
     ),    
     BlocProvider(
       create: (context) =>

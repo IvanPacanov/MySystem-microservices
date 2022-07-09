@@ -8,27 +8,24 @@ import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
-import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 
 part 'chat_event.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final AuthServices authRepository = new AuthServices();
+  final AuthServices authRepository;
   final AuthenticatedSessionCubit chatSessionCubit;
 
   ChatBloc(
-      {required this.chatSessionCubit})
+      {required this.authRepository, required this.chatSessionCubit})
       : super(ChatState(users: [])) {
     chatSessionCubit.signalRProvider.onSendOwnMessageCallback =
         (data) => test(data);
     chatSessionCubit.signalRProvider.onFriendsUpdateCallback =
         (data) => updateFriendsConnectionID(data);
 
-    chatSessionCubit.signalRProvider.onFriendUpdateCallback =
-        (data) => updateFriendConnectionID(data);
-
     chatSessionCubit.signalRProvider.onReceivedMessageCallback =
-        (data) => receivedMessage(data);
+        (data) => chatSessionCubit.receivedMessage(data);
   }
 
   @override
@@ -43,10 +40,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     test.forEach((dynamic testItem) => {_testElo(testItem)});
   }
 
-  void updateFriendConnectionID(dynamic? data) {
-    dynamic test = jsonDecode(data);
-    _testElo(test);
-  }
 
   void _testElo(dynamic testItem) {
     var user = authRepository.user.friends
@@ -62,22 +55,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await chatSessionCubit.signalRProvider.sendMeMessage();
   }
 
-  receivedMessage(MessageSignalR data) {
-    var user = authRepository.user.friends
-        .where((z) => z.id == data.userId)
-        .first;
+  // receivedMessage(MessageSignalR data) {
+  //   var user = authRepository.user.friends
+  //       .where((z) => z.id == data.userId)
+  //       .first;
 
-    int index = authRepository.user.friends.indexOf(user);
+  //   int index = authRepository.user.friends.indexOf(user);
 
-    Message message = new Message(
-        userId: data.userId,
-        text: data.text,
-        read: data.read,
-        send: data.send);
+  //   Message message = new Message(
+  //       userId: data.userId,
+  //       text: data.text,
+  //       read: data.read,
+  //       send: data.send);
 
-    authRepository.user.friends[index].chats![0].messages!
-        .add(message);
-  }
+  //   authRepository.user.friends[index].chats![0].messages!
+  //       .add(message);
+  // }
 
   test(bool value) {
     print(value);

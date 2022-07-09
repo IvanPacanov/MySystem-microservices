@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/presentation/VideoCalling/ReceivedUpcomingVideo.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
-import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class ComingVideo extends StatefulWidget {
@@ -33,6 +33,17 @@ class _ComingVideoState extends State<ComingVideo> {
     initRenders();
     _createPeerConnecion().then((pc) {
       _peerConnection = pc;
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReceivedUpcomingVideo(
+                offer: offer,
+                signalRProvider: context.read<SignalRProvider>(),
+                peerConnection: _peerConnection,
+                remoteRenderer: _remoteRenderer,
+                uid: uid),
+          ));
     });
     super.initState();
   }
@@ -106,6 +117,8 @@ class _ComingVideoState extends State<ComingVideo> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
+
     return BlocProvider(
       create: (context) => SignalRProvider(),
       child: BlocBuilder<SignalRProvider, void>(
@@ -113,13 +126,13 @@ class _ComingVideoState extends State<ComingVideo> {
         return Scaffold(
           body: Stack(
             children: <Widget>[
-              Container(
-                key: Key('local'),
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(color: Colors.black),
-                child: MyStatefulWidget(),
-              ),
+              // Container(
+              //   key: Key('local'),
+              //   width: double.infinity,
+              //   height: double.infinity,
+              //   decoration: BoxDecoration(color: Colors.black),
+              //   child: MyStatefulWidget(),
+              // ),
               Positioned(
                 bottom: 10,
                 left: 120,

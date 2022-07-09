@@ -4,8 +4,8 @@ import 'package:flutter_client/models/Message.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/Chat/messages/components/text_message.dart';
 
-class MessageScreen extends StatelessWidget {
-  const MessageScreen({
+class MessageTextBodyScreen extends StatelessWidget {
+  const MessageTextBodyScreen({
     Key? key,
     required this.message,
     required this.friend,

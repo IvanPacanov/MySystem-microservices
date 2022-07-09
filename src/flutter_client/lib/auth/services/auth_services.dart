@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/api/api_auth.dart';
 import 'package:flutter_client/api/api_social.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class AuthServices {
+class AuthServices extends Bloc {
   final storage = new FlutterSecureStorage();
 
   final ApiAuth _apiAuth = new ApiAuth();
@@ -13,6 +14,8 @@ class AuthServices {
 
   late User user;
   late String token;
+
+  AuthServices() : super(AuthServices);
 
   void setToken(String token) {
     this.token = token;

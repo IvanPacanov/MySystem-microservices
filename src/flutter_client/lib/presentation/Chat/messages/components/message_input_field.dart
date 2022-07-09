@@ -6,7 +6,8 @@ import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/Chat/messages/bloc/message_bloc.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
-import 'package:flutter_client/session/chatSession/chatSession_cubit.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
+import 'package:provider/provider.dart';
 
 class MessageInputField extends StatelessWidget {
   const MessageInputField(BuildContext context,
@@ -20,11 +21,10 @@ class MessageInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => MessageBloc(
-          signalR: context
-              .read<ChatBloc>()
-              .chatSessionCubit
-              .signalRProvider,
-          authRepository: context.read<ChatBloc>().authRepository),
+          signalR:
+              Provider.of<SignalRProvider>(context, listen: false),
+          authRepository:
+              Provider.of<AuthServices>(context, listen: false)),
       child: BlocBuilder<MessageBloc, MessageState>(
         builder: (context, state) {
           return Container(

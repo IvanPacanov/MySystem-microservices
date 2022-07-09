@@ -1,20 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/blocs/chat/chat_bloc.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
+import 'package:flutter_client/presentation/VideoCalling/Calling.dart';
 import 'package:flutter_client/presentation/VideoCalling/VideoCall2.dart';
+import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/src/provider.dart';
 
 import 'components/body.dart';
 
 class MessageScreen extends StatefulWidget {
-  final UserFriend friend;
   final BuildContext context;
+  final UserFriend friend;
   const MessageScreen(
       {Key? key, required this.context, required this.friend})
       : super(key: key);
@@ -110,10 +113,6 @@ class _MessageScreen extends State<MessageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var test = widget.context
-        .read<ChatBloc>()
-        .authRepository
-        .user; // context.read<ChatBloc>().authRepository.user;
     return Scaffold(
       backgroundColor: Colors.grey.shade400,
       appBar: buildAppBar(context),
@@ -152,6 +151,26 @@ class _MessageScreen extends State<MessageScreen> {
           onPressed: () {},
           icon: Icon(Icons.local_phone),
         ),
+        // IconButton(
+        //   onPressed: () {
+        //     context
+        //         .read<SignalRProvider>()
+        //         .callingToUser(friend.connectionId);
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //         builder: (context) => Calling(
+        //           callingUser: friend,
+        //         ),
+        //       ),
+        //       // MaterialPageRoute(
+        //       //   builder: (context) => Calling(
+        //       //       friend: friend,
+        //       //       peerConnection: _peerConnection,
+        //       //       remoteRenderer: _remoteRenderer),
+        //       // ),
+        //     );
+        //   },
         IconButton(
           onPressed: () {
             Navigator.push(

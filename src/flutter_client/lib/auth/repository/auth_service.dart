@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/api/api_auth.dart';
 import 'package:flutter_client/api/api_social.dart';
 import 'package:flutter_client/auth/auth_credentials.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_client/models/User.dart' as UserAuth;
 import 'package:flutter_client/repositories/firebase_api.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 
-class AuthRepository {
+class AuthRepository extends Bloc {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final ApiAuth _apiAuth = new ApiAuth();
@@ -17,6 +18,8 @@ class AuthRepository {
   late UserAuth.User userNew;
 
   late String token;
+
+  AuthRepository() : super(AuthRepository);
 
   // void setUser(UserCredential user) {
   //   this.userCred = user;
@@ -102,5 +105,4 @@ class AuthRepository {
       print(e.toString());
     }
   }
-
 }
