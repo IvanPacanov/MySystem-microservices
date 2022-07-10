@@ -5,6 +5,8 @@ import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/models/Message.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/models/UserFriend.dart';
+import 'package:flutter_client/presentation/Chat/messages/message_screen.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/chatSession_state.dart';
 
@@ -16,19 +18,22 @@ class AuthenticatedSessionCubit
 
   late Function() onFriendsUpdatedCallback;
 
+  List<AuthenticatedSessionState> stateList = [];
+
   AuthenticatedSessionCubit(
       {required this.authServices,
       required this.signalRProvider,
       required this.user})
       : super(NormalState()) {
     print(user);
+    this.stateList.add(NormalState());
     signalRProvider.initSignalR(user);
 
     signalRProvider.onComingCalling =
         (offer, uid) => comingCalling(offer, uid);
 
     signalRProvider.incomingCalling =
-        (offer) => inComingCalling(offer);
+        (user, offer) => inComingCalling(user, offer, user);
 
     signalRProvider.onFriendsUpdateCallback =
         (data) => updateFriendsConnectionID(data);
@@ -86,10 +91,28 @@ class AuthenticatedSessionCubit
     emit(ComingCalling(offer: offer, uid: uid));
   }
 
-  void inComingCalling(dynamic data) {
-   var callingUser= user.friends
-        .where((z) => z.connectionId == data)
-        .first;
-    emit(InComingCalling(callingUser: callingUser));
+  void inComingCalling(dynamic data, String offer, String uid) {
+    var callingUser =
+        user.friends.where((z) => z.connectionId == data).first;
+    emit(InComingCalling(
+        callingUser: callingUser, offer: offer, uid: uid));
+  }
+
+  void openChatView() {
+    this.stateList.add(ChatViewState());
+    emit(ChatViewState());
+  }
+
+  void openMessageView(UserFriend friend) {
+    this.stateList.add(MessageViewState(friend: friend));
+    emit(MessageViewState(friend: friend));
+  }
+
+  void lastState() {
+    emit(stateList.last);
+  }
+
+  void pickUpPhone(String uid, String offer) {
+    emit(ReceivedUpcomingVideoState(uid: uid, offer: offer));
   }
 }

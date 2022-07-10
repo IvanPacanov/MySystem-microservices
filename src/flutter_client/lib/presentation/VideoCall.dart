@@ -1,23 +1,61 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_client/blocs/video-call/video_call_bloc.dart';
+import 'package:flutter_client/blocs/video-call/video_call_state.dart';
+import 'package:flutter_client/models/UserFriend.dart';
+import 'package:flutter_client/presentation/VideoCalling/VideoCall2.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:provider/src/provider.dart';
 import 'package:sdp_transform/sdp_transform.dart';
 
 class VideoCall extends StatefulWidget {
-  const VideoCall({Key? key}) : super(key: key);
+  final UserFriend friend;
+  const VideoCall({Key? key, required this.friend}) : super(key: key);
 
   @override
-  _VideoCallState createState() => _VideoCallState();
+  _VideoCallState createState() => _VideoCallState(friend: friend);
 }
 
 class _VideoCallState extends State<VideoCall> {
-  bool _offer = false;
-  late RTCPeerConnection _peerConnection;
-  final _remoteRenderer = new RTCVideoRenderer();
+  final UserFriend? friend;
 
+  bool _offer = false;
+  final _remoteRenderer = new RTCVideoRenderer();
+  late RTCPeerConnection _peerConnection;
   final sdpController = TextEditingController();
+
+  _VideoCallState({required this.friend});
+
+  @override
+  initState() {
+    initRenders();
+    _createPeerConnecion().then((pc) {
+      _peerConnection = pc;
+
+      if (friend != null) {
+        _createOffer(context);
+        SignalRProvider.connection.on('CandidateToConnect',
+            (message) async {
+          print("ODEBRAŁEM KANDYDATA");
+          _setRemoteDescription(message![0]);
+          await Future.delayed(Duration(seconds: 1));
+          _addCandidate(correctCandidate(message[1]));
+          await Future.delayed(Duration(seconds: 1));
+          _addCandidate(correctCandidate(message[1]));
+          refresh(context);
+        });
+      }
+    });
+    super.initState();
+  }
+
+  initRenders() async {
+    await _remoteRenderer.initialize();
+  }
 
   @override
   void dispose() {
@@ -26,15 +64,11 @@ class _VideoCallState extends State<VideoCall> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    print("INIT STATE !!!!!!!!!!!!!!!!!!!");
-    initRenders();
-    _createPeerConnecion().then((pc) {
-      print("ASYNC!!!!");
-      _peerConnection = pc;
+  double mar = 1;
+  void refresh(dynamic childValue) {
+    setState(() {
+      mar = 2;
     });
-    super.initState();
   }
 
   _createPeerConnecion() async {
@@ -90,41 +124,32 @@ class _VideoCallState extends State<VideoCall> {
     MediaStream stream =
         await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
-    //  _localRenderer.srcObject = stream;
-    //  RTCVideoView(_localRenderer);
-
     return stream;
   }
 
-  initRenders() async {
-    // await _localRenderer.initialize();
-    await _remoteRenderer.initialize();
-  }
-
-  SizedBox videoRenders() => SizedBox(
-        height: 210,
-        child: Column(
-          children: [
-            Flexible(
-              child: Container(
-                key: Key('remote'),
-                decoration: BoxDecoration(color: Colors.black),
-                child: RTCVideoView(_remoteRenderer),
-              ),
-            )
-          ],
-        ),
-      );
-
-  void _createOffer() async {
+  void _createOffer(BuildContext context) async {
     RTCSessionDescription description =
         await _peerConnection.createOffer({'offerToReceiveVideo': 1});
     var session = parse(description.sdp.toString());
-    var t = json.encode(session);
+    var offer = json.encode(session);
+    if (friend?.connectionId != null) {
+      SignalRProvider.phonePicked(offer, friend!.connectionId);
+      _offer = true;
+      _peerConnection.setLocalDescription(description);
+    }
+  }
 
-    _offer = true;
+  void _setRemoteDescription(String offerSet) async {
+    String jsonString = offerSet;
+    dynamic session = await jsonDecode('$jsonString');
 
-    _peerConnection.setLocalDescription(description);
+    String sdp = write(session, null);
+
+    RTCSessionDescription description =
+        new RTCSessionDescription(sdp, _offer ? 'answer' : 'offer');
+    print(description.toMap());
+
+    await _peerConnection.setRemoteDescription(description);
   }
 
   void _createAnswer() async {
@@ -138,21 +163,8 @@ class _VideoCallState extends State<VideoCall> {
     _peerConnection.setLocalDescription(description);
   }
 
-  void _setRemoteDescription() async {
-    String jsonString = sdpController.text;
-    dynamic session = await jsonDecode('$jsonString');
-
-    String sdp = write(session, null);
-
-    RTCSessionDescription description =
-        new RTCSessionDescription(sdp, _offer ? 'answer' : 'offer');
-    print(description.toMap());
-
-    await _peerConnection.setRemoteDescription(description);
-  }
-
-  void _addCandidate() async {
-    String jsonString = sdpController.text;
+  void _addCandidate(String candidateString) async {
+    String jsonString = candidateString;
     dynamic session = await jsonDecode('$jsonString');
     print(session['candidate']);
     dynamic candidate = new RTCIceCandidate(session['candidate'],
@@ -160,67 +172,74 @@ class _VideoCallState extends State<VideoCall> {
     await _peerConnection.addCandidate(candidate);
   }
 
-  Row offerAndAnswerButtons() => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          ElevatedButton(
-            onPressed: _createOffer,
-            child: Text('Offer'),
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Colors.amber)),
-          ),
-          ElevatedButton(
-            onPressed: _createAnswer,
-            child: Text('Answer'),
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Colors.amber)),
-          )
-        ],
-      );
-
-  Padding sdpCandidateTF() => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TextField(
-          controller: sdpController,
-          keyboardType: TextInputType.multiline,
-          maxLines: 4,
-          maxLength: TextField.noMaxLength,
-        ),
-      );
-
-  Row sdpCandidateButtons() => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          ElevatedButton(
-            onPressed: _setRemoteDescription,
-            child: Text('Set Remote Desc.'),
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Colors.amber)),
-          ),
-          ElevatedButton(
-            onPressed: _addCandidate,
-            child: Text('Set Candidate.'),
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Colors.amber)),
-          )
-        ],
-      );
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          videoRenders(),
-          offerAndAnswerButtons(),
-          sdpCandidateTF(),
-          sdpCandidateButtons(),
-        ],
-      ),
-    );
+    return BlocProvider(
+        create: (context) => VideoCallBloc(),
+        // componehtRepository: context.read<ComponentRepository>(),
+        // authRepository: context.read<AuthRepository>(),
+        // chatSessionCubit: context.read<ChatSessionCubit>(),
+        // signalR: context.read<SignalRProvider>()),
+        child: BlocBuilder<VideoCallBloc, VideoCallState>(
+            builder: (context, state) {
+          // if (friend != null) {
+          //   _createOffer(context);
+          //   SignalRProvider.connection.on('CandidateToConnect',
+          //       (message) async {
+          //     print("ODEBRAŁEM KANDYDATA");
+          //     _setRemoteDescription(message![0]);
+          //     await Future.delayed(Duration(seconds: 1));
+          //     _addCandidate(correctCandidate(message[1]));
+          //     await Future.delayed(Duration(seconds: 1));
+          //     _addCandidate(correctCandidate(message[1]));
+          //     refresh(context);
+          //   });
+          // }
+          return Scaffold(
+            body: Stack(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(mar),
+                  key: Key('local'),
+                  decoration: BoxDecoration(color: Colors.black),
+                  child: RTCVideoView(_remoteRenderer),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 40),
+                    width: double.infinity,
+                    child: RawMaterialButton(
+                      onPressed: () {},
+                      fillColor: Colors.red,
+                      child: Icon(
+                        Icons.call_end,
+                        color: Colors.white,
+                        size: 35.0,
+                      ),
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }));
+  }
+
+  String correctCandidate(String message) {
+    var mess = "\{\"" +
+        message.substring(0, 9) +
+        "\"" +
+        ":" +
+        "\"candidate:" +
+        message.substring(11) +
+        "\"," +
+        '"sdpMid":"video","sdpMlineIndex":0' +
+        "\}";
+
+    return mess;
   }
 }

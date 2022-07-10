@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 
@@ -72,11 +73,7 @@ class _MainScreen extends State<MainScreen> {
   Widget _chatButton(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatView(context),
-            ));
+        context.read<AuthenticatedSessionCubit>().openChatView();
       },
       child: Container(
         alignment: Alignment.center,

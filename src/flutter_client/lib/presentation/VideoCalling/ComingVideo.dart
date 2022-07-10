@@ -34,16 +34,7 @@ class _ComingVideoState extends State<ComingVideo> {
     _createPeerConnecion().then((pc) {
       _peerConnection = pc;
 
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReceivedUpcomingVideo(
-                offer: offer,
-                signalRProvider: context.read<SignalRProvider>(),
-                peerConnection: _peerConnection,
-                remoteRenderer: _remoteRenderer,
-                uid: uid),
-          ));
+      
     });
     super.initState();
   }
@@ -142,18 +133,7 @@ class _ComingVideoState extends State<ComingVideo> {
                   width: 250,
                   child: RawMaterialButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ReceivedUpcomingVideo(
-                                    offer: offer,
-                                    signalRProvider: content
-                                        .read<SignalRProvider>(),
-                                    peerConnection: _peerConnection,
-                                    remoteRenderer: _remoteRenderer,
-                                    uid: uid),
-                          ));
+                     
                     },
                     fillColor: Colors.green,
                     child: Icon(

@@ -25,7 +25,7 @@ class SignalRProvider extends Bloc {
   late Function(List<dynamic>? update) onFriendsUpdateCallback;
   late Function(dynamic update) onFriendUpdateCallback;
 
-  late Function(dynamic update) incomingCalling;
+  late Function(dynamic user, dynamic offer) incomingCalling;
 
   late Function(dynamic update, dynamic update2) onComingCalling;
 
@@ -42,13 +42,13 @@ class SignalRProvider extends Bloc {
 
     connection.on('PickUpPhone', (message) async {
       print("OK ODEBRAŁEM CALLING");
-      onComingCalling(message![0], message[1]);
+      incomingCalling(message![0], message[1]);
     });
 
 // poniżej odpowiednik!
 
     connection.on("IncomingCall", (message) async {
-      incomingCalling(message?[0]);
+      incomingCalling(message?[0], message![1]);
     });
 
     connection.on('WelcomeOnServer', (message) async {
@@ -142,6 +142,10 @@ class SignalRProvider extends Bloc {
 
   static callToUser(String offer, String user) async {
     connection.invoke('CallUser', args: [offer, user]);
+  }
+
+  static phonePicked(String offer, String user) async {
+    connection.invoke('PhonePicked', args: [offer, user]);
   }
 
   sendCandidate(List<dynamic> offer, String uid) async {

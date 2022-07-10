@@ -20,7 +20,7 @@ import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:provider/provider.dart';
 
 class ChatView extends StatefulWidget {
-  ChatView(BuildContext context);
+  ChatView();
 
   @override
   State<ChatView> createState() => _ChatView();
@@ -151,14 +151,9 @@ class _ChatView extends State<ChatView> {
       child: IntrinsicHeight(
         child: InkWell(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MessageScreen(
-                    context: context,
-                    friend: friend,
-                  ),
-                ));
+            context
+                .read<AuthenticatedSessionCubit>()
+                .openMessageView(friend);
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),

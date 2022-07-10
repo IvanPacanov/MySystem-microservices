@@ -16,21 +16,20 @@ import 'package:provider/src/provider.dart';
 import 'components/body.dart';
 
 class MessageScreen extends StatefulWidget {
-  final BuildContext context;
+  // final BuildContext context;
   final UserFriend friend;
   const MessageScreen(
-      {Key? key, required this.context, required this.friend})
+      {Key? key, required this.friend})
       : super(key: key);
 
   @override
   _MessageScreen createState() =>
-      _MessageScreen(context: context, friend: friend);
+      _MessageScreen(friend: friend);
 }
 
 class _MessageScreen extends State<MessageScreen> {
   final UserFriend friend;
-  final BuildContext context;
-  _MessageScreen({required this.context, required this.friend});
+  _MessageScreen({required this.friend});
   final _remoteRenderer = new RTCVideoRenderer();
   late RTCPeerConnection _peerConnection;
   final sdpController = TextEditingController();

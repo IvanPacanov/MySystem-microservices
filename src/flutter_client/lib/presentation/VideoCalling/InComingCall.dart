@@ -3,16 +3,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/VideoCalling/VideoCall2.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:provider/src/provider.dart';
 
 class InComingCall extends StatefulWidget {
-  const InComingCall({Key? key, required this.callingUser})
+  const InComingCall(
+      {Key? key,
+      required this.callingUser,
+      required this.uid,
+      required this.offer})
       : super(key: key);
   final UserFriend callingUser;
+  final String uid;
+  final String offer;
 
   @override
-  State<InComingCall> createState() =>
-      _InComingCallState(callingUser: callingUser);
+  State<InComingCall> createState() => _InComingCallState(
+      callingUser: callingUser, uid: uid, offer: offer);
 }
 
 class _InComingCallState extends State<InComingCall> {
@@ -21,84 +29,89 @@ class _InComingCallState extends State<InComingCall> {
   final sdpController = TextEditingController();
 
   final UserFriend callingUser;
+  final String uid;
+  final String offer;
 
-  _InComingCallState({required this.callingUser});
+  _InComingCallState(
+      {required this.callingUser,
+      required this.uid,
+      required this.offer});
 
-  @override
-  initState() {
-    initRenders();
-    _createPeerConnecion().then((pc) {
-      _peerConnection = pc;
-    });
-    super.initState();
-  }
+  // @override
+  // initState() {
+  //   initRenders();
+  //   _createPeerConnecion().then((pc) {
+  //     _peerConnection = pc;
+  //   });
+  //   super.initState();
+  // }
 
-  initRenders() async {
-    await _remoteRenderer.initialize();
-  }
+  // initRenders() async {
+  //   await _remoteRenderer.initialize();
+  // }
 
-  @override
-  void dispose() {
-    _remoteRenderer.dispose();
-    sdpController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _remoteRenderer.dispose();
+  //   sdpController.dispose();
+  //   super.dispose();
+  // }
 
-  _createPeerConnecion() async {
-    Map<String, dynamic> configuration = {
-      "iceServers": [
-        {"url": "stun:stun.l.google.com:19302"},
-      ]
-    };
+  // _createPeerConnecion() async {
+  //   Map<String, dynamic> configuration = {
+  //     "iceServers": [
+  //       {"url": "stun:stun.l.google.com:19302"},
+  //     ]
+  //   };
 
-    final Map<String, dynamic> offerSdpConstraints = {
-      "mandatory": {
-        "OfferToReceiveAudio": true,
-        "OfferToReceiveVideo": true,
-      },
-      "optional": [],
-    };
+  //   final Map<String, dynamic> offerSdpConstraints = {
+  //     "mandatory": {
+  //       "OfferToReceiveAudio": true,
+  //       "OfferToReceiveVideo": true,
+  //     },
+  //     "optional": [],
+  //   };
 
-    RTCPeerConnection pc = await createPeerConnection(
-        configuration, offerSdpConstraints);
+  //   RTCPeerConnection pc = await createPeerConnection(
+  //       configuration, offerSdpConstraints);
 
-    pc.addStream(await _getUserMedia());
+  //   pc.addStream(await _getUserMedia());
 
-    pc.onIceCandidate = (e) {
-      if (e.candidate != null) {
-        print(json.encode({
-          'candidate': e.candidate.toString(),
-          'sdpMid': e.sdpMid.toString(),
-          'sdpMlineIndex': e.sdpMlineIndex,
-        }));
-      }
-    };
+  //   pc.onIceCandidate = (e) {
+  //     if (e.candidate != null) {
+  //       print(json.encode({
+  //         'candidate': e.candidate.toString(),
+  //         'sdpMid': e.sdpMid.toString(),
+  //         'sdpMlineIndex': e.sdpMlineIndex,
+  //       }));
+  //     }
+  //   };
 
-    pc.onIceConnectionState = (e) {
-      print(e);
-    };
+  //   pc.onIceConnectionState = (e) {
+  //     print(e);
+  //   };
 
-    pc.onAddStream = (stream) {
-      print('addStream: ' + stream.id);
-      _remoteRenderer.srcObject = stream;
-    };
+  //   pc.onAddStream = (stream) {
+  //     print('addStream: ' + stream.id);
+  //     _remoteRenderer.srcObject = stream;
+  //   };
 
-    return pc;
-  }
+  //   return pc;
+  // }
 
-  _getUserMedia() async {
-    final Map<String, dynamic> mediaConstraints = {
-      'audio': false,
-      'video': {
-        'facingMode': 'user',
-      },
-    };
+  // _getUserMedia() async {
+  //   final Map<String, dynamic> mediaConstraints = {
+  //     'audio': false,
+  //     'video': {
+  //       'facingMode': 'user',
+  //     },
+  //   };
 
-    MediaStream stream =
-        await navigator.mediaDevices.getUserMedia(mediaConstraints);
+  //   MediaStream stream =
+  //       await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
-    return stream;
-  }
+  //   return stream;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -130,14 +143,18 @@ class _InComingCallState extends State<InComingCall> {
               width: 250,
               child: RawMaterialButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VideoCall2(
-                            friend: callingUser,
-                            peerConnection: _peerConnection,
-                            remoteRenderer: _remoteRenderer),
-                      ));
+                  context
+                      .read<AuthenticatedSessionCubit>()
+                      .pickUpPhone(uid, offer);
+
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => VideoCall2(
+                  //           friend: callingUser,
+                  //           peerConnection: _peerConnection,
+                  //           remoteRenderer: _remoteRenderer),
+                  //     ));
                 },
                 fillColor: Colors.green,
                 child: Icon(
@@ -158,7 +175,11 @@ class _InComingCallState extends State<InComingCall> {
                   EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               width: 250,
               child: RawMaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  context
+                      .read<AuthenticatedSessionCubit>()
+                      .lastState();
+                },
                 fillColor: Colors.red,
                 child: Icon(
                   Icons.call_end,

@@ -6,6 +6,7 @@ import 'package:flutter_client/blocs/video-call/video_call_bloc.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sdp_transform/sdp_transform.dart';
 import 'package:flutter_client/blocs/video-call/video_call_state.dart';
@@ -35,6 +36,7 @@ class _VideoCallState2 extends State<VideoCall2> {
       required this.remoteRenderer,
       required this.peerConnection});
 
+  bool createdOffer = false;
   double mar = 1;
   void refresh(dynamic childValue) {
     setState(() {
@@ -92,87 +94,6 @@ class _VideoCallState2 extends State<VideoCall2> {
     await peerConnection.addCandidate(candidate);
   }
 
-  // @override
-  // void dispose() {
-  //   _remoteRenderer.dispose();
-  //   sdpController.dispose();
-  //   super.dispose();
-  // }
-
-  // Future<bool> initState222() async {
-  //   print("INITIALIZEEEEE");
-  //   initRenders();
-  //   await _createPeerConnecion().then((pc) {
-  //     _peerConnection = pc;
-  //   });
-  //   super.initState();
-
-  //   print("INITIALIZEEEEE END");
-  //   print(_peerConnection);
-
-  //   return true;
-  // }
-
-  // _createPeerConnecion() async {
-  //   Map<String, dynamic> configuration = {
-  //     "iceServers": [
-  //       {"url": "stun:stun.l.google.com:19302"},
-  //     ]
-  //   };
-
-  //   final Map<String, dynamic> offerSdpConstraints = {
-  //     "mandatory": {
-  //       "OfferToReceiveAudio": true,
-  //       "OfferToReceiveVideo": true,
-  //     },
-  //     "optional": [],
-  //   };
-
-  //   RTCPeerConnection pc = await createPeerConnection(
-  //       configuration, offerSdpConstraints);
-
-  //   pc.addStream(await _getUserMedia());
-
-  //   pc.onIceCandidate = (e) {
-  //     if (e.candidate != null) {
-  //       print(json.encode({
-  //         'candidate': e.candidate.toString(),
-  //         'sdpMid': e.sdpMid.toString(),
-  //         'sdpMlineIndex': e.sdpMlineIndex,
-  //       }));
-  //     }
-  //   };
-
-  //   pc.onIceConnectionState = (e) {
-  //     print(e);
-  //   };
-
-  //   pc.onAddStream = (stream) {
-  //     print('addStream: ' + stream.id);
-  //     _remoteRenderer.srcObject = stream;
-  //   };
-
-  //   return pc;
-  // }
-
-  // _getUserMedia() async {
-  //   final Map<String, dynamic> mediaConstraints = {
-  //     'audio': false,
-  //     'video': {
-  //       'facingMode': 'user',
-  //     },
-  //   };
-
-  //   MediaStream stream =
-  //       await navigator.mediaDevices.getUserMedia(mediaConstraints);
-
-  //   return stream;
-  // }
-
-  // initRenders() async {
-  //   await _remoteRenderer.initialize();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -184,7 +105,10 @@ class _VideoCallState2 extends State<VideoCall2> {
         child: BlocBuilder<VideoCallBloc, VideoCallState>(
             builder: (context, state) {
           if (friend != null) {
-            _createOffer(context);
+            if (createdOffer == false) {
+              _createOffer(context);
+              createdOffer = true;
+            }
             SignalRProvider.connection.on('CandidateToConnect',
                 (message) async {
               print("ODEBRAŁEM KANDYDATA");
@@ -212,7 +136,13 @@ class _VideoCallState2 extends State<VideoCall2> {
                         horizontal: 20, vertical: 40),
                     width: double.infinity,
                     child: RawMaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        remoteRenderer.dispose();
+                        peerConnection.dispose();
+                        context
+                            .read<AuthenticatedSessionCubit>()
+                            .lastState();
+                      },
                       fillColor: Colors.red,
                       child: Icon(
                         Icons.call_end,

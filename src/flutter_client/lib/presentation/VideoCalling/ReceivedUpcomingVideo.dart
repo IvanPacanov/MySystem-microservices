@@ -2,40 +2,37 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:provider/src/provider.dart';
 import 'package:sdp_transform/sdp_transform.dart';
 
 class ReceivedUpcomingVideo extends StatefulWidget {
-  final RTCVideoRenderer remoteRenderer;
-  final RTCPeerConnection peerConnection;
-  final SignalRProvider signalRProvider;
+  // final RTCVideoRenderer remoteRenderer;
+  // final RTCPeerConnection peerConnection;
+  // final SignalRProvider signalRProvider;
   final String offer;
   final String uid;
-  const ReceivedUpcomingVideo(
-      {Key? key,
-      required this.remoteRenderer,
-      required this.uid,
-      required this.offer,
-      required this.signalRProvider,
-      required this.peerConnection})
-      : super(key: key);
+  ReceivedUpcomingVideo({
+    Key? key,
+    required this.uid,
+    required this.offer,
+  }) : super(key: key);
 
   @override
   _ReceivedUpcomingVideoState createState() =>
       _ReceivedUpcomingVideoState(
-          offer: offer,
-          signalRProvider: signalRProvider,
-          remoteRenderer: remoteRenderer,
-          uid: uid,
-          peerConnection: peerConnection);
+        offer: offer,
+        uid: uid,
+      );
 }
 
 class _ReceivedUpcomingVideoState
     extends State<ReceivedUpcomingVideo> {
-  final RTCPeerConnection peerConnection;
-  final RTCVideoRenderer remoteRenderer;
-  final SignalRProvider signalRProvider;
+  late RTCPeerConnection peerConnection;
+  late RTCVideoRenderer remoteRenderer = new RTCVideoRenderer();
   final String uid;
   final String offer;
   bool _offer = false;
@@ -49,11 +46,84 @@ class _ReceivedUpcomingVideoState
   var arr = [];
 
   _ReceivedUpcomingVideoState(
-      {required this.remoteRenderer,
-      required this.peerConnection,
-      required this.uid,
-      required this.signalRProvider,
-      required this.offer});
+      {required this.uid, required this.offer});
+
+  @override
+  initState() {
+    initRenders();
+    _createPeerConnecion().then((pc) {
+      peerConnection = pc;
+      _setRemoteDescription();
+    });
+    super.initState();
+  }
+
+  initRenders() async {
+    await remoteRenderer.initialize();
+  }
+
+  @override
+  void dispose() {
+    remoteRenderer.dispose();
+    // sdpController.dispose();
+    super.dispose();
+  }
+
+  _createPeerConnecion() async {
+    Map<String, dynamic> configuration = {
+      "iceServers": [
+        {"url": "stun:stun.l.google.com:19302"},
+      ]
+    };
+
+    final Map<String, dynamic> offerSdpConstraints = {
+      "mandatory": {
+        "OfferToReceiveAudio": true,
+        "OfferToReceiveVideo": true,
+      },
+      "optional": [],
+    };
+
+    RTCPeerConnection pc = await createPeerConnection(
+        configuration, offerSdpConstraints);
+
+    pc.addStream(await _getUserMedia());
+
+    pc.onIceCandidate = (e) {
+      if (e.candidate != null) {
+        print(json.encode({
+          'candidate': e.candidate.toString(),
+          'sdpMid': e.sdpMid.toString(),
+          'sdpMlineIndex': e.sdpMlineIndex,
+        }));
+      }
+    };
+
+    pc.onIceConnectionState = (e) {
+      print(e);
+    };
+
+    pc.onAddStream = (stream) {
+      print('addStream: ' + stream.id);
+      remoteRenderer.srcObject = stream;
+    };
+
+    return pc;
+  }
+
+  _getUserMedia() async {
+    final Map<String, dynamic> mediaConstraints = {
+      'audio': false,
+      'video': {
+        'facingMode': 'user',
+      },
+    };
+
+    MediaStream stream =
+        await navigator.mediaDevices.getUserMedia(mediaConstraints);
+
+    return stream;
+  }
 
   void _setRemoteDescription() async {
     String jsonString = offer;
@@ -97,7 +167,6 @@ class _ReceivedUpcomingVideoState
 
   @override
   Widget build(BuildContext context) {
-    _setRemoteDescription();
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -114,7 +183,13 @@ class _ReceivedUpcomingVideoState
                   EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               width: double.infinity,
               child: RawMaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  remoteRenderer.dispose();
+                  peerConnection.dispose();
+                  context
+                      .read<AuthenticatedSessionCubit>()
+                      .lastState();
+                },
                 fillColor: Colors.red,
                 child: Icon(
                   Icons.call_end,
@@ -138,7 +213,7 @@ class _ReceivedUpcomingVideoState
       LineSplitter ls = new LineSplitter();
       var a = ls.convert(c!);
       arr.add(a[10].substring(2));
-      signalRProvider.sendCandidate(arr, uid);
+      context.read<SignalRProvider>().sendCandidate(arr, uid);
 
       await Future.delayed(Duration(seconds: 2));
       refresh(context);

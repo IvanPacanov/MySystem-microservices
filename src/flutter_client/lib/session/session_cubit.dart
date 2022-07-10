@@ -6,6 +6,7 @@ import 'package:flutter_client/session/session_state.dart';
 class SessionCubit extends Cubit<SessionState> {
   final AuthServices authServices;
   late User user;
+
   SessionCubit({required this.authServices})
       : super(UnKnownSessionState()) {
     emit(Unauthenticated());
