@@ -27,6 +27,7 @@ class _VideoCallState extends State<VideoCall> {
   final _remoteRenderer = new RTCVideoRenderer();
   late RTCPeerConnection _peerConnection;
   final sdpController = TextEditingController();
+  late MediaStream stream;
 
   _VideoCallState({required this.friend});
 
@@ -38,6 +39,14 @@ class _VideoCallState extends State<VideoCall> {
 
       if (friend != null) {
         _createOffer(context);
+
+        SignalRProvider.connection.on('CallEnded', (arguments) async {
+          _remoteRenderer.srcObject = null;
+          _peerConnection.dispose();
+          _peerConnection.close();
+          context.read<AuthenticatedSessionCubit>().lastState();
+        });
+
         SignalRProvider.connection.on('CandidateToConnect',
             (message) async {
           print("ODEBRAŁEM KANDYDATA");
@@ -121,7 +130,7 @@ class _VideoCallState extends State<VideoCall> {
       },
     };
 
-    MediaStream stream =
+    stream =
         await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
     return stream;
@@ -133,7 +142,7 @@ class _VideoCallState extends State<VideoCall> {
     var session = parse(description.sdp.toString());
     var offer = json.encode(session);
     if (friend?.connectionId != null) {
-      SignalRProvider.phonePicked(offer, friend!.connectionId);
+      SignalRProvider.callToUser(offer, friend!.connectionId);
       _offer = true;
       _peerConnection.setLocalDescription(description);
     }
@@ -174,6 +183,13 @@ class _VideoCallState extends State<VideoCall> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<SignalRProvider>().rejectedCalling = (data) => {
+          _remoteRenderer.srcObject = null,
+          _peerConnection.removeStream(stream),
+          _peerConnection.dispose(),
+          _peerConnection.close(),
+          context.read<AuthenticatedSessionCubit>().hangUp(friend!),
+        };
     return BlocProvider(
         create: (context) => VideoCallBloc(),
         // componehtRepository: context.read<ComponentRepository>(),
@@ -211,7 +227,16 @@ class _VideoCallState extends State<VideoCall> {
                         horizontal: 20, vertical: 40),
                     width: double.infinity,
                     child: RawMaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _remoteRenderer.srcObject = null;
+                        _peerConnection.removeStream(stream);
+
+                        _peerConnection.dispose();
+                        _peerConnection.close();
+                        context
+                            .read<AuthenticatedSessionCubit>()
+                            .hangUp(friend!);
+                      },
                       fillColor: Colors.red,
                       child: Icon(
                         Icons.call_end,
@@ -230,6 +255,7 @@ class _VideoCallState extends State<VideoCall> {
   }
 
   String correctCandidate(String message) {
+    print(message);
     var mess = "\{\"" +
         message.substring(0, 9) +
         "\"" +

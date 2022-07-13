@@ -33,9 +33,13 @@ class _ReceivedUpcomingVideoState
     extends State<ReceivedUpcomingVideo> {
   late RTCPeerConnection peerConnection;
   late RTCVideoRenderer remoteRenderer = new RTCVideoRenderer();
+  late RTCPeerConnection pc;
+  late MediaStream stream;
   final String uid;
   final String offer;
   bool _offer = false;
+
+  bool stopConnection = false;
   double mar = 1;
   void refresh(dynamic childValue) {
     setState(() {
@@ -54,6 +58,13 @@ class _ReceivedUpcomingVideoState
     _createPeerConnecion().then((pc) {
       peerConnection = pc;
       _setRemoteDescription();
+
+      SignalRProvider.connection.on('CallEnded', (arguments) async {
+        remoteRenderer.srcObject = null;
+        peerConnection.dispose();
+        peerConnection.close();
+        context.read<AuthenticatedSessionCubit>().lastState();
+      });
     });
     super.initState();
   }
@@ -84,7 +95,7 @@ class _ReceivedUpcomingVideoState
       "optional": [],
     };
 
-    RTCPeerConnection pc = await createPeerConnection(
+    pc = await createPeerConnection(
         configuration, offerSdpConstraints);
 
     pc.addStream(await _getUserMedia());
@@ -104,7 +115,6 @@ class _ReceivedUpcomingVideoState
     };
 
     pc.onAddStream = (stream) {
-      print('addStream: ' + stream.id);
       remoteRenderer.srcObject = stream;
     };
 
@@ -119,7 +129,7 @@ class _ReceivedUpcomingVideoState
       },
     };
 
-    MediaStream stream =
+    stream =
         await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
     return stream;
@@ -135,7 +145,6 @@ class _ReceivedUpcomingVideoState
         new RTCSessionDescription(sdp, _offer ? 'answer' : 'offer');
 
     var help = description.toMap();
-    print(help);
 
     await peerConnection.setRemoteDescription(description);
     await _createAnswer();
@@ -184,11 +193,15 @@ class _ReceivedUpcomingVideoState
               width: double.infinity,
               child: RawMaterialButton(
                 onPressed: () {
-                  remoteRenderer.dispose();
+                  remoteRenderer.srcObject = null;
+                  peerConnection.removeStream(stream);
+                  stream.dispose();
+
                   peerConnection.dispose();
+                  peerConnection.close();
                   context
                       .read<AuthenticatedSessionCubit>()
-                      .lastState();
+                      .hangUpConnectionId(uid);
                 },
                 fillColor: Colors.red,
                 child: Icon(
@@ -216,6 +229,7 @@ class _ReceivedUpcomingVideoState
       context.read<SignalRProvider>().sendCandidate(arr, uid);
 
       await Future.delayed(Duration(seconds: 2));
+
       refresh(context);
     }
   }

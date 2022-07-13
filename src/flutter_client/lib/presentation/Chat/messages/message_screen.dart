@@ -10,6 +10,7 @@ import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/VideoCalling/Calling.dart';
 import 'package:flutter_client/presentation/VideoCalling/VideoCall2.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/src/provider.dart';
 
@@ -18,97 +19,95 @@ import 'components/body.dart';
 class MessageScreen extends StatefulWidget {
   // final BuildContext context;
   final UserFriend friend;
-  const MessageScreen(
-      {Key? key, required this.friend})
+  const MessageScreen({Key? key, required this.friend})
       : super(key: key);
 
   @override
-  _MessageScreen createState() =>
-      _MessageScreen(friend: friend);
+  _MessageScreen createState() => _MessageScreen(friend: friend);
 }
 
 class _MessageScreen extends State<MessageScreen> {
   final UserFriend friend;
   _MessageScreen({required this.friend});
-  final _remoteRenderer = new RTCVideoRenderer();
-  late RTCPeerConnection _peerConnection;
-  final sdpController = TextEditingController();
+  // final _remoteRenderer = new RTCVideoRenderer();
+  // late RTCPeerConnection _peerConnection;
+  // final sdpController = TextEditingController();
 
-  @override
-  initState() {
-    initRenders();
-    _createPeerConnecion().then((pc) {
-      _peerConnection = pc;
-    });
-    super.initState();
-  }
+  // @override
+  // initState() {
+  //   initRenders();
+  //   _createPeerConnecion().then((pc) {
+  //     _peerConnection = pc;
+  //   });
+  //   super.initState();
+  // }
 
-  initRenders() async {
-    await _remoteRenderer.initialize();
-  }
+  // initRenders() async {
+  //   await _remoteRenderer.initialize();
+  // }
 
-  @override
-  void dispose() {
-    _remoteRenderer.dispose();
-    sdpController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _remoteRenderer.dispose();
+  //   sdpController.dispose();
+  //   super.dispose();
+  // }
 
-  _createPeerConnecion() async {
-    Map<String, dynamic> configuration = {
-      "iceServers": [
-        {"url": "stun:stun.l.google.com:19302"},
-      ]
-    };
+  // _createPeerConnecion() async {
+  //   Map<String, dynamic> configuration = {
+  //     "iceServers": [
+  //       {"url": "stun:stun.l.google.com:19302"},
+  //     ]
+  //   };
 
-    final Map<String, dynamic> offerSdpConstraints = {
-      "mandatory": {
-        "OfferToReceiveAudio": true,
-        "OfferToReceiveVideo": true,
-      },
-      "optional": [],
-    };
+  //   final Map<String, dynamic> offerSdpConstraints = {
+  //     "mandatory": {
+  //       "OfferToReceiveAudio": true,
+  //       "OfferToReceiveVideo": true,
+  //     },
+  //     "optional": [],
+  //   };
 
-    RTCPeerConnection pc = await createPeerConnection(
-        configuration, offerSdpConstraints);
+  //   RTCPeerConnection pc = await createPeerConnection(
+  //       configuration, offerSdpConstraints);
 
-    pc.addStream(await _getUserMedia());
+  //   pc.addStream(await _getUserMedia());
 
-    pc.onIceCandidate = (e) {
-      if (e.candidate != null) {
-        print(json.encode({
-          'candidate': e.candidate.toString(),
-          'sdpMid': e.sdpMid.toString(),
-          'sdpMlineIndex': e.sdpMlineIndex,
-        }));
-      }
-    };
+  //   pc.onIceCandidate = (e) {
+  //     if (e.candidate != null) {
+  //       print(json.encode({
+  //         'candidate': e.candidate.toString(),
+  //         'sdpMid': e.sdpMid.toString(),
+  //         'sdpMlineIndex': e.sdpMlineIndex,
+  //       }));
+  //     }
+  //   };
 
-    pc.onIceConnectionState = (e) {
-      print(e);
-    };
+  //   pc.onIceConnectionState = (e) {
+  //     print(e);
+  //   };
 
-    pc.onAddStream = (stream) {
-      print('addStream: ' + stream.id);
-      _remoteRenderer.srcObject = stream;
-    };
+  //   pc.onAddStream = (stream) {
+  //     print('addStream: ' + stream.id);
+  //     _remoteRenderer.srcObject = stream;
+  //   };
 
-    return pc;
-  }
+  //   return pc;
+  // }
 
-  _getUserMedia() async {
-    final Map<String, dynamic> mediaConstraints = {
-      'audio': false,
-      'video': {
-        'facingMode': 'user',
-      },
-    };
+  // _getUserMedia() async {
+  //   final Map<String, dynamic> mediaConstraints = {
+  //     'audio': false,
+  //     'video': {
+  //       'facingMode': 'user',
+  //     },
+  //   };
 
-    MediaStream stream =
-        await navigator.mediaDevices.getUserMedia(mediaConstraints);
+  //   MediaStream stream =
+  //       await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
-    return stream;
-  }
+  //   return stream;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -172,14 +171,17 @@ class _MessageScreen extends State<MessageScreen> {
         //   },
         IconButton(
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VideoCall2(
-                      friend: friend,
-                      peerConnection: _peerConnection,
-                      remoteRenderer: _remoteRenderer),
-                ));
+            context
+                .read<AuthenticatedSessionCubit>()
+                .goToVideoCall(friend);
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => VideoCall2(
+            //           friend: friend,
+            //           peerConnection: _peerConnection,
+            //           remoteRenderer: _remoteRenderer),
+            //     ));
           },
           icon: Icon(Icons.videocam),
         ),

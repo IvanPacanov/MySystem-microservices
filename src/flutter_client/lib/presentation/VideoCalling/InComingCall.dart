@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/VideoCalling/VideoCall2.dart';
+import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/src/provider.dart';
@@ -115,7 +116,7 @@ class _InComingCallState extends State<InComingCall> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -146,15 +147,6 @@ class _InComingCallState extends State<InComingCall> {
                   context
                       .read<AuthenticatedSessionCubit>()
                       .pickUpPhone(uid, offer);
-
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => VideoCall2(
-                  //           friend: callingUser,
-                  //           peerConnection: _peerConnection,
-                  //           remoteRenderer: _remoteRenderer),
-                  //     ));
                 },
                 fillColor: Colors.green,
                 child: Icon(
@@ -178,7 +170,7 @@ class _InComingCallState extends State<InComingCall> {
                 onPressed: () {
                   context
                       .read<AuthenticatedSessionCubit>()
-                      .lastState();
+                      .rejectCall(callingUser);
                 },
                 fillColor: Colors.red,
                 child: Icon(

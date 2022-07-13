@@ -6,13 +6,13 @@ import 'package:flutter_client/presentation/Chat/chat_view.dart';
 import 'package:flutter_client/presentation/Chat/messages/message_screen.dart';
 import 'package:flutter_client/presentation/MainScreen/main_screen.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
-import 'package:flutter_client/presentation/VideoCalling/ComingVideo.dart';
 import 'package:flutter_client/presentation/VideoCalling/InComingCall.dart';
 import 'package:flutter_client/presentation/VideoCalling/ReceivedUpcomingVideo.dart';
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_client/session/chatSession/chatSession_state.dart';
 import 'package:flutter_client/session/session_cubit.dart';
+import 'package:provider/provider.dart';
 
 class SessionView extends StatelessWidget {
   SessionView(BuildContext context);
@@ -61,11 +61,7 @@ Widget _navigation(AuthenticatedSessionState state) {
               callingUser: state.callingUser,
               uid: state.uid,
               offer: state.offer),
-        ),
-      if (state is ComingCalling)
-        MaterialPage(
-          child: ComingVideo(offer: state.offer, uid: state.uid),
-        ),
+        ),     
       if (state is VideoCallState)
         MaterialPage(
           child: VideoCall(
@@ -74,11 +70,13 @@ Widget _navigation(AuthenticatedSessionState state) {
         ),
       if (state is ReceivedUpcomingVideoState)
         MaterialPage(
+            child: ChangeNotifierProvider(
+          create: (BuildContext context) {},
           child: ReceivedUpcomingVideo(
             offer: state.offer,
             uid: state.uid,
           ),
-        ),
+        )),
     ],
     onPopPage: (route, result) => route.didPop(result),
   );

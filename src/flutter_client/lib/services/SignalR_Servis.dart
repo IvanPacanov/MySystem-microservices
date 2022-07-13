@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/environments/environments.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
+import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:signalr_core/signalr_core.dart';
 
@@ -29,6 +30,10 @@ class SignalRProvider extends Bloc {
 
   late Function(dynamic update, dynamic update2) onComingCalling;
 
+  late Function(dynamic update2) rejectedCalling;
+
+  late Function(dynamic update2) onRingingInterrupted;
+
   SignalRProvider() : super(SignalRProvider);
 
   Future initSignalR(User user) async {
@@ -38,6 +43,10 @@ class SignalRProvider extends Bloc {
 
     connection.on('SendMessage', (message) async {
       onReceivedMessageCallback(MessageSignalR.fromJson(message?[0]));
+    });
+
+    connection.on('RejectCall', (message) async {
+      rejectedCalling(message![0]);
     });
 
     connection.on('PickUpPhone', (message) async {
@@ -93,7 +102,7 @@ class SignalRProvider extends Bloc {
     });
 
     connection.on('CallEnded', (message) async {
-      print(message);
+      onRingingInterrupted(message![0]);
     });
 
     connection.on('Errors', (message) async {
@@ -166,5 +175,13 @@ class SignalRProvider extends Bloc {
 
   stopCallingToUser(String user) async {
     connection.invoke('StopCallingToUser', args: [user]);
+  }
+
+  hangUp(String uid) async {
+    connection.invoke('HangUp', args: [uid]);
+  }
+
+  rejectCall(UserFriend user) {
+    connection.invoke('RejectCall', args: [user.connectionId]);
   }
 }

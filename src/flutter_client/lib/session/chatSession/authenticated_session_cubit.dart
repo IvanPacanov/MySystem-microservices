@@ -43,6 +43,9 @@ class AuthenticatedSessionCubit
 
     signalRProvider.onReceivedMessageCallback =
         (data) => receivedMessage(data);
+
+    signalRProvider.onRingingInterrupted =
+        (data) => ringingInterrupted(data);
   }
 
   receivedMessage(MessageSignalR data) {
@@ -114,5 +117,28 @@ class AuthenticatedSessionCubit
 
   void pickUpPhone(String uid, String offer) {
     emit(ReceivedUpcomingVideoState(uid: uid, offer: offer));
+  }
+
+  void goToVideoCall(UserFriend friend) {
+    emit(VideoCallState(friend: friend));
+  }
+
+  void ringingInterrupted(String connectionId) {
+    lastState();
+  }
+
+  void rejectCall(UserFriend user) {
+    signalRProvider.rejectCall(user);
+    lastState();
+  }
+
+  void hangUp(UserFriend friend) {
+    signalRProvider.hangUp(friend.connectionId);
+    lastState();
+  }
+
+  void hangUpConnectionId(String connectionId) {
+    signalRProvider.hangUp(connectionId);
+    lastState();
   }
 }
