@@ -27,6 +27,7 @@ class _MainScreen extends State<MainScreen> {
             _cardElement(_phoneButton(context)),
             _cardElement(_guardianButton(context)),
             _cardElement(_chatButton(context)),
+            _cardElement(_textToSpeech(context)),
             _cardElement(_logoutButton(context)),
           ],
         ),
@@ -42,6 +43,57 @@ class _MainScreen extends State<MainScreen> {
       ),
       margin: EdgeInsets.all(8.0),
       child: content,
+    );
+  }
+
+  Widget _textToSpeech(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.read<AuthenticatedSessionCubit>().textToSpeech();
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: 200.0,
+        height: 200.0,
+        decoration: BoxDecoration(
+            border:
+                Border.all(color: Colors.orange.shade400, width: 5),
+            shape: BoxShape.circle),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.hearing_outlined,
+                size: 50, color: Colors.orange.shade400),
+            Text('Rozpoznawanie tekstu'.toUpperCase()),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget _addFriend(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.read<AuthenticatedSessionCubit>().addNewFriendView();
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: 200.0,
+        height: 200.0,
+        decoration: BoxDecoration(
+            border:
+                Border.all(color: Colors.orange.shade400, width: 5),
+            shape: BoxShape.circle),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.person_add,
+                size: 50, color: Colors.orange.shade400),
+            Text('Logout'.toUpperCase()),
+          ],
+        ),
+      ),
     );
   }
 

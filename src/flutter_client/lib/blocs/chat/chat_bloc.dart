@@ -51,26 +51,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         testItem['ConnectionId'];
   }
 
-  void sendCos() async {
-    await chatSessionCubit.signalRProvider.sendMeMessage();
-  }
-
-  // receivedMessage(MessageSignalR data) {
-  //   var user = authRepository.user.friends
-  //       .where((z) => z.id == data.userId)
-  //       .first;
-
-  //   int index = authRepository.user.friends.indexOf(user);
-
-  //   Message message = new Message(
-  //       userId: data.userId,
-  //       text: data.text,
-  //       read: data.read,
-  //       send: data.send);
-
-  //   authRepository.user.friends[index].chats![0].messages!
-  //       .add(message);
-  // }
 
   test(bool value) {
     print(value);

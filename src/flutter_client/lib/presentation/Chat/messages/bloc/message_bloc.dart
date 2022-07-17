@@ -31,8 +31,12 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           read: false,
           send: DateTime.now().toString());
 
-      signalR.sendMessage(
-          message, event.friend.connectionId, event.chatId);
+      if (event.friend.connectionId != null) {
+        signalR.sendMessage(
+            message, event.friend.connectionId!, event.chatId);
+      } else {
+        signalR.sendMessageWithoutConnectionId(message, event.chatId);
+      }
 
       _addSendedMessage(message, event.friend.id!);
     }

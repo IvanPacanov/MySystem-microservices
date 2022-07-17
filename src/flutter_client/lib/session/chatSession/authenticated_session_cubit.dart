@@ -14,7 +14,7 @@ class AuthenticatedSessionCubit
     extends Cubit<AuthenticatedSessionState> {
   final SignalRProvider signalRProvider;
   final AuthServices authServices;
-  final User user;
+  late User user;
 
   late Function() onFriendsUpdatedCallback;
 
@@ -112,6 +112,7 @@ class AuthenticatedSessionCubit
   }
 
   void lastState() {
+    stateList.removeLast();
     emit(stateList.last);
   }
 
@@ -133,12 +134,41 @@ class AuthenticatedSessionCubit
   }
 
   void hangUp(UserFriend friend) {
-    signalRProvider.hangUp(friend.connectionId);
+    signalRProvider.hangUp(friend.connectionId!);
     lastState();
   }
 
   void hangUpConnectionId(String connectionId) {
     signalRProvider.hangUp(connectionId);
     lastState();
+  }
+
+  void addNewFriendView() {
+    this.stateList.add(FriendViewState());
+    emit(FriendViewState());
+  }
+
+  void addNewFriend(String userUid, String userName) {}
+
+  void rejectFriend(UserFriend friend) {
+    this
+        .authServices
+        .actionFriendFlag(user.id!, friend.id!, 'Rejected');
+  }
+
+  Future<bool> confirmFriend(UserFriend friend) async {
+    var result = await authServices.actionFriendFlag(
+        user.id!, friend.id!, 'Approved');
+
+    if (result) {
+      user = await authServices.getProfile(email: user.email!);
+      return true;
+    }
+    return false;
+  }
+
+  void textToSpeech() {
+    this.stateList.add(TextToSpeechState());
+    emit(TextToSpeechState());
   }
 }

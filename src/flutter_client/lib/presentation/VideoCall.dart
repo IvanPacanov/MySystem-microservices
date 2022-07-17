@@ -142,7 +142,7 @@ class _VideoCallState extends State<VideoCall> {
     var session = parse(description.sdp.toString());
     var offer = json.encode(session);
     if (friend?.connectionId != null) {
-      SignalRProvider.callToUser(offer, friend!.connectionId);
+      SignalRProvider.callToUser(offer, friend!.connectionId!);
       _offer = true;
       _peerConnection.setLocalDescription(description);
     }

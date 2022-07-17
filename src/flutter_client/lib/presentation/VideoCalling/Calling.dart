@@ -31,7 +31,7 @@ class Calling extends StatelessWidget {
                 onPressed: () {
                   context
                       .read<SignalRProvider>()
-                      .stopCallingToUser(callingUser.connectionId);
+                      .stopCallingToUser(callingUser.connectionId!);
                   Navigator.pop(context);
                 },
                 fillColor: Colors.red,

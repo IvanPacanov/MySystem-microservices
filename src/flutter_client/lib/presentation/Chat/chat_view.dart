@@ -1,21 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/blocs/chat/chat_bloc.dart';
 import 'package:flutter_client/blocs/chat/chat_state.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
-import 'package:flutter_client/presentation/AddNewUser/AddNewUser.dart';
-import 'package:flutter_client/presentation/Chat/messages/message_screen.dart';
-import 'package:flutter_client/presentation/Chat/widget/chat_header.dart';
-import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/account/account_screen.dart';
-import 'package:flutter_client/repositories/component_repository.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
-import 'package:flutter_client/session/session_cubit.dart';
 import 'package:flutter_client/widgets/gradient_button.dart';
 import 'package:provider/provider.dart';
 
@@ -56,27 +48,6 @@ class _ChatView extends State<ChatView> {
     );
   }
 
-  Widget _buttton() {
-    return BlocBuilder<ChatBloc, ChatState>(
-        builder: (context, state) {
-      return GradientButton(
-        width: 150,
-        height: 50,
-        onPressed: () {
-          context.read<ChatBloc>().sendCos();
-        },
-        text: Text(
-          'Send Message',
-          style: TextStyle(color: Colors.white),
-        ),
-        icon: Icon(
-          Icons.check,
-          color: Colors.white,
-        ),
-      );
-    });
-  }
-
   Widget _buttton1() {
     return BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
@@ -106,97 +77,133 @@ class _ChatView extends State<ChatView> {
   Widget _connectionString(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
-      // if (true) {
-      //   Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) => VideoCall2(
-      //             friend: friend,
-      //             peerConnection: _peerConnection,
-      //             remoteRenderer: _remoteRenderer),
-      //       ));
-      // }
       userCred = context.read<ChatBloc>().chatSessionCubit.user;
 
       return ListView.builder(
           itemCount: userCred.friends.length,
           itemBuilder: (context, index) {
             return _friendCard(context, userCred.friends[index]);
-
-            // return ListTile(
-            //   onTap: () => {
-            //     Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) => MessageScreen(
-            //             friend: userCred.friends[index],
-            //           ),
-            //         ))
-            //   },
-            //   title: Text(userCred.friends[index].nick!),
-            //   leading: CircleAvatar(
-            //     radius: 60.0,
-            //     backgroundImage:
-            //         NetworkImage(userCred.friends[index].urlAvatar!),
-            //     backgroundColor: Colors.transparent,
-            //   ),
-            // );
           });
     });
   }
 
   Widget _friendCard(BuildContext context, UserFriend friend) {
     return Card(
-      color: friend.isOnline! ? Colors.green.shade200 : Colors.white,
-      child: IntrinsicHeight(
-        child: InkWell(
-          onTap: () {
-            context
-                .read<AuthenticatedSessionCubit>()
-                .openMessageView(friend);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+        color: friend.approved == FriendRequestFlag.Approved
+            ? Colors.green.shade200
+            : friend.isOnline!
+                ? Colors.green.shade200
+                : Colors.white,
+        child: friend.approved == FriendRequestFlag.Approved
+            ? confirmedFriend(friend)
+            : unConfirmedFriend(friend));
+  }
+
+  Widget unConfirmedFriend(UserFriend friend) {
+    return IntrinsicHeight(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            CircleAvatar(
+              radius: 60.0,
+              backgroundImage: NetworkImage(friend.urlAvatar!),
+              backgroundColor: Colors.transparent,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                CircleAvatar(
-                  radius: 60.0,
-                  backgroundImage: NetworkImage(friend.urlAvatar!),
-                  backgroundColor: Colors.transparent,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                Text(friend.nick!, style: TextStyle(fontSize: 20)),
+                Row(
                   children: <Widget>[
-                    Text(friend.nick!,
-                        style: TextStyle(fontSize: 20)),
-                    Text(
-                        friend.chats!.length > 0
-                            ? (friend.chats![0].messages!.length > 0
-                                ? friend.chats![0].messages![0].text
-                                : "")
-                            : "",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: friend.chats!.length > 0
-                              ? (friend.chats![0].messages!.length > 0
-                                  ? friend.chats![0].messages![0]
-                                          .read!
-                                      ? FontWeight.normal
-                                      : FontWeight.bold
-                                  : FontWeight.normal)
-                              : FontWeight.normal,
-                        )),
+                    ElevatedButton(
+                      onPressed: () {
+                        context
+                            .read<AuthenticatedSessionCubit>()
+                            .rejectFriend(friend);
+                      },
+                      child: const Text('Odrzuć'),
+                    ),
+                    const SizedBox(width: 30),
+                    ElevatedButton(
+                      onPressed: () {
+                        context
+                            .read<AuthenticatedSessionCubit>()
+                            .confirmFriend(friend)
+                            .then((value) => setState(() {}));
+                        // userCred = context
+                        //     .read<ChatBloc>()
+                        //     .chatSessionCubit
+                        //     .user;
+                      },
+                      child: const Text('Potwierdź'),
+                    ),
                   ],
-                ),
-                Positioned(
-                    child: Text(friend.lastLogin != null
-                        ? friend.lastLogin!
-                        : ""))
+                )
               ],
             ),
+            Positioned(
+                child: Text(friend.lastLogin != null
+                    ? friend.lastLogin!
+                    : ""))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget confirmedFriend(UserFriend friend) {
+    var messageLength = friend.chats![0].messages!.length;
+    return IntrinsicHeight(
+      child: InkWell(
+        onTap: () {
+          context
+              .read<AuthenticatedSessionCubit>()
+              .openMessageView(friend);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              CircleAvatar(
+                radius: 60.0,
+                backgroundImage: NetworkImage(friend.urlAvatar!),
+                backgroundColor: Colors.transparent,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(friend.nick!, style: TextStyle(fontSize: 20)),
+                  Text(
+                      messageLength > 0
+                          ? (messageLength > 0
+                              ? friend.chats![0]
+                                  .messages![messageLength - 1].text
+                              : "")
+                          : "",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: friend.chats!.length > 0
+                            ? (friend.chats![0].messages!.length > 0
+                                ? friend.chats![0].messages![0].read!
+                                    ? FontWeight.normal
+                                    : FontWeight.bold
+                                : FontWeight.normal)
+                            : FontWeight.normal,
+                      )),
+                ],
+              ),
+              Positioned(
+                  child: Text(friend.lastLogin != null
+                      ? friend.lastLogin!
+                      : ""))
+            ],
           ),
         ),
       ),
@@ -210,11 +217,9 @@ class _ChatView extends State<ChatView> {
       actions: [
         IconButton(
             onPressed: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) =>
-              //             AddNewUser(userCred: userCred)));
+              context
+                  .read<AuthenticatedSessionCubit>()
+                  .addNewFriendView();
             },
             icon: Icon(Icons.add)),
         IconButton(
@@ -239,23 +244,6 @@ class _ChatView extends State<ChatView> {
       ),
     );
   }
-
-  // Widget _chatView() {
-  //   return Column(children: [
-  //     Expanded(
-  //         child: ListView.builder(
-  //       itemCount: mockChatsData.length,
-  //       itemBuilder: (context, index) => ChatCard(
-  //         chat: mockChatsData[index],
-  //         press: () => Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //               builder: (context) => MessageScreen(),
-  //             )),
-  //       ),
-  //     )),
-  //   ]);
-  // }
 
   Widget _bottomNavigation() {
     return SizedBox(

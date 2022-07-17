@@ -52,6 +52,9 @@ dependencies:
 
   #NEW 30,06,2022
   flutter_secure_storage: ^5.0.2
+  google_ml_kit: ^0.11.0
+  enum_to_string: ^2.0.1
+  image_picker: ^0.8.5+3
 
 dev_dependencies:
   flutter_test:

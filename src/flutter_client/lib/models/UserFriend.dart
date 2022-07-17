@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter_client/models/ChatMessage.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -15,7 +16,9 @@ class UserFriend {
   final String? urlAvatar;
   final bool? isOnline;
   final String? lastLogin;
-  late String connectionId;
+  final FriendRequestFlag approved;
+  // ignore: avoid_init_to_null
+  late String? connectionId = null;
   final List<NewChat>? chats;
 
   UserFriend(
@@ -25,6 +28,7 @@ class UserFriend {
       required this.email,
       required this.lastLogin,
       required this.urlAvatar,
+      required this.approved,
       required this.chats});
 
   factory UserFriend.fromJson(Map<String, dynamic> json) =>
@@ -48,7 +52,7 @@ class UserFriend {
   //     confirmed: json['confirmed'],
   //     chatMessage: []);
 
-  copyWith(
+  copyWith(FriendRequestFlag approved,
           {int? id,
           String? nick,
           String? email,
@@ -61,5 +65,8 @@ class UserFriend {
           email: email,
           lastLogin: lastLogin,
           urlAvatar: urlAvatar,
+          approved: approved,
           chats: chats);
 }
+
+enum FriendRequestFlag { None, Approved, Rejected, Blocked, Spam }

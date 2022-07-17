@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/auth/repository/auth_service.dart';
 import 'package:flutter_client/auth/services/auth_services.dart';
+import 'package:flutter_client/presentation/AddNewUser/FriendsView.dart';
 import 'package:flutter_client/presentation/Chat/chat_view.dart';
 import 'package:flutter_client/presentation/Chat/messages/message_screen.dart';
+import 'package:flutter_client/presentation/MainScreen/TextToSpeech/TextToSpeechView.dart';
 import 'package:flutter_client/presentation/MainScreen/main_screen.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/VideoCalling/InComingCall.dart';
@@ -61,7 +63,7 @@ Widget _navigation(AuthenticatedSessionState state) {
               callingUser: state.callingUser,
               uid: state.uid,
               offer: state.offer),
-        ),     
+        ),
       if (state is VideoCallState)
         MaterialPage(
           child: VideoCall(
@@ -77,6 +79,14 @@ Widget _navigation(AuthenticatedSessionState state) {
             uid: state.uid,
           ),
         )),
+      if (state is FriendViewState)
+        MaterialPage(
+          child: FriendsView(),
+        ),
+      if (state is TextToSpeechState)
+        MaterialPage(
+          child: TextToSpeechView(),
+        ),
     ],
     onPopPage: (route, result) => route.didPop(result),
   );

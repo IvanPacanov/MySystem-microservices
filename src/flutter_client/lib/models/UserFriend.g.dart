@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'UserFriend.dart';
 
 // **************************************************************************
@@ -12,6 +11,8 @@ UserFriend _$UserFriendFromJson(Map<String, dynamic> json) =>
       isOnline: json['isOnline'] as bool?,
       nick: json['nick'] as String?,
       email: json['email'] as String?,
+      approved: EnumToString.fromString<FriendRequestFlag>(
+          FriendRequestFlag.values, json['approved'])!,
       lastLogin: json['lastLogin'] as String?,
       urlAvatar: json['urlAvatar'] as String?,
       chats: (json['chats'] as List<dynamic>?)
@@ -27,5 +28,6 @@ Map<String, dynamic> _$UserFriendToJson(UserFriend instance) =>
       'urlAvatar': instance.urlAvatar,
       'isOnline': instance.isOnline,
       'lastLogin': instance.lastLogin,
+      'approved': instance.approved,
       'chats': instance.chats,
     };

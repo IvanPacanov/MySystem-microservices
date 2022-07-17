@@ -1,9 +1,11 @@
-class AddnewuserState {
+class AddNewUserState {
   final String userName;
 
-  AddnewuserState({this.userName = ''});
+  AddNewUserState({this.userName = ''});
 
-  AddnewuserState copyWith({String? userName, String? password}) {
-    return AddnewuserState(userName: userName ?? this.userName);
+  AddNewUserState copyWith({String? userName, String? password}) {
+    return AddNewUserState(userName: userName ?? this.userName);
   }
 }
+
+

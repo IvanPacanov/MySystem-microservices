@@ -76,7 +76,7 @@ class AuthRepository extends Bloc {
           await _auth.createUserWithEmailAndPassword(
               email: email, password: password);
       User user = result.user!;
-      FireBaseApi.newUserAfterRegister(user.uid, userName);
+      // FireBaseApi.newUserAfterRegister(user.uid, userName);
       return _userFromFirebaseUser(user);
     } catch (e) {
       print(e.toString());

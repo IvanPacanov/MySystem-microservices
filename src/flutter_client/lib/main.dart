@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: _providersBlocList(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           primaryColor: Color(0xff6a515e),
@@ -70,7 +71,7 @@ List<BlocProvider> _providersBlocList() {
   return [
     BlocProvider(
       create: (context) => AuthenticatedSessionCubit(
-        authServices: context.read<AuthServices>(),
+          authServices: context.read<AuthServices>(),
           signalRProvider: context.read<SignalRProvider>(),
           user: context.read<SessionCubit>().user),
     ),
@@ -79,10 +80,10 @@ List<BlocProvider> _providersBlocList() {
     ),
     BlocProvider(
       create: (context) => SignalRProvider(),
-    ),    
-     BlocProvider(
+    ),
+    BlocProvider(
       create: (context) => AuthRepository(),
-    ),    
+    ),
     BlocProvider(
       create: (context) =>
           SessionCubit(authServices: context.read<AuthServices>()),
@@ -90,6 +91,11 @@ List<BlocProvider> _providersBlocList() {
     BlocProvider(
       create: (context) =>
           AuthCubit(sessionCubit: context.read<SessionCubit>()),
+    ),
+    BlocProvider<AddNewUserBloc>(
+      create: (BuildContext context) => AddNewUserBloc(
+        authRepository: context.read<AuthServices>(),
+      ),
     ),
     BlocProvider<ChatBloc>(
       create: (BuildContext context) => ChatBloc(

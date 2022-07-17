@@ -145,10 +145,6 @@ class SignalRProvider extends Bloc {
     });
   }
 
-  sendMeMessage() async {
-    await connection.invoke('SendMEssage', args: ['Mordeczko']);
-  }
-
   static callToUser(String offer, String user) async {
     connection.invoke('CallUser', args: [offer, user]);
   }
@@ -167,6 +163,13 @@ class SignalRProvider extends Bloc {
     onSendOwnMessageCallback(true);
     await connection
         .invoke('SendMessage', args: [message, connectionId, chatId]);
+  }
+
+   sendMessageWithoutConnectionId(
+      MessageSignalR message, int chatId) async {
+    onSendOwnMessageCallback(true);
+    await connection
+        .invoke('SendMessageWithoutConnectionId', args: [message,  chatId]);
   }
 
   callingToUser(String user) async {

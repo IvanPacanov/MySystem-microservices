@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_client/api/api_auth.dart';
 import 'package:flutter_client/api/api_social.dart';
+import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -103,4 +104,19 @@ class AuthServices extends Bloc {
   Future<void> logout() async {
     await storage.delete(key: 'userEmail');
   }
+
+  void addNewFriend(String email) async {
+    await _apiSocial.addFriend(email: email, userId: user.id!);
+  }
+
+  Future<bool> actionFriendFlag(
+      int userId, int friendId, String flag) async {
+    return await _apiSocial.actionInvitationFriend(
+        userId: userId, friendId: friendId, flag: flag);
+  }
+
+//   void sendMessage(MessageSignalR message, int userId) async {
+//     await _apiSocial.sendMessage(
+//         message: message, userId: userId);
+// }
 }
