@@ -52,8 +52,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 //   ],
                 // ),
                 SettingsSection(
-                  
-                  titlePadding: EdgeInsets.all(20),
                   tiles: [
                     // SettingsTile(
                     //   title: 'Security',
@@ -62,7 +60,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     //   onPressed: (BuildContext context) {},
                     // ),
                     SettingsTile(
-                      title: 'Wyloguj',
+                      title: Text('Wyloguj'),
                       leading: Icon(Icons.logout),
                       onPressed: (BuildContext context) {
                         //context.read<SessionCubit>().signOut();

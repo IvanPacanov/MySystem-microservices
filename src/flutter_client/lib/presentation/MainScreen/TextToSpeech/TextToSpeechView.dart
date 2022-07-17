@@ -5,7 +5,7 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TextToSpeechView extends StatefulWidget {
-  const TextToSpeechView({ Key? key }) : super(key: key);
+  const TextToSpeechView({Key? key}) : super(key: key);
 
   @override
   State<TextToSpeechView> createState() => _TextToSpeechViewState();
@@ -155,8 +155,8 @@ class _TextToSpeechViewState extends State<TextToSpeechView> {
 
   void getRecognisedText(XFile image) async {
     final inputImage = InputImage.fromFilePath(image.path);
-    final textDetector = GoogleMlKit.vision.textDetector();
-    RecognisedText recognisedText =
+    final textDetector = GoogleMlKit.vision.textRecognizer();
+    RecognizedText recognisedText =
         await textDetector.processImage(inputImage);
     await textDetector.close();
     scannedText = "";
