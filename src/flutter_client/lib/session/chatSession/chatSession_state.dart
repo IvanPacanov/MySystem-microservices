@@ -27,7 +27,6 @@ class ChatViewState extends AuthenticatedSessionState {}
 
 class FriendViewState extends AuthenticatedSessionState {}
 
-
 class TextToSpeechState extends AuthenticatedSessionState {}
 
 class VideoCallState extends AuthenticatedSessionState {

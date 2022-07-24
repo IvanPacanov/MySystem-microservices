@@ -21,11 +21,13 @@ class _FriendsView extends State<FriendsView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddNewUserBloc(
+        authenticatedSessionCubit:  context.read<AuthenticatedSessionCubit>(),
           authRepository:
               context.read<AuthenticatedSessionCubit>().authServices),
       child: BlocBuilder<AddNewUserBloc, AddNewUserState>(
         builder: (context, state) {
           return Scaffold(
+            bottomNavigationBar: _bottomNavigation(),
             body: Container(
                 padding: EdgeInsets.only(left: 50, right: 50),
                 alignment: Alignment.center,
@@ -94,5 +96,35 @@ class _FriendsView extends State<FriendsView> {
         ),
       ),
     );
+  }
+
+  Widget _bottomNavigation() {
+    return Container(
+        height: 95,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: Colors.red.shade200,
+                    border: Border.all(width: 1),
+                    borderRadius: BorderRadius.circular(5)),
+                child: IconButton(
+                    color: Colors.black,
+                    iconSize: 75,
+                    onPressed: () {
+                      context
+                          .read<AuthenticatedSessionCubit>()
+                          .lastState();
+                    },
+                    icon: Icon(Icons.arrow_back_rounded)),
+              ),
+            ),
+          ],
+        ));
   }
 }

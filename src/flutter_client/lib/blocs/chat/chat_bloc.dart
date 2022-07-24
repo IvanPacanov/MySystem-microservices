@@ -16,6 +16,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final AuthServices authRepository;
   final AuthenticatedSessionCubit chatSessionCubit;
 
+  late Function() onUpdatedFriend;
+
   ChatBloc(
       {required this.authRepository, required this.chatSessionCubit})
       : super(ChatState(users: [])) {
@@ -40,7 +42,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     test.forEach((dynamic testItem) => {_testElo(testItem)});
   }
 
-
   void _testElo(dynamic testItem) {
     var user = authRepository.user.friends
         .where((z) => z.email == testItem['email'])
@@ -49,8 +50,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     int index = authRepository.user.friends.indexOf(user);
     authRepository.user.friends[index].connectionId =
         testItem['ConnectionId'];
-  }
+    authRepository.user.friends[index].isOnline =
+        testItem['IsActive'] as bool;
 
+    onUpdatedFriend();
+  }
 
   test(bool value) {
     print(value);

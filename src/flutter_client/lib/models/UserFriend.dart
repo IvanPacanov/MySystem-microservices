@@ -14,8 +14,9 @@ class UserFriend {
   final String? nick;
   final String? email;
   final String? urlAvatar;
-  final bool? isOnline;
+  late bool? isOnline;
   final String? lastLogin;
+  final bool? requestedByUser;
   final FriendRequestFlag approved;
   // ignore: avoid_init_to_null
   late String? connectionId = null;
@@ -28,6 +29,7 @@ class UserFriend {
       required this.email,
       required this.lastLogin,
       required this.urlAvatar,
+      required this.requestedByUser,
       required this.approved,
       required this.chats});
 
@@ -58,6 +60,7 @@ class UserFriend {
           String? email,
           String? urlAvatar,
           String? lastMessageTime,
+          bool? requestedByUser,
           List<NewChat>? chats}) =>
       UserFriend(
           id: id,
@@ -66,6 +69,7 @@ class UserFriend {
           lastLogin: lastLogin,
           urlAvatar: urlAvatar,
           approved: approved,
+          requestedByUser: requestedByUser,
           chats: chats);
 }
 

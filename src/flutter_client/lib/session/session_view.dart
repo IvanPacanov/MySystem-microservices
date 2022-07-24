@@ -27,9 +27,9 @@ class SessionView extends StatelessWidget {
         create: (context) => AuthRepository(),
         child: BlocProvider(
           create: (context) => AuthenticatedSessionCubit(
-              authServices: context.read<AuthServices>(),
-              signalRProvider: context.read<SignalRProvider>(),
-              user: context.read<SessionCubit>().user),
+            authServices: context.read<AuthServices>(),
+            signalRProvider: context.read<SignalRProvider>(),
+          ),
           child: BlocBuilder<AuthenticatedSessionCubit,
               AuthenticatedSessionState>(builder: (context, state) {
             return _navigation(state);

@@ -15,6 +15,7 @@ UserFriend _$UserFriendFromJson(Map<String, dynamic> json) =>
           FriendRequestFlag.values, json['approved'])!,
       lastLogin: json['lastLogin'] as String?,
       urlAvatar: json['urlAvatar'] as String?,
+      requestedByUser: json['requestedByUser'] as bool?,
       chats: (json['chats'] as List<dynamic>?)
           ?.map((e) => NewChat.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -30,4 +31,5 @@ Map<String, dynamic> _$UserFriendToJson(UserFriend instance) =>
       'lastLogin': instance.lastLogin,
       'approved': instance.approved,
       'chats': instance.chats,
+      'requestedByUser': instance.requestedByUser
     };

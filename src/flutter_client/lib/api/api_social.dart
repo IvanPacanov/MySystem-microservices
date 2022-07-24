@@ -32,7 +32,8 @@ class ApiSocial {
       }),
     );
     if (response.statusCode == 200) {
-      return;
+      print(response.body);
+      return User.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to create album.');
     }
@@ -45,6 +46,22 @@ class ApiSocial {
     var response = await http.post(
       Uri.parse(API_SOCIAL_PROFILE_URL +
           "action-invitation-friend?id=$userId&whoSend=$friendId&friend=$flag"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> cancelInvitation(
+      {required int userId, required int friendId}) async {
+    var response = await http.post(
+      Uri.parse(API_SOCIAL_PROFILE_URL +
+          "cancel-invitation-friend?id=$userId&whoSend=$friendId"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

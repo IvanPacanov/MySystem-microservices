@@ -137,7 +137,7 @@ class SignalRProvider extends Bloc {
     timer = Timer.periodic(Duration(seconds: 10), (timer) async {
       if (connection.state == HubConnectionState.connected) {
         await connection.invoke('StayLiveMessage',
-            args: [user.email, "I'm live"]);
+            args: [user.email, "I'm live", a]);
         print("I am Alive!");
       } else {
         await connection.start();
@@ -165,11 +165,11 @@ class SignalRProvider extends Bloc {
         .invoke('SendMessage', args: [message, connectionId, chatId]);
   }
 
-   sendMessageWithoutConnectionId(
+  sendMessageWithoutConnectionId(
       MessageSignalR message, int chatId) async {
     onSendOwnMessageCallback(true);
-    await connection
-        .invoke('SendMessageWithoutConnectionId', args: [message,  chatId]);
+    await connection.invoke('SendMessageWithoutConnectionId',
+        args: [message, chatId]);
   }
 
   callingToUser(String user) async {

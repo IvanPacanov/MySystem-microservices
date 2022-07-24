@@ -7,7 +7,7 @@ class ApiAuth {
   Future<dynamic> login(
       {required String userName, required String password}) async {
     var response = await http.post(
-      Uri.parse(API_AUTH_URL + "user-login-token"),
+      Uri.parse(API_AUTH_URL + 'user-login-token'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -29,7 +29,7 @@ class ApiAuth {
       required String email,
       required String password}) async {
     var response = await http.post(
-      Uri.parse(API_AUTH_URL + "user-register"),
+      Uri.parse(API_AUTH_URL + 'user-register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -50,7 +50,7 @@ class ApiAuth {
   Future<bool> confirmCode(
       {required String code, required String userId}) async {
     var response = await http.get(
-      Uri.parse(API_AUTH_URL + "user-confirm/$code/$userId"),
+      Uri.parse(API_AUTH_URL + 'user-confirm/$code/$userId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -60,6 +60,35 @@ class ApiAuth {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to create album.');
+    }
+  }
+
+  Future<bool> register(
+      {required String email,
+      required String userName,
+      required String password,
+      required String firstName,
+      required String lastName,
+      required String phone}) async {
+    var response = await http.post(
+      Uri.parse(API_AUTH_URL + 'user-register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+        'userName': userName,
+        'firstName': firstName,
+        'lastName': lastName,
+        'phone': phone
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw false;
     }
   }
 }

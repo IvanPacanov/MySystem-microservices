@@ -15,9 +15,12 @@ class AuthCubit extends Cubit<AuthState> {
   void openLoginPage() => emit(AuthState.login);
   void openRegistrationPage() => emit(AuthState.registration);
   void showConfirmSignUp({
-    required String userName,
     required String email,
     required String password,
+    required String userName,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
   }) {
     credentials = AuthCredentials(
       userName: userName,
@@ -31,8 +34,6 @@ class AuthCubit extends Cubit<AuthState> {
       sessionCubit.showSession(credentials);
 
   void showConfirmLogin(User user) {
-    //emit(AuthState.confirmSignUp);
-    // emit(AuthState.confirmLogin);
     sessionCubit.showSession(user);
   }
 }

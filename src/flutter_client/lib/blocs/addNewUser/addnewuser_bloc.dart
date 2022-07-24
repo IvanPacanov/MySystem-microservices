@@ -8,8 +8,11 @@ import 'package:flutter_client/session/chatSession/authenticated_session_cubit.d
 class AddNewUserBloc extends Bloc<AddNewUserEvent, AddNewUserState> {
   bool isTrusted = false;
   final AuthServices authRepository;
+  final AuthenticatedSessionCubit authenticatedSessionCubit;
 
-  AddNewUserBloc({required this.authRepository})
+  AddNewUserBloc(
+      {required this.authRepository,
+      required this.authenticatedSessionCubit})
       : super(AddNewUserState());
 
   @override
@@ -18,7 +21,11 @@ class AddNewUserBloc extends Bloc<AddNewUserEvent, AddNewUserState> {
     if (event is UserNameChanged) {
       yield state.copyWith(userName: event.userName);
     } else if (event is AddNewFriendSubmitted) {
-      authRepository.addNewFriend(state.userName);
+      var result = await authRepository.addNewFriend(state.userName);
+      if (result != null) {
+        authenticatedSessionCubit.user = result;
+        authenticatedSessionCubit.lastState();
+      }
     }
   }
 }

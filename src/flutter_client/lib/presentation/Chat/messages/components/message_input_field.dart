@@ -8,6 +8,7 @@ import 'package:flutter_client/presentation/Chat/messages/bloc/message_bloc.dart
 import 'package:flutter_client/services/SignalR_Servis.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:provider/provider.dart';
+import 'package:text_to_speech/text_to_speech.dart';
 
 class MessageInputField extends StatelessWidget {
   const MessageInputField(BuildContext context,
@@ -19,6 +20,7 @@ class MessageInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextToSpeech tts = TextToSpeech();
     return BlocProvider(
       create: (context) => MessageBloc(
           signalR:
@@ -63,12 +65,24 @@ class MessageInputField extends StatelessWidget {
                                 decoration: InputDecoration(
                                     hintText: "Wprowadź wiadomość",
                                     border: InputBorder.none,
-                                    suffixIcon: IconButton(
-                                        icon: Icon(Icons.send),
-                                        onPressed: () => context
-                                            .read<MessageBloc>()
-                                            .add(MessageSend(
-                                                friend, chatId)))),
+                                    suffixIcon: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        IconButton(
+                                            onPressed: () {
+                                              tts.speak(
+                                                  state.message);
+                                            },
+                                            icon: Icon(Icons
+                                                .campaign_sharp)),
+                                        IconButton(
+                                            icon: Icon(Icons.send),
+                                            onPressed: () => context
+                                                .read<MessageBloc>()
+                                                .add(MessageSend(
+                                                    friend, chatId))),
+                                      ],
+                                    )),
                                 onChanged: (value) => context
                                     .read<MessageBloc>()
                                     .add(MessageChanged(

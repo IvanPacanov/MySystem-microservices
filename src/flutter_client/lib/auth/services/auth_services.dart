@@ -46,50 +46,29 @@ class AuthServices extends Bloc {
     return this.user;
   }
 
+  Future<bool> registerUser({
+    required String email,
+    required String userName,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String phone,
+  }) async {
+    print('register User');
+    return await _apiAuth.register(
+        email: email,
+        userName: userName,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone);
+  }
+
   Future<User> getProfile({
     required String email,
   }) async {
     return this.user = await _apiSocial.getProfileData(email: email);
   }
-  // Future signUp({
-  //   required String email,
-  //   required String userName,
-  //   required String password,
-  // }) async {
-  //   try {
-  //     UserCredential result =
-  //         await _auth.createUserWithEmailAndPassword(
-  //             email: email, password: password);
-  //     User user = result.user!;
-  //     FireBaseApi.newUserAfterRegister(user.uid, userName);
-  //     return _userFromFirebaseUser(user);
-  //   } catch (e) {
-  //     print(e.toString());
-  //     return null;
-  //   }
-  // }
-
-  // Future<String> confirmSignUp({
-  //   required String userName,
-  //   required String confirmationCode,
-  // }) async {
-  //   try {
-  //     UserCredential result =
-  //         await Future.delayed(Duration(seconds: 2));
-  //     return 'OK';
-  //   } catch (e) {
-  //     print(e.toString());
-  //     return "Error during registration - $e";
-  //   }
-  // }
-
-  // Future<void> signOut() async {
-  //   try {
-  //     await _auth.signOut();
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
 
   Future<void> storeTokenAndData(User user, String token) async {
     await storage.write(key: 'token', value: token);
@@ -105,14 +84,20 @@ class AuthServices extends Bloc {
     await storage.delete(key: 'userEmail');
   }
 
-  void addNewFriend(String email) async {
-    await _apiSocial.addFriend(email: email, userId: user.id!);
+  Future<User> addNewFriend(String email) async {
+    return this.user =
+        await _apiSocial.addFriend(email: email, userId: user.id!);
   }
 
   Future<bool> actionFriendFlag(
       int userId, int friendId, String flag) async {
     return await _apiSocial.actionInvitationFriend(
         userId: userId, friendId: friendId, flag: flag);
+  }
+
+  Future<bool> cancelInvitation(int userId, int friendId) async {
+    return await _apiSocial.cancelInvitation(
+        userId: userId, friendId: friendId);
   }
 
 //   void sendMessage(MessageSignalR message, int userId) async {

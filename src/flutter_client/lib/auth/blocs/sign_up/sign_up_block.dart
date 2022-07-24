@@ -8,12 +8,11 @@ import 'package:flutter_client/auth/blocs/sign_up/sign_up_state.dart';
 import 'package:flutter_client/constants.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
-  final AuthServices authRepo;
+  final AuthServices authRepository;
   final AuthCubit authCubit;
 
-  SignUpBloc({required this.authRepo, required this.authCubit})
+  SignUpBloc({required this.authRepository, required this.authCubit})
       : super(SignUpState());
-
 
   @override
   Stream<SignUpState> mapEventToState(SignUpEvent event) async* {
@@ -28,24 +27,42 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       // Password updated
     } else if (event is SignUpPasswordChanged) {
       yield state.copyWith(password: event.password);
+    } else if (event is SignUpPhoneChanged) {
+      yield state.copyWith(phoneNumber: event.phone);
+    } else if (event is SignUpLastNameChanged) {
+      yield state.copyWith(lastName: event.lastName);
+    } else if (event is SignUpFirstNameChanged) {
+      yield state.copyWith(firstName: event.firstName);
 
       // Form submitted
     } else if (event is SignUpSubmitted) {
       yield state.copyWith(formStatus: FormSubmitting());
 
       try {
-        // await authRepo.signUp(
-        //   userName: state.username,
-        //   email: state.email,
-        //   password: state.password,
-        // );
+        final results = await authRepository.registerUser(
+            email: state.email,
+            password: state.password,
+            userName: state.username,
+            firstName: state.firstName,
+            lastName: state.lastName,
+            phone: state.phoneNumber);
         yield state.copyWith(formStatus: SubmissionSuccess());
 
-        authCubit.showConfirmSignUp(
-          userName: state.username,
-          email: state.email,
-          password: state.password,
-        );
+        if (results) {
+          final user = await authRepository.loginWithEmailAndPassword(
+            userName: state.username,
+            password: state.password,
+          );
+          authCubit.showConfirmLogin(user);
+        } else {
+          authCubit.showConfirmSignUp(
+              email: state.email,
+              password: state.password,
+              userName: state.username,
+              firstName: state.firstName,
+              lastName: state.lastName,
+              phoneNumber: state.phoneNumber);
+        }
       } catch (e) {
         yield state.copyWith(
             formStatus: SubmissionFailed(e as Exception));

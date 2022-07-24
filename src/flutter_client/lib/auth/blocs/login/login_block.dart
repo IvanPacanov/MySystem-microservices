@@ -27,37 +27,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield state.copyWith(email: event.userName);
     } else if (event is LoginPasswordChanged) {
       yield state.copyWith(password: event.password);
-    } else if (event is LoginAsGuest) {
-      try {
-        // dynamic user = await authRepository.signInAnon();
-        final token = await authRepository.loginWithEmailAndPassword(
-          userName: "Admin",
-          password: "Admin",
-        );
-        print("TODO AUTORYZACJA Z POBIERANIEM!!!!");
-        // authRepository.setToken(token);
-        yield state.copyWith(formStatus: SubmissionSuccess());
-        // authCubit.showConfirmLogin(user);
-      } catch (e) {
-        print(e.toString());
-        yield state.copyWith(
-            formStatus: SubmissionFailed(e as Exception));
-      }
-    } else if (event is LoginAsGuest2) {
-      try {
-        // dynamic user = await authRepository.signInAnon();
-        final user = await authRepository.loginWithEmailAndPassword(
-          userName: "dreezy",
-          password: "dreezy",
-        );
-        // authRepository.setToken(user);
-        yield state.copyWith(formStatus: SubmissionSuccess());
-        // authCubit.showConfirmLogin(user);
-      } catch (e) {
-        print(e.toString());
-        yield state.copyWith(
-            formStatus: SubmissionFailed(e as Exception));
-      }
     } else if (event is LoginSubmitted) {
       yield state.copyWith(formStatus: FormSubmitting());
 
@@ -68,8 +37,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
         yield state.copyWith(formStatus: SubmissionSuccess());
         authCubit.showConfirmLogin(user);
-
-        // authRepository.setToken(token);
       } catch (e) {
         yield state.copyWith(
             formStatus: SubmissionFailed(e as Exception));

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'dart:async';
@@ -6,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_client/presentation/Chat/chat_view.dart';
 import 'package:flutter_client/session/session_cubit.dart';
+import 'package:torch_controller/torch_controller.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,6 +15,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreen extends State<MainScreen> {
+  final torchController = TorchController();
+
   static const MethodChannel _channel =
       const MethodChannel('flashlight');
   @override
@@ -20,18 +24,29 @@ class _MainScreen extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Colors.green.shade100,
       body: Container(
-        child: GridView.count(
-          crossAxisCount: 2,
-          children: <Widget>[
-            _cardElement(_latarkaButton(context)),
-            _cardElement(_phoneButton(context)),
-            _cardElement(_guardianButton(context)),
-            _cardElement(_chatButton(context)),
-            _cardElement(_textToSpeech(context)),
-            _cardElement(_logoutButton(context)),
-          ],
-        ),
-      ),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                  "assets/images/background-image.jpg"), //photo by Photo by ????
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Column(
+            children: <Widget>[
+              Flexible(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  children: <Widget>[
+                    _cardElement(_torchButton(context)),
+                    _cardElement(_chatButton(context)),
+                    _cardElement(_textToSpeech(context)),
+                    _cardElement(_logoutButton(context)),
+                  ],
+                ),
+              ),
+              _cardElement(_guardianButton(context)),
+            ],
+          )),
     );
   }
 
@@ -64,13 +79,12 @@ class _MainScreen extends State<MainScreen> {
           children: [
             Icon(Icons.hearing_outlined,
                 size: 50, color: Colors.orange.shade400),
-            Text('Rozpoznawanie tekstu'.toUpperCase()),
+            Text('Przeczytaj tekst'.toUpperCase()),
           ],
         ),
       ),
     );
   }
-
 
   Widget _addFriend(BuildContext context) {
     return InkWell(
@@ -97,11 +111,36 @@ class _MainScreen extends State<MainScreen> {
     );
   }
 
+  logout() {
+    context.read<SessionCubit>().logout();
+  }
+
   Widget _logoutButton(BuildContext context) {
     return InkWell(
-      onTap: () {
-        context.read<SessionCubit>().logout();
-      },
+      onTap: () => showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text("Wylogowanie?"),
+          content: Text("Czy na pewno chcesz się wylogować?"),
+          actions: [
+            CupertinoDialogAction(
+              child: Text('Nie'),
+              onPressed: (() {
+                Navigator.of(context, rootNavigator: true)
+                    .pop("Discard");
+              }),
+            ),
+            CupertinoDialogAction(
+              child: Text('Tak'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true)
+                    .pop("Discard");
+                logout();
+              },
+            )
+          ],
+        ),
+      ),
       child: Container(
         alignment: Alignment.center,
         width: 200.0,
@@ -139,29 +178,7 @@ class _MainScreen extends State<MainScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.chat, size: 50, color: Colors.orange.shade400),
-            Text('Chat'.toUpperCase()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _phoneButton(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        alignment: Alignment.center,
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: Colors.orange.shade400, width: 5),
-            shape: BoxShape.circle),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.call, size: 50, color: Colors.orange.shade400),
-            Text('Telefon'.toUpperCase()),
+            Text('Wiadomości'.toUpperCase()),
           ],
         ),
       ),
@@ -191,28 +208,43 @@ class _MainScreen extends State<MainScreen> {
     );
   }
 
-  Widget _latarkaButton(BuildContext context) {
+  Widget _torchButton(BuildContext context) {
     return InkWell(
       onTap: () {
+        torchController.toggle(intensity: 1);
         setState(() {});
       },
-      child: Container(
-        alignment: Alignment.center,
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: Colors.orange.shade400, width: 5),
-            shape: BoxShape.circle),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.flashlight_on,
-                size: 50, color: Colors.orange.shade400),
-            Text('Latarka'.toUpperCase()),
-          ],
-        ),
-      ),
+      child: FutureBuilder(
+          future: torchController.isTorchActive,
+          builder: (_, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done)
+              return Container(
+                alignment: Alignment.center,
+                width: 200.0,
+                height: 200.0,
+                decoration: BoxDecoration(
+                    color: snapshot.data as bool
+                        ? Colors.yellow.shade100
+                        : Colors.white,
+                    border: Border.all(
+                        color: Colors.orange.shade400, width: 5),
+                    shape: BoxShape.circle),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                        snapshot.data as bool
+                            ? Icons.flashlight_on
+                            : Icons.flashlight_off,
+                        size: 50,
+                        color: Colors.orange.shade400),
+                    Text('Latarka'.toUpperCase()),
+                  ],
+                ),
+              );
+
+            return Container();
+          }),
     );
   }
 

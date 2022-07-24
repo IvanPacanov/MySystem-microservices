@@ -17,14 +17,16 @@ class AuthenticatedSessionCubit
   late User user;
 
   late Function() onFriendsUpdatedCallback;
+  late Function() onUpdatedFriend;
+  late Function() onRemovedInvitation;
 
   List<AuthenticatedSessionState> stateList = [];
 
-  AuthenticatedSessionCubit(
-      {required this.authServices,
-      required this.signalRProvider,
-      required this.user})
-      : super(NormalState()) {
+  AuthenticatedSessionCubit({
+    required this.authServices,
+    required this.signalRProvider,
+  }) : super(NormalState()) {
+    user = authServices.user;
     print(user);
     this.stateList.add(NormalState());
     signalRProvider.initSignalR(user);
@@ -80,6 +82,8 @@ class AuthenticatedSessionCubit
     print("!!!!! END !!!!!  Update friends after login: ");
     List<dynamic> test = jsonDecode(data![0]);
     test.forEach((dynamic testItem) => {_testElo(testItem)});
+
+    onUpdatedFriend();
   }
 
   void _testElo(dynamic testItem) {
@@ -88,6 +92,7 @@ class AuthenticatedSessionCubit
 
     int index = user.friends.indexOf(userHelp);
     user.friends[index].connectionId = testItem['ConnectionId'];
+    user.friends[index].isOnline = testItem['IsActive'] as bool;
   }
 
   void comingCalling(String offer, String uid) {
@@ -170,5 +175,15 @@ class AuthenticatedSessionCubit
   void textToSpeech() {
     this.stateList.add(TextToSpeechState());
     emit(TextToSpeechState());
+  }
+
+  void cancelInvitation(UserFriend friend) async {
+    var result =
+        await authServices.cancelInvitation(user.id!, friend.id!);
+
+    if (result) {
+      this.user.friends.remove(friend);
+      onRemovedInvitation();
+    }
   }
 }

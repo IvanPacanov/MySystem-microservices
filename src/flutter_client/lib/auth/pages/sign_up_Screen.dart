@@ -12,17 +12,11 @@ class SignUpView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-     onWillPop: () async {
-        // Do something here
-        print("After clicking the Android Back Button");
-        return false;
-     },
-     child: Scaffold(
+    return  Scaffold(
         resizeToAvoidBottomInset: false,
         body: BlocProvider(
           create: (context) => SignUpBloc(
-            authRepo: context.read<AuthServices>(),
+            authRepository: context.read<AuthServices>(),
             authCubit: context.read<AuthCubit>(),
           ),
           child: Stack(
@@ -31,8 +25,7 @@ class SignUpView extends StatelessWidget {
               _signUpForm(),
             ],
           ),
-        ),
-      ),
+        ),      
     );
   }
 
@@ -83,7 +76,7 @@ class SignUpView extends StatelessWidget {
             ? null
             : 'Phone number is too short',
         onChanged: (value) => context.read<SignUpBloc>().add(
-              SignUpUsernameChanged(username: value),
+              SignUpPhoneChanged(phone: value),
             ),
       );
     });
@@ -100,7 +93,7 @@ class SignUpView extends StatelessWidget {
         validator: (value) =>
             state.isValidUsername ? null : 'Last name is too short',
         onChanged: (value) => context.read<SignUpBloc>().add(
-              SignUpUsernameChanged(username: value),
+              SignUpLastNameChanged(lastName: value),
             ),
       );
     });
@@ -117,7 +110,7 @@ class SignUpView extends StatelessWidget {
         validator: (value) =>
             state.isValidUsername ? null : 'First name is too short',
         onChanged: (value) => context.read<SignUpBloc>().add(
-              SignUpUsernameChanged(username: value),
+              SignUpFirstNameChanged(firstName: value),
             ),
       );
     });

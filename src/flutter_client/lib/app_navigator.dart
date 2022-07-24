@@ -4,6 +4,7 @@ import 'package:flutter_client/auth/auth_navigator.dart';
 import 'package:flutter_client/auth/services/auth_services.dart';
 import 'package:flutter_client/loading_view.dart';
 import 'package:flutter_client/main.dart';
+import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_client/session/session_cubit.dart';
 import 'package:flutter_client/session/session_state.dart';
 import 'package:flutter_client/session/session_view.dart';
@@ -25,8 +26,7 @@ class AppNavigator extends StatelessWidget {
 Widget _navi(SessionState state, BuildContext context) {
   return WillPopScope(
     onWillPop: () async {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MyApp()));
+      context.read<AuthenticatedSessionCubit>().lastState();
       return false;
     },
     child: Navigator(

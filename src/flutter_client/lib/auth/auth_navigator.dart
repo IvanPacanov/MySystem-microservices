@@ -10,21 +10,13 @@ import 'package:flutter_client/session/session_cubit.dart';
 class AuthNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Do something here
-        print("ELOOOO");
-
-        return true;
-      },
-      child: BlocProvider(
-        create: (context) =>
-            AuthCubit(sessionCubit: context.read<SessionCubit>()),
-        child: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            return _navigation(state);
-          },
-        ),
+    return BlocProvider(
+      create: (context) =>
+          AuthCubit(sessionCubit: context.read<SessionCubit>()),
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (context, state) {
+          return _navigation(state);
+        },
       ),
     );
   }
