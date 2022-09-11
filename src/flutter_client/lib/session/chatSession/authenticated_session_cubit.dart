@@ -7,7 +7,7 @@ import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/Chat/messages/message_screen.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 import 'package:flutter_client/session/chatSession/chatSession_state.dart';
 
 class AuthenticatedSessionCubit
@@ -17,7 +17,7 @@ class AuthenticatedSessionCubit
   late User user;
 
   late Function() onFriendsUpdatedCallback;
-  late Function() onUpdatedFriend;
+  //late Function() onUpdatedFriend;
   late Function() onRemovedInvitation;
 
   List<AuthenticatedSessionState> stateList = [];
@@ -83,7 +83,7 @@ class AuthenticatedSessionCubit
     List<dynamic> test = jsonDecode(data![0]);
     test.forEach((dynamic testItem) => {_testElo(testItem)});
 
-    onUpdatedFriend();
+    //onUpdatedFriend();
   }
 
   void _testElo(dynamic testItem) {
@@ -109,6 +109,11 @@ class AuthenticatedSessionCubit
   void openChatView() {
     this.stateList.add(ChatViewState());
     emit(ChatViewState());
+  }
+
+  void openGuardianView() {
+    this.stateList.add(GuardianViewState(user: user));
+    emit(GuardianViewState(user: user));
   }
 
   void openMessageView(UserFriend friend) {
@@ -186,4 +191,9 @@ class AuthenticatedSessionCubit
       onRemovedInvitation();
     }
   }
+
+  void statusGuardianOk() {}
+
+  
+  void statusGuardianNotOk() {}
 }

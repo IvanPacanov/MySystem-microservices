@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/models/UserFriend.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 import 'package:provider/src/provider.dart';
 
 class Calling extends StatelessWidget {

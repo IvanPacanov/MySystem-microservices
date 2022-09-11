@@ -87,6 +87,7 @@ class _ChatView extends State<ChatView> {
     return BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
       userCred = context.read<ChatBloc>().chatSessionCubit.user;
+      context.read<ChatBloc>().onUpdatedFriendIsSet = true;
       context.read<ChatBloc>().onUpdatedFriend =
           () => {setState(() {})};
       return Column(
@@ -247,16 +248,16 @@ class _ChatView extends State<ChatView> {
                                 ? (friend.chats![0].messages!.length >
                                         0
                                     ? friend.chats![0].messages![0]
-                                            .read!
+                                            .read
                                         ? FontWeight.normal
                                         : FontWeight.bold
                                     : FontWeight.normal)
                                 : FontWeight.normal,
                           )),
-                      Positioned(
-                          child: Text(friend.lastLogin != null
-                              ? friend.lastLogin!
-                              : ""))
+                      // Positioned(
+                      //     child: Text(friend.lastLogin != null
+                      //         ? friend.lastLogin!
+                      //         : ""))
                     ],
                   ),
                 ),
@@ -320,6 +321,10 @@ class _ChatView extends State<ChatView> {
                     color: Colors.black,
                     iconSize: 75,
                     onPressed: () {
+                      // context.read<ChatBloc>().onUpdatedFriendIsSet =
+                      //     false;
+                      // context.read<ChatBloc>().onUpdatedFriend =
+                      //     () {};
                       context
                           .read<AuthenticatedSessionCubit>()
                           .lastState();

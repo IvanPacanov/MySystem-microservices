@@ -4,7 +4,6 @@ import 'package:flutter_client/environments/environments.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
-import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRProvider extends Bloc {
@@ -33,6 +32,8 @@ class SignalRProvider extends Bloc {
   late Function(dynamic update2) rejectedCalling;
 
   late Function(dynamic update2) onRingingInterrupted;
+
+  late Function() onStatusGuardian;
 
   SignalRProvider() : super(SignalRProvider);
 
@@ -103,6 +104,10 @@ class SignalRProvider extends Bloc {
 
     connection.on('CallEnded', (message) async {
       onRingingInterrupted(message![0]);
+    });
+
+    connection.on('StatusGuardian', (message) async {
+      onStatusGuardian();
     });
 
     connection.on('Errors', (message) async {
@@ -186,5 +191,15 @@ class SignalRProvider extends Bloc {
 
   rejectCall(UserFriend user) {
     connection.invoke('RejectCall', args: [user.connectionId]);
+  }
+
+  sendReminder(String message, String targetConnectionId) {
+    print(message);
+    connection
+        .invoke('SendReminder', args: [message, targetConnectionId]);
+  }
+
+  checkStatus(String targetConnectionId) {
+    connection.invoke('CheckStatus', args: [targetConnectionId]);
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter_client/models/ChatMessage.dart';
 
@@ -17,13 +18,17 @@ class User {
   final int? id;
   final String? nick;
   final String? email;
+  final bool isGuardian;
+  final String? guardianEmail;
   final String? urlAvatar;
   final List<UserFriend> friends;
 
   const User(
       {this.id,
+      this.guardianEmail,
       required this.nick,
       required this.email,
+      required this.isGuardian,
       required this.urlAvatar,
       required this.friends});
 
@@ -31,12 +36,14 @@ class User {
           {int? id,
           String? nick,
           String? email,
+          required bool isGuardian,
           String? urlAvatar,
           List<UserFriend>? friends}) =>
       User(
         id: id,
         nick: nick,
         email: email,
+        isGuardian: isGuardian,
         urlAvatar: urlAvatar,
         friends: friends == null ? [] : friends,
       );
@@ -45,12 +52,14 @@ class User {
           {int? id,
           String? nick,
           String? email,
+          required bool isGuardian,
           String? urlAvatar,
           List<UserFriend>? friends}) =>
       User(
         id: id,
         nick: nick,
         email: email,
+        isGuardian: isGuardian,
         urlAvatar: urlAvatar,
         friends: friends == null ? [] : friends,
       );
@@ -60,12 +69,12 @@ class User {
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
-  static User fromJson2(Map<String, dynamic> json) => User(
-      id: json['idUser'],
-      nick: json['name'],
-      email: json['email'],
-      urlAvatar: json['urlAvatar'],
-      friends: []);
+  // static User fromJson2(Map<String, dynamic> json) => User(
+  //     id: json['idUser'],
+  //     nick: json['name'],
+  //     email: json['email'],
+  //     urlAvatar: json['urlAvatar'],
+  //     friends: []);
 
   // Map<String, dynamic> toJson() => {
   //       'idUser': idUser,

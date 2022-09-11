@@ -14,6 +14,7 @@ class UserFriend {
   final String? nick;
   final String? email;
   final String? urlAvatar;
+  final String? guardianEmail;
   late bool? isOnline;
   final String? lastLogin;
   final bool? requestedByUser;
@@ -28,6 +29,7 @@ class UserFriend {
       required this.nick,
       required this.email,
       required this.lastLogin,
+      required this.guardianEmail,
       required this.urlAvatar,
       required this.requestedByUser,
       required this.approved,
@@ -60,6 +62,7 @@ class UserFriend {
           String? email,
           String? urlAvatar,
           String? lastMessageTime,
+          String? guardianEmail,
           bool? requestedByUser,
           List<NewChat>? chats}) =>
       UserFriend(
@@ -68,6 +71,7 @@ class UserFriend {
           email: email,
           lastLogin: lastLogin,
           urlAvatar: urlAvatar,
+          guardianEmail: guardianEmail,
           approved: approved,
           requestedByUser: requestedByUser,
           chats: chats);

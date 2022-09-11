@@ -7,7 +7,7 @@ import 'package:flutter_client/api/api_social.dart';
 import 'package:flutter_client/auth/auth_credentials.dart';
 import 'package:flutter_client/models/User.dart' as UserAuth;
 import 'package:flutter_client/repositories/firebase_api.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 
 class AuthRepository extends Bloc {
   final FirebaseAuth _auth = FirebaseAuth.instance;

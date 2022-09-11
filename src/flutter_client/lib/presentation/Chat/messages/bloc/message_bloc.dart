@@ -5,7 +5,7 @@ import 'package:flutter_client/models/Message.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/repositories/user_repository.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 
 part 'message_event.dart';
 part 'message_state.dart';

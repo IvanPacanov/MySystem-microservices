@@ -7,7 +7,7 @@ import 'package:flutter_client/models/Message.dart';
 import 'package:flutter_client/models/MessageSignalR.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 
 part 'chat_event.dart';
@@ -18,11 +18,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   late Function() onUpdatedFriend;
 
+  bool onUpdatedFriendIsSet = false;
+
   ChatBloc(
       {required this.authRepository, required this.chatSessionCubit})
       : super(ChatState(users: [])) {
-    chatSessionCubit.signalRProvider.onSendOwnMessageCallback =
-        (data) => test(data);
     chatSessionCubit.signalRProvider.onFriendsUpdateCallback =
         (data) => updateFriendsConnectionID(data);
 
@@ -53,10 +53,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     authRepository.user.friends[index].isOnline =
         testItem['IsActive'] as bool;
 
-    onUpdatedFriend();
-  }
-
-  test(bool value) {
-    print(value);
+    if (onUpdatedFriendIsSet) {
+      onUpdatedFriend();
+    }
   }
 }

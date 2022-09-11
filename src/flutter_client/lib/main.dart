@@ -12,7 +12,7 @@ import 'package:flutter_client/models/ChatMessage.dart';
 import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/presentation/Chat/messages/bloc/message_bloc.dart';
 import 'package:flutter_client/repositories/component_repository.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_client/session/session_cubit.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,6 +21,7 @@ import 'package:torch_controller/torch_controller.dart';
 
 import 'auth/repository/auth_service.dart';
 import 'auth/services/auth_services.dart';
+import 'presentation/Guardian/bloc/guardian_bloc.dart';
 
 Future main() async {
   TorchController().initialize();
@@ -79,6 +80,11 @@ List<BlocProvider> _providersBlocList() {
         signalRProvider: context.read<SignalRProvider>(),
       ),
     ),
+    // BlocProvider(
+    //   create: (context) => GuardianBloc(
+    //       authenticatedSessionCubit:
+    //           context.read<AuthenticatedSessionCubit>()),
+    // ),
     BlocProvider(
       create: (context) => VideoCallBloc(),
     ),

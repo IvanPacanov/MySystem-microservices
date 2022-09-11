@@ -1,125 +1,81 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
-import 'dart:async';
-import 'package:provider/provider.dart';
-
-import 'package:flutter/services.dart';
-import 'package:flutter_client/presentation/Chat/chat_view.dart';
-import 'package:flutter_client/session/session_cubit.dart';
 import 'package:torch_controller/torch_controller.dart';
 
 import '../../blocs/chat/chat_bloc.dart';
 import '../../blocs/chat/chat_state.dart';
 import '../../models/User.dart';
 import '../../models/UserFriend.dart';
+import '../../session/chatSession/authenticated_session_cubit.dart';
+import '../../session/session_cubit.dart';
 
-class MainScreen extends StatefulWidget {
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
+
   @override
-  State<MainScreen> createState() => _MainScreen();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MainScreen extends State<MainScreen> {
+class _MainPageState extends State<MainPage> {
   final torchController = TorchController();
-
-  static const MethodChannel _channel =
-      const MethodChannel('flashlight');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green.shade100,
-      body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                  "assets/images/background-image.jpg"), //photo by Photo by ????
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Column(
-            children: <Widget>[
-              Flexible(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  children: <Widget>[
-                    _cardElement(_torchButton(context)),
-                    _cardElement(_chatButton(context)),
-                    _cardElement(_textToSpeech(context)),
-                    _cardElement(_logoutButton(context)),
-                  ],
+      backgroundColor: Colors.black12,
+      body: _mainBody(context),
+    );
+  }
+
+  Widget _mainBody(BuildContext context) {
+    return Container(
+      child: Column(children: <Widget>[
+        _menuContainer(context),
+        _chatContainer()
+      ]),
+    );
+  }
+
+  Widget _menuContainer(BuildContext context) {
+    return Container(
+        height: 200,
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(flex: 1, child: _torchWidget()),
+                SizedBox(
+                  width: 0.1,
                 ),
-              ),
-              _cardElement(_guardianButton(context)),
-              _chatContainer()
-            ],
-          )),
-    );
-  }
-
-  Widget _cardElement(Widget content) {
-    return Card(
-      elevation: 20,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(150),
-      ),
-      margin: EdgeInsets.all(8.0),
-      child: content,
-    );
-  }
-
-  Widget _textToSpeech(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.read<AuthenticatedSessionCubit>().textToSpeech();
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: Colors.orange.shade400, width: 5),
-            shape: BoxShape.circle),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.hearing_outlined,
-                size: 50, color: Colors.orange.shade400),
-            Text('Przeczytaj tekst'.toUpperCase()),
+                Expanded(flex: 1, child: _textToSpeech(context)),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(flex: 1, child: _textToSpeech(context)),
+                SizedBox(
+                  width: 0.1,
+                ),
+                Expanded(flex: 1, child: _textToSpeech(context)),
+              ],
+            ),
           ],
-        ),
-      ),
-    );
-  }
+        )
 
-  Widget _addFriend(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.read<AuthenticatedSessionCubit>().addNewFriendView();
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: Colors.orange.shade400, width: 5),
-            shape: BoxShape.circle),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.person_add,
-                size: 50, color: Colors.orange.shade400),
-            Text('Logout'.toUpperCase()),
-          ],
-        ),
-      ),
-    );
-  }
+        // GridView.count(
 
-  logout() {
-    context.read<SessionCubit>().logout();
+        //   childAspectRatio: 0.75,
+        //   crossAxisCount: 2,
+        //   children: <Widget>[
+        //     _menuElement(_torchWidget()),
+        //     _menuElement(_torchWidget()),
+        //     _menuElement(_torchWidget()),
+        //     _menuElement(_torchWidget())
+        //   ],
+        // ),
+        );
   }
 
   Widget _logoutButton(BuildContext context) {
@@ -168,99 +124,8 @@ class _MainScreen extends State<MainScreen> {
     );
   }
 
-  Widget _chatButton(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.read<AuthenticatedSessionCubit>().openChatView();
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: Colors.orange.shade400, width: 5),
-            shape: BoxShape.circle),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.chat, size: 50, color: Colors.orange.shade400),
-            Text('Wiadomości'.toUpperCase()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _guardianButton(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.read<AuthenticatedSessionCubit>().openGuardianView();
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: Colors.orange.shade400, width: 5),
-            shape: BoxShape.circle),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.security,
-                size: 50, color: Colors.orange.shade400),
-            Text('Kontakt z bliskim!'.toUpperCase()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _torchButton(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        torchController.toggle(intensity: 1);
-        setState(() {});
-      },
-      child: FutureBuilder(
-          future: torchController.isTorchActive,
-          builder: (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done)
-              return Container(
-                alignment: Alignment.center,
-                width: 200.0,
-                height: 200.0,
-                decoration: BoxDecoration(
-                    color: snapshot.data as bool
-                        ? Colors.yellow.shade100
-                        : Colors.white,
-                    border: Border.all(
-                        color: Colors.orange.shade400, width: 5),
-                    shape: BoxShape.circle),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                        snapshot.data as bool
-                            ? Icons.flashlight_on
-                            : Icons.flashlight_off,
-                        size: 50,
-                        color: Colors.orange.shade400),
-                    Text('Latarka'.toUpperCase()),
-                  ],
-                ),
-              );
-
-            return Container();
-          }),
-    );
-  }
-
-  Widget _sizeBoxH10({double value = 10}) {
-    return SizedBox(
-      height: value,
-    );
+  logout() {
+    context.read<SessionCubit>().logout();
   }
 
   Widget _chatContainer() {
@@ -280,6 +145,70 @@ class _MainScreen extends State<MainScreen> {
                     BoxDecoration(color: Colors.green.shade300),
                 child: _connectionString(context)),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _torchWidget() {
+    return InkWell(
+      onTap: () {
+        torchController.toggle(intensity: 1);
+        setState(() {});
+      },
+      child: FutureBuilder(
+          future: torchController.isTorchActive,
+          builder: (_, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done)
+              return Container(
+                alignment: Alignment.center,
+                height: 100,
+                // width: (MediaQuery.of(context).size.width - 2) / 2,
+                decoration: BoxDecoration(
+                  color: snapshot.data as bool
+                      ? Colors.yellow.shade100
+                      : Colors.white,
+                  border: Border.all(
+                      color: Colors.orange.shade400, width: 5),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                        snapshot.data as bool
+                            ? Icons.flashlight_on
+                            : Icons.flashlight_off,
+                        size: 20,
+                        color: Colors.orange.shade400),
+                    Text('Latarka'.toUpperCase()),
+                  ],
+                ),
+              );
+
+            return Container();
+          }),
+    );
+  }
+
+  Widget _textToSpeech(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.read<AuthenticatedSessionCubit>().textToSpeech();
+      },
+      child: Container(
+        alignment: Alignment.center,
+        height: 100,
+        // width: (MediaQuery.of(context).size.width - 2) / 2,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.orange.shade400, width: 5),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.hearing_outlined,
+                size: 50, color: Colors.orange.shade400),
+            Text('Przeczytaj tekst'.toUpperCase()),
+          ],
         ),
       ),
     );

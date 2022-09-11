@@ -5,7 +5,7 @@ import 'package:flutter_client/blocs/chat/chat_bloc.dart';
 import 'package:flutter_client/constants.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/Chat/messages/bloc/message_bloc.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:provider/provider.dart';
 import 'package:text_to_speech/text_to_speech.dart';

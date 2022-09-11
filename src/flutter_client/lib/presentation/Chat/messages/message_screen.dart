@@ -9,7 +9,7 @@ import 'package:flutter_client/models/UserFriend.dart';
 import 'package:flutter_client/presentation/VideoCall.dart';
 import 'package:flutter_client/presentation/VideoCalling/Calling.dart';
 import 'package:flutter_client/presentation/VideoCalling/VideoCall2.dart';
-import 'package:flutter_client/services/SignalR_Servis.dart';
+import 'package:flutter_client/services/SignalR_Services.dart';
 import 'package:flutter_client/session/chatSession/authenticated_session_cubit.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/src/provider.dart';

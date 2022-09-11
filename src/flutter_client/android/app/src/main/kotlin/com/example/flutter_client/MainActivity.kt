@@ -1,4 +1,4 @@
-package com.example.flutter_client_2
+package com.example.magisterka_v1
 
 import io.flutter.embedding.android.FlutterActivity
 

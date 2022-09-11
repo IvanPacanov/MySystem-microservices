@@ -1,3 +1,4 @@
+import 'package:flutter_client/models/User.dart';
 import 'package:flutter_client/models/UserFriend.dart';
 
 abstract class AuthenticatedSessionState {}
@@ -24,6 +25,11 @@ class NormalState extends AuthenticatedSessionState {}
 
 class ChatViewState extends AuthenticatedSessionState {}
 
+class GuardianViewState extends AuthenticatedSessionState {
+  final User user;
+
+  GuardianViewState({required this.user});
+}
 
 class FriendViewState extends AuthenticatedSessionState {}
 
